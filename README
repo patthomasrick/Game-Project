@@ -4,7 +4,7 @@ forward in the cave, the map moves accordingly. The player must navigate through
 the cave and try and get as far as possible in the cave. The hang glider is 
 controlled by the mouse, and the position of the mouse controls where the player 
 flies. The glider slowly changes its direction to go towards the mouse. Going up 
-reduces the glider’s speed, and going down increases the speed. If the player were 
+reduces the gliderâ€™s speed, and going down increases the speed. If the player were 
 to go up for too long, the player would stall and fall. Crashing into the ceiling 
 or floor would result in the player losing, and the distance that the player 
 travelled would be his score.
@@ -18,3 +18,5 @@ also allow for the saving of high scores, allowing you to see how you compete
 against others on the same computer. Additionally, the color of the hang glider 
 would be able to be customized. You can also buy smoke trails and other 
 customizations for your hang glider with the currency that you collect. 
+
+change
