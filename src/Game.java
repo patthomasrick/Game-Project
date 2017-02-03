@@ -75,21 +75,12 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 	
 	public void paint(Graphics g)
 	{
-		// set color of ceiling objects
-        g.setColor(Color.BLACK);
-		// draw map objects	
-		for (Map.CaveObstacle co: m.ceiling_objs)
-		{
-			g.fillPolygon(co.polygon_x(), co.polygon_y(), 3);
-		} // end tick ceiling g.os
-		for (Map.CaveObstacle co: m.floor_objs)
-		{
-			g.fillPolygon(co.polygon_x(), co.polygon_y(), 3);
-		} // end tick ceiling g.os
+		// draw bg
+		g.setColor(Map.bg_color_1);
+		g.fillRect(0, 0, aWidth, aHeight);
 		
-		// draw ceiling and floor rect
-		g.fillRect(0, 0, aWidth, m.ceiling);
-		g.fillRect(0, m.floor, aWidth, 50);
+		// draw map and its objects
+		m.draw(g);
 	}
 	
 	private class MyTimer implements ActionListener
