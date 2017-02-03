@@ -10,6 +10,8 @@ Purpose: 	Provide the map for hang gliding. THe map scrolls with the progression
 
 import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Map
 {
@@ -27,6 +29,7 @@ public class Map
 	// current tick
 	int current_tick = 0;
 	int total_ticks = 0;
+	int ticks_til_obj_spawn = 30;
 	
 	// define some theme colors
 	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
@@ -35,14 +38,15 @@ public class Map
 	static Color fg_color_2 = new Color(128, 95, 21); // dark sandy yellow
 	
 	// arrays for game objs
-	CaveObstacle[] ceiling_objs;
-	CaveObstacle[] floor_objs;
+	ArrayList<CaveObstacle> obstacles;
+	// iterator for obstacles
+	Iterator<CaveObstacle> obst_iter = obstacles.iterator();
 	
 	// create timer for events
 	Events.EventTimer etimer = new Events.EventTimer();
 	
-	// constructor for map
 	public Map(int screensize_x, int screensize_y)
+	// constructor for map
 	{
 		// variables
 		this.scroll_speed = 3;
@@ -52,72 +56,22 @@ public class Map
 		this.floor = 550;
 		
 		// creates an array for the points of ceiling 
-		this.ceiling_objs = new CaveObstacle[10];
-		this.floor_objs = new CaveObstacle[10];
-		
-		// create initial game objects
-		for (int i = 0; i < 10; i++)
-		{
-			// -----------------------
-			// CEILING
-			// -----------------------
-			
-			// create first obj
-			if (i == 0)
-			{
-				CaveObstacle co = new CaveObstacle(this.ceiling, true);
-				this.ceiling_objs[i] = co;
-			} // end if first run
-			
-			// create all subsequent objs
-			else
-			{
-				CaveObstacle co = new CaveObstacle(this.ceiling, true);
-				co.rect_x += this.ceiling_objs[i-1].rect_x;
-				
-				this.ceiling_objs[i] = co;
-			} // end else
-
-			// -----------------------
-			// FLOOR
-			// -----------------------
-			
-			// create first obj
-			if (i == 0)
-			{
-				CaveObstacle co = new CaveObstacle(this.floor, false);
-				this.floor_objs[i] = co;
-			} // end if first run
-			
-			// create all subsequent objs
-			else
-			{
-				CaveObstacle co = new CaveObstacle(this.floor, false);
-				co.rect_x += this.floor_objs[i-1].rect_x;
-				
-				this.floor_objs[i] = co;
-			} // end else
-		} // end for loop
+		this.obstacles = new ArrayList<CaveObstacle>();
 		
 		this.current_tick = 0;
 	} // end map constructor
 
 	public void tick()
+	// make sure map is being updated with time
 	{
 		// TICK GAME OBJECTS
 		if (this.current_tick%1 == 0)
 		{
-			for (CaveObstacle go: this.ceiling_objs)
+			while(this.obst_iter.hasNext())
 			{
-				go.tick(this.scroll_speed);
-				if (go.rect_x + go.rect_w < 0)
-				{
-					go.rect_x = 800;
-				} // reset rect to beginning of screen
-			} // end tick ceiling g.os
-			
-			for (CaveObstacle go: this.floor_objs)
-			{
+				// get the next item in the iterator
+				CaveObstacle go = this.obst_iter.next();
+				
 				go.tick(this.scroll_speed);
 				if (go.rect_x + go.rect_w < 0)
 				{
@@ -143,26 +97,27 @@ public class Map
 		} // end if game tick
 	} // end tick
 	
+	public void draw(Graphics g)
 	// 2/3/17
 	// draw the map's objects
-	public void draw(Graphics g)
 	{
 		// 	PLACEHOLDER UNTIL GETTING APPLET SIZE IS DONE
 		int aWidth = 800;
 		
 		// set color and draw objects
         g.setColor(Map.fg_color_1);
-		for (CaveObstacle co: this.ceiling_objs)
+		while(this.obst_iter.hasNext())
 		{
+			CaveObstacle co = this.obst_iter.next();
+			g.setColor(co.color);
 			g.fillPolygon(co.polygon_x(), co.polygon_y(), 3);
-		} // end tick ceiling g.os
+		} // draw obstacles
+		
+		// draw floor and ceiling
+		g.setColor(Map.fg_color_1);
 		g.fillRect(0, 0, aWidth, ceiling); // rect for ceiling (placeholder)
 
         g.setColor(Map.fg_color_2);
-		for (Map.CaveObstacle co: this.floor_objs)
-		{
-			g.fillPolygon(co.polygon_x(), co.polygon_y(), 3);
-		} // end tick ceiling g.os
 		g.fillRect(0, this.floor, aWidth, 50); // rect for floor (placeholder)
 	}
 	
@@ -172,11 +127,13 @@ public class Map
 	} // end create tick game object
 
 	
-	// class for a stalagtite/mite
 	public static class CaveObstacle
+	// class for a stalagtite/mite
 	{
 		// these are all isosceles trianges (2 sides equal)
 		int base, side;
+		
+		Color color;
 		
 		// bounding rect
 		int rect_x, rect_y;
@@ -188,9 +145,11 @@ public class Map
 		
 		boolean ceiling_or_floor;
 		
-		public CaveObstacle(int x, boolean ceiling)
+		public CaveObstacle(int x, boolean ceiling, Color color)
 		{
 			this.ceiling_or_floor = ceiling;
+			
+			this.color = color;
 			
 			// placeholder lengths
 			this.base = (int) (Math.random()*60)+30;
