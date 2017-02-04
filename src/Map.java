@@ -1,11 +1,13 @@
 /**
 Authors:	Patrick Thomas
 Date:		2/3/17
-Purpose: 	Provide the map for hang gliding. THe map scrolls with the progression of time. The map also needs
-			to scroll based on the speed of the hang glider. Map generation makes the map get more difficult the longer
-			the player has been flying.
+Purpose: 	Provide the map for hang gliding. THe map scrolls with the progression of time.
+			The map also needs to scroll based on the speed of the hang glider. Map 
+			generation makes the map get more difficult the longer the player has been 
+			flying.
 			
-			The map objects (stalagtite and stalagmites) are chosen based on "every other time", so that they alternate.
+			The map objects (stalagtite and stalagmites) are chosen based on "every other 
+			time", so that they alternate.
 */
 
 import java.awt.Color; // imported to define custom colors
@@ -49,9 +51,18 @@ public class Map
 	// constructor for map
 	{
 		// variables
+		/*
+		 * Scroll speed will be designed to change based on the speed that the hand glider
+		 * is travelling at. Physics will be used to calculate speeds and such, and the
+		 * (somewhat unconserved) kinetic energy will be used to calculate the speed after
+		 * dives and such. The x-component of the speed is then used as the scroll speed.
+		 * 
+		 * Hang glider needs to be implemented.
+		 */
 		this.scroll_speed = 3;
 		
 		// floor and ceiling
+		// update this to change to a percent of the applet size.
 		this.ceiling = 50;
 		this.floor = 550;
 		
@@ -62,11 +73,26 @@ public class Map
 	} // end map constructor
 
 	public void tick()
-	// make sure map is being updated with time
+	/**
+	 * This is to update the map with time. The map is updated per tick, along with screen
+	 * refreshes. Thus, the rate that the map is updated is tied in with FPS. This is
+	 * supposed to be ran every update of the screen/when the rest of the game ticks.
+	 * 
+	 * Every tick, the map's objects are scrolled in relation with the hang glider.
+	 * 
+	 * This is also designed to hook in with the events class, so timed events can happen
+	 * per amount of ticks or check a condition every set amount of ticks.
+	 */
 	{
 		// TICK GAME OBJECTS
-		if (this.current_tick%1 == 0)
+		if (((this.current_tick%1 == 0)))
 		{
+			/*
+			 * Iterate through the ArrayList. Use iterators.
+			 *  
+			 * For every object in the ArrayList/iterator, run the individual object's
+			 * tick. 
+			 */
 			while(this.obst_iter.hasNext())
 			{
 				// get the next item in the iterator
