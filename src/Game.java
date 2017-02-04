@@ -80,14 +80,21 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 		
 		// draw map and its objects
 		m.draw(g);
-	}
+	} // end draw
+	
+	public void update_applet_size()
+	{
+		this.aWidth = this.getWidth();
+		this.aHeight = this.getHeight();
+	} // end update applet size
 	
 	private class MyTimer implements ActionListener
 	{
 		public void actionPerformed(ActionEvent a)
 		{
 			// tick map and map objects
-			m.tick();
+			
+			m.tick(aWidth, aHeight);
 			
 			// update screen
 			repaint();

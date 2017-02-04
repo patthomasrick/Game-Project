@@ -14,6 +14,7 @@ import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
 
 public class Map
 {
@@ -73,7 +74,7 @@ public class Map
 		this.obstacles = new ArrayList<CaveObstacle>();
 	} // end map constructor
 
-	public void tick()
+	public void tick(int a_width, int a_height)
 	/*
 	 * This is to update the map with time. The map is updated per tick, along with screen
 	 * refreshes. Thus, the rate that the map is updated is tied in with FPS. This is
@@ -85,6 +86,10 @@ public class Map
 	 * per amount of ticks or check a condition every set amount of ticks.
 	 */
 	{
+		// renew applet size
+		this.a_width = a_width;
+		this.a_height = a_height;
+		
 		// TICK GAME OBJECTS
 		
 		/*
@@ -133,24 +138,32 @@ public class Map
 		// ---------- SPAWNING ----------------
 		if (this.distance_until_spawn <= 0)
 		{
+			// get applet screen factors
+			double x_shift = this.a_width/800.0;
+			double y_shift = this.a_height/600.0;
+			
+			// randomize values
+			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-50, 50 + 1) * x_shift);
+			int w_rand = (int) (ThreadLocalRandom.current().nextInt(60, 250 + 1) * x_shift);
+			int h_rand = (int) (ThreadLocalRandom.current().nextInt(80, 300 + 1) * y_shift);
 			// init new obstacle
 			CaveObstacle co;
 			if (this.next_spawn_is_ceiling == true)
 			{
 				co = new CaveObstacle(
-						(double) this.a_width,
+						(double) (this.a_width + x_rand),
 						(double) this.ceiling,
-						150,
-						150,
+						h_rand,
+						w_rand,
 						Map.fg_color_1);
 			} // end if time to spawn on ceiling
 			else
 			{
 				co = new CaveObstacle(
-						(double) this.a_width,
+						(double) (this.a_width + x_rand),
 						(double) this.floor,
-						-150,
-						150,
+						-h_rand,
+						w_rand,
 						Map.fg_color_2);
 			} // end if time to spawn on floor
 			
