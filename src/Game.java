@@ -13,7 +13,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 
@@ -33,6 +32,9 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 	public Timer timer;
 	private int aWidth = 800, aHeight = 600;
 	
+	// create Map
+	public Map m;
+	public Map.CaveObstacle tri;
 
 	// mouse events
 	public void mouseReleased(java.awt.event.MouseEvent p1) {}
@@ -64,10 +66,34 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 		// direction = (int) (360 * Math.random());	// intializes initial direction
 		timer = new Timer(1000/60, new MyTimer());	// class associated with the timer and the length
 													// of time between 
-		
 		// start the timer
 		timer.start();
+		
+		// create map
+		m = new Map(aWidth, aHeight);
 	} // end initialization
+	
+	public void paint(Graphics g)
+	{
+		// draw bg
+		g.setColor(Map.bg_color_1);
+		g.fillRect(0, 0, aWidth, aHeight);
+		
+		// draw map and its objects
+		m.draw(g);
+	}
+	
+	private class MyTimer implements ActionListener
+	{
+		public void actionPerformed(ActionEvent a)
+		{
+			// tick map and map objects
+			m.tick();
+			
+			// update screen
+			repaint();
+		} // end actionPerformed
+	} // end class MyTimer
 	
 	public void update(Graphics g)	// method to double buffer
 	{
@@ -92,13 +118,4 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 		g.drawImage(dbImage, 0, 0, this);
 		Toolkit.getDefaultToolkit().sync(); // fixes lag on Ubuntu
 	} // end update
-	
-	private class MyTimer implements ActionListener
-	{
-		public void actionPerformed(ActionEvent a)
-		{			
-			// update screen
-			repaint();
-		} // end actionPerformed
-	} // end class MyTimer
 }
