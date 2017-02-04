@@ -69,7 +69,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 		timer.start();
 		
 		// create map
-		m = new Map(aWidth, aHeight);
+		m = new Map(aWidth, aHeight, 1.0);
 	} // end initialization
 	
 	public void paint(Graphics g)

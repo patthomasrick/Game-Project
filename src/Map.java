@@ -18,7 +18,7 @@ import java.util.Iterator;
 public class Map
 {
 	// variables
-	int scroll_speed; // how fast the map scrolls (placeholder)
+	double scroll_speed; // how fast the map scrolls (placeholder)
 	
 	// applet size
 	int a_width;
@@ -28,6 +28,11 @@ public class Map
 	int ceiling;
 	int floor;
 	
+	// hardcode spawning
+	int distance_between_spawns = 150;
+	int distance_until_spawn = 0;
+	boolean next_spawn_is_ceiling = true;
+	
 	// define some theme colors
 	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
 	static Color bg_color_2 = new Color(48, 62, 115); // darker blue
@@ -36,13 +41,11 @@ public class Map
 	
 	// arrays for game obstacles
 	ArrayList<CaveObstacle> obstacles;
-	// iterator for obstacles
-	Iterator<CaveObstacle> obst_iter;
 	
 	// create timer for events
 	Events.EventTimer etimer = new Events.EventTimer();
 	
-	public Map(int screensize_x, int screensize_y)
+	public Map(int screensize_x, int screensize_y, double scroll_speed)
 	// constructor for map
 	{
 		// variables
@@ -55,7 +58,7 @@ public class Map
 		 * Hang glider needs to be implemented.
 		 */
 		// set scroll speed to a constant for now
-		this.scroll_speed = 3;
+		this.scroll_speed = scroll_speed;
 		
 		// set screensize to be what is specified
 		this.a_width = screensize_x;
@@ -71,7 +74,7 @@ public class Map
 	} // end map constructor
 
 	public void tick()
-	/**
+	/*
 	 * This is to update the map with time. The map is updated per tick, along with screen
 	 * refreshes. Thus, the rate that the map is updated is tied in with FPS. This is
 	 * supposed to be ran every update of the screen/when the rest of the game ticks.
@@ -92,15 +95,79 @@ public class Map
 		 */
 		
 		// recall iterator
-		this.obst_iter = obstacles.iterator();
-		while(this.obst_iter.hasNext())
+		Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+		while(obst_iter.hasNext())
 		{
-			// get the next item in the iterator
-			CaveObstacle go = this.obst_iter.next();
 			
+			// get the next item in the iterator
+			CaveObstacle go = obst_iter.next();
 			// internal tick
 			go.tick(this.scroll_speed);
+			/*
+			// remove object if it moves off of screen
+			ArrayList<Integer> cull_values = new ArrayList<Integer>();
+			if (go.x + go.w < 0)
+			{
+				// kill the sprite
+				go.kill();
+				
+				// remove object from obstacles
+				int index = this.obstacles.indexOf(go);
+				cull_values.add(index);
+				//this.obstacles.remove(index);
+			} // end if off of screen
+			
+				if (cull_values.size() > 0)
+				{
+					Iterator<Integer> cull_iter = cull_values.iterator();
+					while(cull_iter.hasNext())
+					{
+						int index = cull_iter.next();
+						this.obstacles.remove(index);
+					} // end culling
+				} // end if things to cull
+			}
+		*/
 		} // end tick game objects
+		
+		// ---------- SPAWNING ----------------
+		if (this.distance_until_spawn <= 0)
+		{
+			// init new obstacle
+			CaveObstacle co;
+			if (this.next_spawn_is_ceiling == true)
+			{
+				co = new CaveObstacle(
+						(double) this.a_width,
+						(double) this.ceiling,
+						150,
+						150,
+						Map.fg_color_1);
+			} // end if time to spawn on ceiling
+			else
+			{
+				co = new CaveObstacle(
+						(double) this.a_width,
+						(double) this.floor,
+						-150,
+						150,
+						Map.fg_color_2);
+			} // end if time to spawn on floor
+			
+			// add new obj to obstacles
+			this.obstacles.add(co);
+			
+			// switch spawn plane for next time
+			this.next_spawn_is_ceiling = !this.next_spawn_is_ceiling;
+			
+			// reset spawn timer
+			this.distance_until_spawn = this.distance_between_spawns;
+		} // end if spawn
+		else
+		{
+			// simulate the passage of cave
+			this.distance_until_spawn -= this.scroll_speed;
+		} // end else
 	} // end tick
 	
 	public void draw(Graphics g)
@@ -114,11 +181,11 @@ public class Map
 		if (this.obstacles.size() > 0)
 		{
 			// iterate through all of the obstacles
-			this.obst_iter = obstacles.iterator();
-			while(this.obst_iter.hasNext())
+			Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+			while(obst_iter.hasNext())
 			{
-				CaveObstacle co = this.obst_iter.next();			// get obstacle
-
+				// get obstacle
+				CaveObstacle co = obst_iter.next();
 				// use built-in draw method
 				co.draw(g);
 			} // end while draw obstacles

@@ -9,6 +9,8 @@ import java.awt.Color;
 
 public class Sprite extends Rect
 {
+	boolean alive = true;
+	
 	public Sprite(double x, double y, int h, int w)
 	// constructs Sprite based off of rect
 	{
@@ -17,7 +19,16 @@ public class Sprite extends Rect
 	
 	public void draw(Graphics g, Color color)
 	{// get obstacle
-		g.setColor(color);
-		g.fillRect((int) this.x, (int) this.y, this.w, this.h);
+		if (this.alive = true)
+		{
+			g.setColor(color);
+			g.fillRect((int) this.x, (int) this.y, this.w, this.h);
+		} // end if alive
 	} // end draw
+	
+	public void kill()
+	// sets the sprite to be dead.
+	{
+		this.alive = false;
+	}
 } // end Sprite
