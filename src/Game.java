@@ -34,7 +34,6 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 	
 	// create Map
 	public Map m;
-	public Map.CaveObstacle tri;
 
 	// mouse events
 	public void mouseReleased(java.awt.event.MouseEvent p1) {}

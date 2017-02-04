@@ -83,12 +83,14 @@ public class Map
 	 */
 	{
 		// TICK GAME OBJECTS
+		
 		/*
 		 * Iterate through the ArrayList. Use iterators.
 		 *  
 		 * For every object in the ArrayList/iterator, run the individual object's
 		 * tick. 
 		 */
+		
 		// recall iterator
 		this.obst_iter = obstacles.iterator();
 		while(this.obst_iter.hasNext())
@@ -96,9 +98,9 @@ public class Map
 			// get the next item in the iterator
 			CaveObstacle go = this.obst_iter.next();
 			
+			// internal tick
 			go.tick(this.scroll_speed);
-			if (go.rect_x + go.rect_w < 0) go.rect_x = this.a_width;
-		} // end tick ceiling g.os
+		} // end tick game objects
 	} // end tick
 	
 	public void draw(Graphics g)
@@ -116,8 +118,9 @@ public class Map
 			while(this.obst_iter.hasNext())
 			{
 				CaveObstacle co = this.obst_iter.next();			// get obstacle
-				g.setColor(co.color);								// get obstacle's color
-				g.fillPolygon(co.polygon_x(), co.polygon_y(), 3);	// draw obstacle
+
+				// use built-in draw method
+				co.draw(g);
 			} // end while draw obstacles
 		} // end if any obstacles
 		
@@ -127,101 +130,4 @@ public class Map
         g.setColor(Map.fg_color_2);
 		g.fillRect(0, this.floor, this.a_width, 50);
 	} // end draw
-
-	
-	public static class CaveObstacle
-	// class for a stalagtite/mite
-	{
-		// these are all isosceles trianges (2 sides equal)
-		int base, side;
-		
-		Color color;
-		
-		// bounding rect
-		int rect_x, rect_y;
-		int rect_l, rect_w;
-		
-		int[] tri_a = new int[2];
-		int[] tri_b = new int[2];
-		int[] tri_c = new int[2];
-		
-		boolean ceiling_or_floor;
-		
-		public CaveObstacle(int x, boolean ceiling, Color color)
-		{
-			this.ceiling_or_floor = ceiling;
-			
-			this.color = color;
-			
-			// placeholder lengths
-			this.base = (int) (Math.random()*60)+30;
-			this.side = (int) (Math.random()*130)+100;
-			
-			// x is between two set numbers
-			this.rect_x = (int)(Math.random() * 51) + 100;
-			// y will always be a set number for simplicity
-			this.rect_y = x;
-			
-			// set other rect dimentions
-			this.rect_w = this.base;
-			this.rect_l = (int) Math.sqrt(Math.pow(this.side, 2) - Math.pow(this.base/2, 2));
-			
-			// three points of triangle
-			this.tri_a[0] = this.rect_x;
-			this.tri_a[1] = this.rect_y;
-			
-			this.tri_b[0] = this.rect_x + this.base;
-			this.tri_b[1] = this.rect_y;
-			
-			this.tri_c[0] = this.rect_x + this.rect_w/2;
-			
-			if (this.ceiling_or_floor == true)
-			{
-				this.tri_c[1] = this.rect_y + this.rect_l;
-			}
-			else
-			{
-				this.tri_c[1] = this.rect_y - this.rect_l;
-			}
-		} // end constructor for stalagtite
-		
-		public void tick(int scroll_speed)
-		{
-			// move triangle
-			this.rect_x -= scroll_speed;
-			
-			// three points of triangle
-			this.tri_a[0] = this.rect_x;
-			// this.tri_a[1] = this.rect_y;
-			
-			this.tri_b[0] = this.rect_x + this.base;
-			// this.tri_b[1] = this.rect_y;
-			
-			this.tri_c[0] = this.rect_x + this.rect_w/2;
-			/*
-			if (this.ceiling_or_floor == true)
-			{
-				this.tri_c[1] = this.rect_y + this.rect_l;
-			}
-			else
-			{
-				this.tri_c[1] = this.rect_y - this.rect_l;
-			}
-			*/
-		} // end tick
-		
-		public int[] polygon_x()
-		{
-			// collect triangle point x values
-			int[] tri_x = {this.tri_a[0], this.tri_b[0], this.tri_c[0]};
-			return tri_x;
-		} // end polygon x
-		
-		public int[] polygon_y()
-		{
-			// collect triangle point y values
-			int[] tri_y = {this.tri_a[1], this.tri_b[1], this.tri_c[1]};
-			return tri_y;
-		} // end polygon y
-	} // end gameobject
 } // end class
