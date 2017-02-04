@@ -20,18 +20,13 @@ public class Map
 	// variables
 	int scroll_speed; // how fast the map scrolls (placeholder)
 	
+	// applet size
+	int a_width;
+	int a_height;
+	
 	// floor and ceiling
 	int ceiling;
 	int floor;
-	
-	// min and max space between obstacles (x)
-	int min_x_space = 50;
-	int max_x_space = 150;
-	
-	// current tick
-	int current_tick = 0;
-	int total_ticks = 0;
-	int ticks_til_obj_spawn = 30;
 	
 	// define some theme colors
 	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
@@ -39,10 +34,10 @@ public class Map
 	static Color fg_color_1 = new Color(170, 135, 57); // sandy yellow
 	static Color fg_color_2 = new Color(128, 95, 21); // dark sandy yellow
 	
-	// arrays for game objs
+	// arrays for game obstacles
 	ArrayList<CaveObstacle> obstacles;
 	// iterator for obstacles
-	Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+	Iterator<CaveObstacle> obst_iter;
 	
 	// create timer for events
 	Events.EventTimer etimer = new Events.EventTimer();
@@ -59,17 +54,20 @@ public class Map
 		 * 
 		 * Hang glider needs to be implemented.
 		 */
+		// set scroll speed to a constant for now
 		this.scroll_speed = 3;
 		
-		// floor and ceiling
-		// update this to change to a percent of the applet size.
-		this.ceiling = 50;
-		this.floor = 550;
+		// set screensize to be what is specified
+		this.a_width = screensize_x;
+		this.a_height = screensize_y;
+		
+		// y-values of the ceiling and floor
+		// updates this to change to a percent of the applet size.
+		this.ceiling = 	this.a_height/12;
+		this.floor = 	this.a_height*11/12;
 		
 		// creates an array for the points of ceiling 
 		this.obstacles = new ArrayList<CaveObstacle>();
-		
-		this.current_tick = 0;
 	} // end map constructor
 
 	public void tick()
@@ -85,72 +83,50 @@ public class Map
 	 */
 	{
 		// TICK GAME OBJECTS
-		if (((this.current_tick%1 == 0)))
+		/*
+		 * Iterate through the ArrayList. Use iterators.
+		 *  
+		 * For every object in the ArrayList/iterator, run the individual object's
+		 * tick. 
+		 */
+		// recall iterator
+		this.obst_iter = obstacles.iterator();
+		while(this.obst_iter.hasNext())
 		{
-			/*
-			 * Iterate through the ArrayList. Use iterators.
-			 *  
-			 * For every object in the ArrayList/iterator, run the individual object's
-			 * tick. 
-			 */
-			while(this.obst_iter.hasNext())
-			{
-				// get the next item in the iterator
-				CaveObstacle go = this.obst_iter.next();
-				
-				go.tick(this.scroll_speed);
-				if (go.rect_x + go.rect_w < 0)
-				{
-					go.rect_x = 800;
-				} // reset rect to beginning of screen
-			} // end tick ceiling g.os
+			// get the next item in the iterator
+			CaveObstacle go = this.obst_iter.next();
 			
-			// increment tick once all is done
-		} // end if every third tick
-		
-		// increment ticks
-		this.total_ticks += 1; // effectively distance
-		this.current_tick += 1; // for timing game spawns
-		
-		// timed tick
-		if (this.current_tick >= 50)
-		{
-			// reset tick
-			this.current_tick = 0;
-			
-			// spawn stuff
-			this.create_game_object();
-		} // end if game tick
+			go.tick(this.scroll_speed);
+			if (go.rect_x + go.rect_w < 0) go.rect_x = this.a_width;
+		} // end tick ceiling g.os
 	} // end tick
 	
 	public void draw(Graphics g)
-	// 2/3/17
-	// draw the map's objects
-	{
-		// 	PLACEHOLDER UNTIL GETTING APPLET SIZE IS DONE
-		int aWidth = 800;
-		
-		// set color and draw objects
-        g.setColor(Map.fg_color_1);
-		while(this.obst_iter.hasNext())
+	/*
+	 * 2/3/17
+	 * 
+	 * Draw the map's objects (obstacles and coins) onto the given graphics object.
+	 */
+	{		
+		// first see if there are any objects in the arraylist
+		if (this.obstacles.size() > 0)
 		{
-			CaveObstacle co = this.obst_iter.next();
-			g.setColor(co.color);
-			g.fillPolygon(co.polygon_x(), co.polygon_y(), 3);
-		} // draw obstacles
+			// iterate through all of the obstacles
+			this.obst_iter = obstacles.iterator();
+			while(this.obst_iter.hasNext())
+			{
+				CaveObstacle co = this.obst_iter.next();			// get obstacle
+				g.setColor(co.color);								// get obstacle's color
+				g.fillPolygon(co.polygon_x(), co.polygon_y(), 3);	// draw obstacle
+			} // end while draw obstacles
+		} // end if any obstacles
 		
 		// draw floor and ceiling
 		g.setColor(Map.fg_color_1);
-		g.fillRect(0, 0, aWidth, ceiling); // rect for ceiling (placeholder)
-
+		g.fillRect(0, 0, this.a_width, ceiling);
         g.setColor(Map.fg_color_2);
-		g.fillRect(0, this.floor, aWidth, 50); // rect for floor (placeholder)
-	}
-	
-	public void create_game_object()
-	{
-		// UNUSED
-	} // end create tick game object
+		g.fillRect(0, this.floor, this.a_width, 50);
+	} // end draw
 
 	
 	public static class CaveObstacle
