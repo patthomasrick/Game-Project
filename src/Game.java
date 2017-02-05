@@ -10,16 +10,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 import javax.swing.Timer;
 
 public class Game extends Applet
-implements MouseListener, ActionListener, ItemListener, KeyListener
+implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotionListener
 {
 	// to fix warning...
 	private static final long serialVersionUID = 1L;
@@ -34,13 +30,21 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 	
 	// create Map
 	public Map m;
+	
+	// create test hang glider
+	public TestGlider hg;
 
 	// mouse events
-	public void mouseReleased(java.awt.event.MouseEvent p1) {}
-	public void mouseEntered(java.awt.event.MouseEvent p1) {}
-	public void mouseClicked(java.awt.event.MouseEvent p1) {}
-	public void mousePressed(java.awt.event.MouseEvent p1) {}
-	public void mouseExited(java.awt.event.MouseEvent p1) {}
+	public void mouseReleased(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	public void mouseMoved(MouseEvent e)
+	{
+		hg.move(125, e.getY()-15);
+	}
+	public void mouseDragged(MouseEvent e) {}
 	
 	// applet events
 	public void actionPerformed(java.awt.event.ActionEvent p1) {}
@@ -56,6 +60,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 	{
 		// ADD KEY AND MOUSE LISTENERS
 		addMouseListener(this);
+		addMouseMotionListener(this);
 		addKeyListener(this);
 		// focus window
 		setFocusable(true);
@@ -70,6 +75,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 		
 		// create map
 		m = new Map(aWidth, aHeight, 1.0);
+		
+		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
 	} // end initialization
 	
 	public void paint(Graphics g)
@@ -80,6 +87,9 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 		
 		// draw map and its objects
 		m.draw(g);
+		
+		// draw hangglider
+		hg.draw(g);
 	} // end draw
 	
 	public void update_applet_size()
@@ -94,7 +104,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener
 		{
 			// tick map and map objects
 			
-			m.tick(aWidth, aHeight);
+			m.tick(aWidth, aHeight, hg);
 			
 			// update screen
 			repaint();

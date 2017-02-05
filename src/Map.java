@@ -74,7 +74,7 @@ public class Map
 		this.obstacles = new ArrayList<CaveObstacle>();
 	} // end map constructor
 
-	public void tick(int a_width, int a_height)
+	public void tick(int a_width, int a_height, TestGlider hg)
 	/*
 	 * This is to update the map with time. The map is updated per tick, along with screen
 	 * refreshes. Thus, the rate that the map is updated is tied in with FPS. This is
@@ -108,31 +108,12 @@ public class Map
 			CaveObstacle go = obst_iter.next();
 			// internal tick
 			go.tick(this.scroll_speed);
-			/*
-			// remove object if it moves off of screen
-			ArrayList<Integer> cull_values = new ArrayList<Integer>();
-			if (go.x + go.w < 0)
-			{
-				// kill the sprite
-				go.kill();
-				
-				// remove object from obstacles
-				int index = this.obstacles.indexOf(go);
-				cull_values.add(index);
-				//this.obstacles.remove(index);
-			} // end if off of screen
 			
-				if (cull_values.size() > 0)
-				{
-					Iterator<Integer> cull_iter = cull_values.iterator();
-					while(cull_iter.hasNext())
-					{
-						int index = cull_iter.next();
-						this.obstacles.remove(index);
-					} // end culling
-				} // end if things to cull
-			}
-		*/
+			// test for collisions
+			if (go.collide_as_triangle(hg) == true)
+				hg.color = Color.RED;
+			else
+				hg.color = Color.GREEN;
 		} // end tick game objects
 		
 		// ---------- SPAWNING ----------------
@@ -151,7 +132,7 @@ public class Map
 			if (this.next_spawn_is_ceiling == true)
 			{
 				co = new CaveObstacle(
-						(double) (this.a_width + x_rand),
+						(double) (this.a_width + 50 + x_rand),
 						(double) this.ceiling,
 						h_rand,
 						w_rand,
@@ -160,7 +141,7 @@ public class Map
 			else
 			{
 				co = new CaveObstacle(
-						(double) (this.a_width + x_rand),
+						(double) (this.a_width + 50 + x_rand),
 						(double) this.floor,
 						-h_rand,
 						w_rand,

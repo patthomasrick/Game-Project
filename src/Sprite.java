@@ -11,13 +11,17 @@ public class Sprite extends Rect
 {
 	boolean alive = true;
 	
-	public Sprite(double x, double y, int h, int w)
+	Color color;
+	
+	public Sprite(double x, double y, int h, int w, Color color)
 	// constructs Sprite based off of rect
 	{
 		super(x, y, h, w);
+		
+		this.color = color;
 	} // end constructor
 	
-	public void draw(Graphics g, Color color)
+	public void draw(Graphics g)
 	{// get obstacle
 		if (this.alive = true)
 		{

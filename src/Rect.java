@@ -66,6 +66,26 @@ public class Rect
 		return corners;
 	} // end get_corners
 	
+	public boolean collide_point(double x, double y)
+	/*
+	 * 2/4/17
+	 * 
+	 * Tests a point inside the rect.
+	 * @returns boolean
+	 */
+	{
+		// test x-values
+		if ((this.x < x) && (x < this.x + this.w))
+		{
+			// test y-valuess
+			if ((this.y < y) && (y < this.y + this.h))
+				return true;
+			else
+				return false;
+		} // end if x is overlapping
+		else return false;
+	}
+	
 	public boolean collide_rect(Rect r)
 	/*
 	 * Tests to see if this rect and another rect, r, collide.
@@ -74,32 +94,20 @@ public class Rect
 	 * current rectangle.
 	 */
 	{
-		boolean is_colliding = false;
-		
 		// unpack corners
-		int[][] r1_corners = this.get_corners();
-		int[][] r2_corners = r.get_corners();
+		int[][] r_corners = this.get_corners();
 		
-		int[] r1_c1 = r1_corners[0];
-		int[] r1_c2 = r1_corners[1];
-		int[] r2_c1 = r2_corners[0];
-		int[] r2_c2 = r2_corners[1];
+		int[] r_c1 = r_corners[0];
+		int[] r_c2 = r_corners[1];
 		
-		// test x-values
-		// if r2's left side is within r1 or right is within
-		if (((r1_c1[0] < r2_c1[0]) && (r2_c1[0] < r1_c2[0])) ||
-			((r1_c1[0] < r2_c2[0]) && (r2_c2[0] < r1_c2[0])))
-		{
-			// test y-values
-			// if r2's top side is within r1 or bottom is within
-			if (((r1_c1[1] < r2_c1[1]) && (r2_c1[1] < r1_c2[1])) ||
-				((r1_c1[1] < r2_c2[1]) && (r2_c2[1] < r1_c2[1])))
-			{
-				is_colliding = true;
-			} // end if y is overlapping
-		} // end if x is overlapping
-		
-		return is_colliding;
+		// use built in methods to test every point of the opposing rectangle
+		if (this.collide_point(r_c1[0], r_c1[1]) || 
+			this.collide_point(r_c1[0], r_c2[1]) || 
+			this.collide_point(r_c2[0], r_c1[1]) ||
+			this.collide_point(r_c2[0], r_c2[1]))
+			return true;
+		else 
+			return false;
 	} // end collide_rect
 	
 } // end rect
