@@ -1,14 +1,15 @@
-/**
-Authors:	Patrick Thomas
-Date:		2/3/17
-Purpose: 	Provide the map for hang gliding. THe map scrolls with the progression of time.
-			The map also needs to scroll based on the speed of the hang glider. Map 
-			generation makes the map get more difficult the longer the player has been 
-			flying.
-			
-			The map objects (stalagtite and stalagmites) are chosen based on "every other 
-			time", so that they alternate.
-*/
+/** 
+ * Provide the map for hang gliding. THe map scrolls with the progression of time.
+ * The map also needs to scroll based on the speed of the hang glider. Map 
+ * generation makes the map get more difficult the longer the player has been 
+ * flying.
+ * 
+ * The map objects (stalagtite and stalagmites) are chosen based on "every other 
+ * time", so that they alternate.
+ * 
+ * @author Patrick Thomas
+ * @version 2/3/17
+ */
 
 import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
@@ -16,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
 
+/** 
+ * Creates a map object that stores and controls game obstacles.
+ */
 public class Map
 {
 	// variables
@@ -34,7 +38,7 @@ public class Map
 	int distance_until_spawn = 0;
 	boolean next_spawn_is_ceiling = true;
 	
-	// define some theme colors
+	/** Define colors used for the theme */
 	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
 	static Color bg_color_2 = new Color(48, 62, 115); // darker blue
 	static Color fg_color_1 = new Color(170, 135, 57); // sandy yellow
@@ -46,19 +50,21 @@ public class Map
 	// create timer for events
 	Events.EventTimer etimer = new Events.EventTimer();
 	
+	/**
+	 * Constructor for the map.
+	 * 
+	 * Scroll speed will be designed to change based on the speed that the hand glider
+	 * is travelling at. Physics will be used to calculate speeds and such, and the
+	 * (somewhat unconserved) kinetic energy will be used to calculate the speed after
+	 * dives and such. The x-component of the speed is then used as the scroll speed.
+	 * 
+	 * @param screensize_x	The width of the applet
+	 * @param screensize_y	The height of the applet
+	 * @param scroll_speed	The intial speed of the hang glider
+	 */
 	public Map(int screensize_x, int screensize_y, double scroll_speed)
-	// constructor for map
 	{
-		// variables
-		/*
-		 * Scroll speed will be designed to change based on the speed that the hand glider
-		 * is travelling at. Physics will be used to calculate speeds and such, and the
-		 * (somewhat unconserved) kinetic energy will be used to calculate the speed after
-		 * dives and such. The x-component of the speed is then used as the scroll speed.
-		 * 
-		 * Hang glider needs to be implemented.
-		 */
-		// set scroll speed to a constant for now
+		// set scroll speed to an initial value
 		this.scroll_speed = scroll_speed;
 		
 		// set screensize to be what is specified
@@ -68,14 +74,14 @@ public class Map
 		// y-values of the ceiling and floor
 		// updates this to change to a percent of the applet size.
 		this.ceiling = 	this.a_height/12;
-		this.floor = 	this.a_height*11/12;
+		this.floor 	 = 	this.a_height*11/12;
 		
 		// creates an array for the points of ceiling 
 		this.obstacles = new ArrayList<CaveObstacle>();
 	} // end map constructor
 
-	public void tick(int a_width, int a_height, TestGlider hg)
-	/*
+	
+	/**
 	 * This is to update the map with time. The map is updated per tick, along with screen
 	 * refreshes. Thus, the rate that the map is updated is tied in with FPS. This is
 	 * supposed to be ran every update of the screen/when the rest of the game ticks.
@@ -84,39 +90,37 @@ public class Map
 	 * 
 	 * This is also designed to hook in with the events class, so timed events can happen
 	 * per amount of ticks or check a condition every set amount of ticks.
+	 * 
+	 * @param a_width	The width of the applet
+	 * @param a_height	The height of the applet
+	 * @param hg		The TestGlider object
 	 */
+	public void tick(int a_width, int a_height, TestGlider hg)
 	{
-		// renew applet size
+		// renew applet size. useful in case of screen size changes
 		this.a_width = a_width;
 		this.a_height = a_height;
 		
-		// TICK GAME OBJECTS
-		
-		/*
-		 * Iterate through the ArrayList. Use iterators.
-		 *  
-		 * For every object in the ArrayList/iterator, run the individual object's
-		 * tick. 
-		 */
-		// reset color
+		// reset color. useful in case if the hg is actually colliding with an object
 		hg.color = Color.GREEN;
 		
-		// recall iterator
+		// call iterator and loop through all objects in the iterator
 		Iterator<CaveObstacle> obst_iter = obstacles.iterator();
 		while(obst_iter.hasNext())
 		{
-			
 			// get the next item in the iterator
 			CaveObstacle go = obst_iter.next();
-			// internal tick
+			
+			// internally tick the game object
 			go.tick(this.scroll_speed);
 			
-			// test for collisions
+			// test for collisions, if colliding, turn hg red
 			if (go.collide_as_triangle(hg) == true)
 				hg.color = Color.RED;
 		} // end tick game objects
 		
-		// ---------- SPAWNING ----------------
+		// ---------- SPAWNING -------------
+		// set to spawn obstacle every set distance
 		if (this.distance_until_spawn <= 0)
 		{
 			// get applet screen factors
@@ -130,6 +134,7 @@ public class Map
 			
 			// init new obstacle
 			CaveObstacle co;
+			// spawning on ceilings
 			if (this.next_spawn_is_ceiling == true)
 			{
 				co = new CaveObstacle(
@@ -139,6 +144,7 @@ public class Map
 						w_rand,
 						Map.fg_color_1);
 			} // end if time to spawn on ceiling
+			// spawning on floors
 			else
 			{
 				co = new CaveObstacle(
@@ -158,6 +164,8 @@ public class Map
 			// reset spawn timer
 			this.distance_until_spawn = this.distance_between_spawns;
 		} // end if spawn
+		
+		// nothing is supposed to be spawned, so just tick down distance
 		else
 		{
 			// simulate the passage of cave
@@ -165,12 +173,12 @@ public class Map
 		} // end else
 	} // end tick
 	
-	public void draw(Graphics g)
-	/*
-	 * 2/3/17
-	 * 
+	/**
 	 * Draw the map's objects (obstacles and coins) onto the given graphics object.
+	 * 
+	 * @param g		Graphics object to draw to applet
 	 */
+	public void draw(Graphics g)
 	{		
 		// first see if there are any objects in the arraylist
 		if (this.obstacles.size() > 0)
