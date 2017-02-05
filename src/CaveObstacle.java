@@ -15,18 +15,10 @@ public class CaveObstacle extends Sprite
  * collision functions (e.g. triangles). Can draw triangles and store a color.
  */
 {
-	// left half and right half for collisions
-	Rect left_half;
-	Rect right_half;
-	
 	public CaveObstacle(double x, double y, int h, int w, Color color)
 	{
 		// init sprite
 		super(x, y, h, w, color);
-		
-		// split halves
-		left_half = new Rect(this.x, this.y, this.h, this.w/2);
-		right_half = new Rect(this.x + this.w/2.0, this.y, this.h, this.w/2);
 	} // end constructor
 	
 	public void draw(Graphics g)
@@ -66,7 +58,7 @@ public class CaveObstacle extends Sprite
 		this.push(-hg_speed, 0);	// method provided through Rect
 	} // end tick
 	
-	public boolean collide_as_triangle(Rect r)
+	public boolean collide_as_triangle(Geometry.Rect r)
 	/*
 	 * 2/4/17
 	 * 

@@ -98,6 +98,8 @@ public class Map
 		 * For every object in the ArrayList/iterator, run the individual object's
 		 * tick. 
 		 */
+		// reset color
+		hg.color = Color.GREEN;
 		
 		// recall iterator
 		Iterator<CaveObstacle> obst_iter = obstacles.iterator();
@@ -112,8 +114,6 @@ public class Map
 			// test for collisions
 			if (go.collide_as_triangle(hg) == true)
 				hg.color = Color.RED;
-			else
-				hg.color = Color.GREEN;
 		} // end tick game objects
 		
 		// ---------- SPAWNING ----------------
@@ -123,10 +123,11 @@ public class Map
 			double x_shift = this.a_width/800.0;
 			double y_shift = this.a_height/600.0;
 			
-			// randomize values
+			// randomize values of the obstacle to be generated
 			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-50, 50 + 1) * x_shift);
 			int w_rand = (int) (ThreadLocalRandom.current().nextInt(60, 250 + 1) * x_shift);
 			int h_rand = (int) (ThreadLocalRandom.current().nextInt(80, 300 + 1) * y_shift);
+			
 			// init new obstacle
 			CaveObstacle co;
 			if (this.next_spawn_is_ceiling == true)

@@ -7,7 +7,7 @@ Purpose: 	Provides a simple sprite system.
 import java.awt.Graphics;
 import java.awt.Color;
 
-public class Sprite extends Rect
+public class Sprite extends Geometry.Rect
 {
 	boolean alive = true;
 	

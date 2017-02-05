@@ -74,7 +74,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		timer.start();
 		
 		// create map
-		m = new Map(aWidth, aHeight, 1.0);
+		m = new Map(aWidth, aHeight, 2.5);
 		
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
 	} // end initialization
