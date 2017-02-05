@@ -20,7 +20,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	// to fix warning...
 	private static final long serialVersionUID = 1L;
 	
-	// double buffering...
+	// double buffering variables
 	private Image dbImage;
 	private Graphics dbg;
 	
@@ -40,7 +40,10 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseClicked(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
+	
+	// mouse moved events
 	public void mouseMoved(MouseEvent e)
+	// track mouse movements
 	{
 		hg.move(125, e.getY()-15);
 	}
@@ -55,31 +58,42 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void keyPressed(java.awt.event.KeyEvent p1) {}
 	public void keyTyped(java.awt.event.KeyEvent p1) {}
 	
-	// initialize applet
 	public void init()
+	/*
+	 * 1/26/17
+	 * 
+	 * Initialize the applet.
+	 * Add listeners for user input, configure window, start the timer,
+	 * and create the map and hang glider.
+	 */
 	{
-		// ADD KEY AND MOUSE LISTENERS
+		// add mouse and key listeners
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
+		
 		// focus window
 		setFocusable(true);
 		
-		setSize(aWidth, aHeight);					// sets size of window
-		setBackground(Color.white);					// sets bg color
-		// direction = (int) (360 * Math.random());	// intializes initial direction
-		timer = new Timer(1000/60, new MyTimer());	// class associated with the timer and the length
-													// of time between 
-		// start the timer
+		// configure window
+		setSize(aWidth, aHeight);
+		setBackground(Color.WHITE);
+		
+		// start timer
+		timer = new Timer(1000/60, new MyTimer());
 		timer.start();
 		
-		// create map
+		// create map and hang glider
 		m = new Map(aWidth, aHeight, 2.5);
-		
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
 	} // end initialization
 	
 	public void paint(Graphics g)
+	/*
+	 * 1/23/17
+	 * 
+	 * Draw the objects in the game to the screen.
+	 */
 	{
 		// draw bg
 		g.setColor(Map.bg_color_1);
@@ -93,17 +107,32 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	} // end draw
 	
 	public void update_applet_size()
+	/*
+	 * 2/4/17
+	 * 
+	 * Changes the variables associated with this applet's size to what it actually is.
+	 * Essentially a setter.
+	 */
 	{
 		this.aWidth = this.getWidth();
 		this.aHeight = this.getHeight();
 	} // end update applet size
 	
 	private class MyTimer implements ActionListener
+	/*
+	 * 1/23/17
+	 * 
+	 * Timed events (per frame).
+	 */
 	{
 		public void actionPerformed(ActionEvent a)
+		/*
+		 * 1/23/17
+		 * 
+		 * Ran per action performed, basically every 1/60th of a second.
+		 */
 		{
 			// tick map and map objects
-			
 			m.tick(aWidth, aHeight, hg);
 			
 			// update screen
@@ -112,10 +141,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	} // end class MyTimer
 	
 	public void update(Graphics g)	// method to double buffer
+	/*
+	 * 1/23/17
+	 * 
+	 * Double buffering code.
+	 * This method was obtained from the internet and cited as common knowledge.
+	 */
 	{
-		// this method was obtained from the internet and cited as common knowledge
-		
-		// double buffering surfaces
+		// create
 		dbImage = createImage(this.getSize().width, this.getSize().height);
 		dbg = dbImage.getGraphics();
 
@@ -134,4 +167,4 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		g.drawImage(dbImage, 0, 0, this);
 		Toolkit.getDefaultToolkit().sync(); // fixes lag on Ubuntu
 	} // end update
-}
+} // end Game
