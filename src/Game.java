@@ -69,13 +69,13 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseDragged(MouseEvent e) {}
 	
 	// applet events
-	public void actionPerformed(java.awt.event.ActionEvent p1) {}
-	public void itemStateChanged(java.awt.event.ItemEvent p1) {}
+	public void actionPerformed(java.awt.event.ActionEvent e) {}
+	public void itemStateChanged(java.awt.event.ItemEvent e) {}
 	
 	//keyboard events
-	public void keyReleased(java.awt.event.KeyEvent p1) {}
-	public void keyPressed(java.awt.event.KeyEvent p1) {}
-	public void keyTyped(java.awt.event.KeyEvent p1) {}
+	public void keyReleased(java.awt.event.KeyEvent e) {}
+	public void keyPressed(java.awt.event.KeyEvent e) {}
+	public void keyTyped(java.awt.event.KeyEvent e) {}
 	
 	
 	/**Initialize the applet.
@@ -143,6 +143,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		 */
 		public void actionPerformed(ActionEvent a)
 		{
+			// update applet size
+			update_applet_size();
 			// tick map and map objects
 			m.tick(aWidth, aHeight, hg);
 			

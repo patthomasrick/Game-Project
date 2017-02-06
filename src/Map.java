@@ -33,6 +33,12 @@ public class Map
 	int ceiling;
 	int floor;
 	
+	// constants
+	int W_FACTOR = 800;
+	int H_FACTOR = 600;
+	double PCT_CEILING = 1.0/12.0;
+	double PCT_FLOOR = 10.0/12.0;
+	
 	// hardcode spawning
 	int distance_between_spawns = 150;
 	int distance_until_spawn = 0;
@@ -73,8 +79,8 @@ public class Map
 		
 		// y-values of the ceiling and floor
 		// updates this to change to a percent of the applet size.
-		this.ceiling = 	this.a_height/12;
-		this.floor 	 = 	this.a_height*11/12;
+		this.ceiling = 	(int) (this.a_height*this.PCT_CEILING);
+		this.floor 	 = 	(int) (this.a_height*this.PCT_FLOOR);
 		
 		// creates an array for the points of ceiling 
 		this.obstacles = new ArrayList<CaveObstacle>();
@@ -100,6 +106,10 @@ public class Map
 		// renew applet size. useful in case of screen size changes
 		this.a_width = a_width;
 		this.a_height = a_height;
+		
+		// updates ceiling and floor to change to a percent of the applet size.
+		this.ceiling = 	(int) (this.a_height*this.PCT_CEILING);
+		this.floor 	 = 	(int) (this.a_height*this.PCT_FLOOR);
 		
 		// reset color. useful in case if the hg is actually colliding with an object
 		hg.color = Color.GREEN;
@@ -138,7 +148,7 @@ public class Map
 			if (this.next_spawn_is_ceiling == true)
 			{
 				co = new CaveObstacle(
-						(double) (this.a_width + 50 + x_rand),
+						(double) (this.a_width + 50*x_shift + x_rand),
 						(double) this.ceiling,
 						h_rand,
 						w_rand,
@@ -148,7 +158,7 @@ public class Map
 			else
 			{
 				co = new CaveObstacle(
-						(double) (this.a_width + 50 + x_rand),
+						(double) (this.a_width + 50*x_shift + x_rand),
 						(double) this.floor,
 						-h_rand,
 						w_rand,
@@ -198,6 +208,6 @@ public class Map
 		g.setColor(Map.fg_color_1);
 		g.fillRect(0, 0, this.a_width, ceiling);
         g.setColor(Map.fg_color_2);
-		g.fillRect(0, this.floor, this.a_width, 50);
+		g.fillRect(0, this.floor, this.a_width, floor);
 	} // end draw
 } // end class
