@@ -24,6 +24,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Date;
 
 import javax.swing.Timer;
 
@@ -43,6 +44,11 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private Image dbImage;
 	private Graphics dbg;
 	
+	/** timing */
+	Date date = new Date();
+	long lasttime = date.getTime();
+	int timesince = 1000/60;
+	
 	public Timer timer;
 	private int aWidth = 800, aHeight = 600;
 	
@@ -52,7 +58,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
-
+	
 	// mouse events
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
@@ -101,8 +107,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		timer.start();
 		
 		/** Create map and hang glider */
-		m = new Map(aWidth, aHeight, 2.5);
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+		m = new Map(aWidth, aHeight, 2.5);
 	} // end initialization
 	
 	
@@ -138,11 +144,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private class MyTimer implements ActionListener
 	{
 		/** Timed events (per frame). 
-		 * 
 		 * @param a			ActionEvent
 		 */
 		public void actionPerformed(ActionEvent a)
 		{
+			// get number of milliseconds that have passed since last call
+			timesince = (int) (date.getTime() - lasttime);
+			lasttime = date.getTime();
+			
 			// update applet size
 			update_applet_size();
 			// tick map and map objects

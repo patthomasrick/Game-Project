@@ -115,11 +115,10 @@ public class Map
 		hg.color = Color.GREEN;
 		
 		// call iterator and loop through all objects in the iterator
-		Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-		while(obst_iter.hasNext())
+		for (Iterator<CaveObstacle> iter = obstacles.iterator(); iter.hasNext();)
 		{
 			// get the next item in the iterator
-			CaveObstacle go = obst_iter.next();
+			CaveObstacle go = iter.next();
 			
 			// internally tick the game object
 			go.tick(this.scroll_speed);
@@ -127,6 +126,12 @@ public class Map
 			// test for collisions, if colliding, turn hg red
 			if (go.collide_as_triangle(hg) == true)
 				hg.color = Color.RED;
+			
+			// if the obstacle is off-screen, delete it
+			if (go.x + go.w < 0)
+			{
+				iter.remove();
+			} // end if off-screen
 		} // end tick game objects
 		
 		// ---------- SPAWNING -------------
