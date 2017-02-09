@@ -104,8 +104,27 @@ public class Map
 	public void tick(int a_width, int a_height, TestGlider hg)
 	{
 		// renew applet size. useful in case of screen size changes
-		this.a_width = a_width;
-		this.a_height = a_height;
+		// change current screen objects to update immediately to changes
+		if (!(this.a_width == a_width) || !(this.a_height == a_height))
+		{
+			// call iterator and loop through all objects in the iterator
+			for (Iterator<CaveObstacle> iter = obstacles.iterator(); iter.hasNext();)
+			{
+				// get the next item in the iterator
+				CaveObstacle go = iter.next();
+				
+				double[] factors = {
+						((float) a_width)/((float) this.a_width), 
+						((float) a_height)/((float) this.a_height)
+				};
+				
+				go.resize(factors[0], factors[1]);
+			} // end iteration
+			
+			// update values after changes are done
+			this.a_width = a_width;
+			this.a_height = a_height;
+		} // end if width changed
 		
 		// updates ceiling and floor to change to a percent of the applet size.
 		this.ceiling = 	(int) (this.a_height*this.PCT_CEILING);

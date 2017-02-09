@@ -90,4 +90,16 @@ public class CaveObstacle extends Sprite
 		
 		return iscolliding;
 	} // end collide as triangle
+	
+	/**
+	 * Resize the object by a factor
+	 * @param factor	double
+	 */
+	public void resize(double x_factor, double y_factor)
+	{
+		this.x *= x_factor;
+		this.y *= y_factor;
+		this.h = (int) (this.h * y_factor);
+		this.w = (int) (this.w * x_factor);
+	} // end resize
 } // end GameObstacle
