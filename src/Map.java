@@ -44,7 +44,7 @@ public class Map
 	int distance_until_spawn = 0;
 	boolean next_spawn_is_ceiling = true;
 	
-	/** Define colors used for the theme */
+	/** Defined colors of theme */
 	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
 	static Color bg_color_2 = new Color(48, 62, 115); // darker blue
 	static Color fg_color_1 = new Color(170, 135, 57); // sandy yellow
@@ -115,9 +115,9 @@ public class Map
 				
 				double[] factors = {
 						((float) a_width)/((float) this.a_width), 
-						((float) a_height)/((float) this.a_height)
-				};
+						((float) a_height)/((float) this.a_height)};
 				
+				// call the method that performs the resizing of the GO
 				go.resize(factors[0], factors[1]);
 			} // end iteration
 			
@@ -162,9 +162,9 @@ public class Map
 			double y_shift = this.a_height/600.0;
 			
 			// randomize values of the obstacle to be generated
-			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-50, 50 + 1) * x_shift);
-			int w_rand = (int) (ThreadLocalRandom.current().nextInt(60, 250 + 1) * x_shift);
-			int h_rand = (int) (ThreadLocalRandom.current().nextInt(80, 300 + 1) * y_shift);
+			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-40, 40 + 1) * x_shift);
+			int w_rand = (int) (ThreadLocalRandom.current().nextInt(60, 230 + 1) * x_shift);
+			int h_rand = (int) (ThreadLocalRandom.current().nextInt(80, 280 + 1) * y_shift);
 			
 			// init new obstacle
 			CaveObstacle co;

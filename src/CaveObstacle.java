@@ -58,14 +58,15 @@ public class CaveObstacle extends Sprite
 		this.push(-hg_speed, 0);	// method provided through Rect
 	} // end tick
 	
-	public boolean collide_as_triangle(Geometry.Rect r)
-	/*
-	 * 2/4/17
-	 * 
-	 * Collides with a rect (around the hang glider preferably) as an isosceles triangle.
+	/**
+	 * Collides the triangle with a rectangle. Uses the collide point method with every single
+	 * point of a rectangle.
+	 * @param r		Geometry.Rect, used for its 4 corners
+	 * @return		boolean, true if colliding, false if not
 	 */
+	public boolean collide_as_triangle(Geometry.Rect r)
 	{
-		// use the Geometry class to help
+		// uses the Geometry class to help
 		// define points of triangle
 		Geometry.Point a = new Geometry.Point(this.x, this.y);
 		Geometry.Point b = new Geometry.Point(this.x + this.w, this.y);
