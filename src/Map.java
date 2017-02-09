@@ -24,6 +24,7 @@ public class Map
 {
 	// variables
 	double scroll_speed; // how fast the map scrolls (placeholder)
+	double scroll_factor = 1.0; // how fast the map moves in accord to screen size
 	
 	// applet size
 	int a_width;
@@ -121,6 +122,10 @@ public class Map
 				go.resize(factors[0], factors[1]);
 			} // end iteration
 			
+			// also update distance between spawns and scroll speed
+			this.distance_between_spawns = 150 * a_width/800;
+			this.scroll_factor = a_width/800.0;
+			
 			// update values after changes are done
 			this.a_width = a_width;
 			this.a_height = a_height;
@@ -140,7 +145,7 @@ public class Map
 			CaveObstacle go = iter.next();
 			
 			// internally tick the game object
-			go.tick(this.scroll_speed);
+			go.tick(this.scroll_speed * this.scroll_factor);
 			
 			// test for collisions, if colliding, turn hg red
 			if (go.collide_as_triangle(hg) == true)
@@ -203,7 +208,7 @@ public class Map
 		else
 		{
 			// simulate the passage of cave
-			this.distance_until_spawn -= this.scroll_speed;
+			this.distance_until_spawn -= (this.scroll_speed * this.scroll_factor);
 		} // end else
 	} // end tick
 	
