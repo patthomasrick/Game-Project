@@ -60,6 +60,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
+	public int mx, my;
 	private double scrollspeed;
 	
 	// mouse events
@@ -73,7 +74,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		scrollspeed = hg.tick(e.getX(), e.getY());
+		mx = 200;
+		my = e.getY();
 	}
 	public void mouseDragged(MouseEvent e) {}
 	
@@ -163,7 +165,10 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
+			hg.tick(mx, my);
+			scrollspeed = hg.v;
 			m.tick(aWidth, aHeight, hg, scrollspeed);
+			
 			
 			// update screen
 			repaint();
