@@ -15,6 +15,8 @@ Purpose: 	play hang gliding
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -58,6 +60,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
+	private double scrollspeed;
 	
 	// mouse events
 	public void mouseReleased(MouseEvent e) {}
@@ -118,15 +121,20 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	 */
 	public void paint(Graphics g)
 	{
+		// cast graphics object to graphics 2d
+		Graphics2D g2 = (Graphics2D) g;
+		// turn on antialiasing
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		// draw bg
-		g.setColor(Map.bg_color_1);
-		g.fillRect(0, 0, aWidth, aHeight);
+		g2.setColor(Map.bg_color_1);
+		g2.fillRect(0, 0, aWidth, aHeight);
 		
 		// draw map and its objects
-		m.draw(g);
+		m.draw(g2);
 		
 		// draw hangglider
-		hg.draw(g);
+		hg.draw(g2);
 	} // end draw
 
 	
@@ -155,7 +163,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
-			m.tick(aWidth, aHeight, hg);
+			m.tick(aWidth, aHeight, hg, scrollspeed);
 			
 			// update screen
 			repaint();

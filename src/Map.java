@@ -13,6 +13,7 @@
 
 import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
@@ -102,8 +103,10 @@ public class Map
 	 * @param a_height	The height of the applet
 	 * @param hg		The TestGlider object
 	 */
-	public void tick(int a_width, int a_height, TestGlider hg)
+	public void tick(int a_width, int a_height, TestGlider hg, double scroll_speed)
 	{
+		// set scroll speed to this
+		this.scroll_speed = scroll_speed;
 		// renew applet size. useful in case of screen size changes
 		// change current screen objects to update immediately to changes
 		if (!(this.a_width == a_width) || !(this.a_height == a_height))
@@ -218,20 +221,40 @@ public class Map
 	 * @param g		Graphics object to draw to applet
 	 */
 	public void draw(Graphics g)
-	{		
-		// first see if there are any objects in the arraylist
-		if (this.obstacles.size() > 0)
+	{	
+		// if  the object given is graphics2d:
+		if (g instanceof Graphics2D)
 		{
-			// iterate through all of the obstacles
-			Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-			while(obst_iter.hasNext())
+			// first see if there are any objects in the arraylist
+			if (this.obstacles.size() > 0)
 			{
-				// get obstacle
-				CaveObstacle co = obst_iter.next();
-				// use built-in draw method
-				co.draw(g);
-			} // end while draw obstacles
-		} // end if any obstacles
+				// iterate through all of the obstacles
+				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+				while(obst_iter.hasNext())
+				{
+					// get obstacle
+					CaveObstacle co = obst_iter.next();
+					// use built-in draw method
+					co.draw(g);
+				} // end while draw obstacles
+			} // end if any obstacles
+		} // end if graphics2d
+		else
+		{
+			// first see if there are any objects in the arraylist
+			if (this.obstacles.size() > 0)
+			{
+				// iterate through all of the obstacles
+				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+				while(obst_iter.hasNext())
+				{
+					// get obstacle
+					CaveObstacle co = obst_iter.next();
+					// use built-in draw method
+					co.draw(g);
+				} // end while draw obstacles
+			} // end if any obstacles
+		} // end if only graphics
 		
 		// draw floor and ceiling
 		g.setColor(Map.fg_color_1);

@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 /**
 Authors:	Patrick Thomas
@@ -39,9 +40,18 @@ public class CaveObstacle extends Sprite
 				(int) this.y, 
 				(int) (this.y + this.h)};
 		
-		// draws based on color and points
-		g.setColor(this.color);
-		g.fillPolygon(x_values, y_values, 3);;
+		if (g instanceof Graphics2D)
+		{
+			// draws based on color and points
+			g.setColor(this.color);
+			g.fillPolygon(x_values, y_values, 3);
+		} // end if graphics2d
+		else
+		{
+			// draws based on color and points
+			g.setColor(this.color);
+			g.fillPolygon(x_values, y_values, 3);
+		} // end if grahpcsi
 	} // end draw
 	
 	public void tick(double hg_speed)
