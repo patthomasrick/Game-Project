@@ -1,5 +1,10 @@
 import java.awt.Color;
 
+/**
+ * A class that performs as a hang glider. This version has no special movement
+ * actions, and behaves the same as a sprite.
+ * @author Patrick Thomas
+ */
 public class TestGlider extends Sprite
 {
 	double r = 0;//radius
@@ -9,8 +14,8 @@ public class TestGlider extends Sprite
 	double v = 0; //velocity
 	public TestGlider(double x, double y, int h, int w, Color color)
 	{
+		// initialize Sprite
 		super(x, y, h, w, color);
-		
 		r = ((18 * Math.sqrt(2 * this.y)) / Math.PI);
 		a = Math.atan(vy / vx);
 		v = Math.sqrt(this.y / 5);

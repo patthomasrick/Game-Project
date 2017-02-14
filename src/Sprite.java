@@ -54,7 +54,7 @@ public class Sprite extends Geometry.Rect
 	 */
 	public void draw(Graphics g)
 	{// get obstacle
-		if (this.alive = true)
+		if (this.alive == true)
 		{
 			g.setColor(color);
 			g.fillRect((int) this.x, (int) this.y, this.w, this.h);
