@@ -73,7 +73,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		hg.move(125, e.getY()-15);
+		scrollspeed = hg.tick(e.getX(), e.getY());
 	}
 	public void mouseDragged(MouseEvent e) {}
 	
