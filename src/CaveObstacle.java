@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import com.sun.javafx.font.directwrite.RECT;
+
 /**
 Authors:	Patrick Thomas
 Date:		2/4/17
@@ -121,142 +123,163 @@ public class CaveObstacle extends Sprite
 		public Geometry.Point pos;
 		public Sprite bounding_rect, inscribed_rect;
 		public Geometry.Triangle hat;
+		public Geometry.Point a1, a2, b1, b2;
 		
 		// color to render shapes as
 		private Color color;
 		
-		// variables to pass onto next chunk
-		double y;
-		int l_height;
-		int r_height;
-		boolean pointing_up;
-		
+		/**
+		 * Constructor. 
+		 * @param a1	Point	top left corner
+		 * @param a2	Point	top right corner
+		 * @param b1	Point 	bottom left corner
+		 * @param b2	Point 	bottom right corner
+		 */
 		public Chunk(
-				double x, 
-				double y, 
-				int w, 
-				int l_height, 
-				int r_height, 
-				boolean pointing_up, 
+				Geometry.Point a1, 
+				Geometry.Point a2, 
+				Geometry.Point b1, 
+				Geometry.Point b2, 
 				Color color)
 		{
-			// set color
-			this.color = color;
+			// define points in class
+			this.a1 = a1;
+			this.a2 = a2;
+			this.b1 = b1;
+			this.b2 = b2;
 			
-			// set inheritable variables
-			this.y = y;
-			this.l_height = l_height;
-			this.r_height = r_height;
-			this.pointing_up = pointing_up;
-			
-			// get the greatest height to build the bounding rect
-			int max_height, min_height;
-			boolean left_side;
-			if (l_height > r_height)
+			// determine where the base is
+			if (a1.y - b1.y <= 0.01) // floating point equality testing
 			{
-				max_height = l_height;
-				min_height = r_height;
-				left_side = true;
-			} // end if 
-			else;
-			{
-				min_height = l_height;
-				max_height = r_height;
-				left_side = false;
-			} // end else
-			
-			// get the factor to mult height by for pointing
-			byte h_mult;
-			if (pointing_up)
-				h_mult = 1;
-			else;
-				h_mult = -1;
-			
-			this.pos = new Geometry.Point(x, y);
-			this.bounding_rect = new Sprite(pos.x, pos.y, max_height*h_mult, w, this.color);
-			
-			// find inscribed rect
-			if (pointing_up)
-			{
-				this.inscribed_rect = new Sprite(
-						pos.x - (max_height - min_height),
-						pos.y,
-						min_height,
-						w,
-						this.color
-				);
-			} // end if pointing up
-			else
-			{
-				this.inscribed_rect = new Sprite(
-						pos.x,
-						pos.y,
-						min_height,
-						w,
-						this.color
-				);
-			} // end else
-			
-			Geometry.Point a, b, c;
-			// get base
-			if (pointing_up)
-			{
-				a = new Geometry.Point(
-						this.inscribed_rect.x, 
-						this.inscribed_rect.y);
-				b = new Geometry.Point(
-						this.inscribed_rect.x + this.inscribed_rect.w, 
-						this.inscribed_rect.y);
-				if (left_side)
+				// a1 and b1 are base, are above a2 and b2
+				this.pos = new Geometry.Point(a1.x, a1.y);	// set top left point
+				
+				// find if a2 or b2 is lower (eg more extreme)
+				if (a2.y > b2.y)
 				{
-					c = new Geometry.Point(
-							this.inscribed_rect.x,
-							this.bounding_rect.y);
-				} // end if left side is tallest
+					this.bounding_rect = new Sprite(
+							this.pos.x,					// x pos
+							this.pos.y,					// y pos
+							(int) (a2.y - this.pos.y),	// height
+							(int) (b1.x - this.pos.x),  // width
+							color);						// color
+					this.inscribed_rect = new Sprite(
+							this.pos.x,					// x pos
+							this.pos.y,					// y pos
+							(int) (b2.y - this.pos.y),	// height
+							(int) (b1.x - this.pos.x),  // width
+							color);						// color
+					this.hat = new Geometry.Triangle(
+							this.pos.x, 				// ax
+							b2.y, 						// ay
+							this.pos.x, 				// bx
+							a2.y, 						// by
+							b2.x, 						// cx
+							b2.y);						// cy
+				} // end if a2 is lower (closer to the ground)
 				else
 				{
-					c = new Geometry.Point(
-							this.inscribed_rect.x + this.inscribed_rect.w,
-							this.bounding_rect.y);
-				} // right side is taller
-			} // end if
+					this.bounding_rect = new Sprite(
+							this.pos.x,					// x pos
+							this.pos.y,					// y pos
+							(int) (b2.y - this.pos.y),	// height
+							(int) (b1.x - this.pos.x),  // width
+							color);						// color
+					this.inscribed_rect = new Sprite(
+							this.pos.x,					// x pos
+							this.pos.y,					// y pos
+							(int) (a2.y - this.pos.y),	// height
+							(int) (b1.x - this.pos.x),  // width
+							color);						// color
+					this.hat = new Geometry.Triangle(
+							this.pos.x, 				// ax
+							a2.y, 						// ay
+							b1.x, 						// bx
+							a2.y, 						// by
+							b2.x, 						// cx
+							b2.y);						// cy
+				} // end if b2 is lower
+			} // end if top points are level
 			else
 			{
-				a = new Geometry.Point(
-						this.inscribed_rect.x, 
-						this.inscribed_rect.y + this.inscribed_rect.h);
-				b = new Geometry.Point(
-						this.inscribed_rect.x + this.inscribed_rect.w, 
-						this.inscribed_rect.y + this.inscribed_rect.h);
-				if (left_side)
+				// a2 and b2 are base, are below a1 and b1
+				
+				// find if a2 or b2 is lower (eg more extreme)
+				if (a1.y < b1.y)
 				{
-					c = new Geometry.Point(
-							this.inscribed_rect.x,
-							this.bounding_rect.y + this.bounding_rect.h);
-				} // end if left side is tallest
+					// a1 is higher than b1
+					this.pos = new Geometry.Point(a1.x, a1.y);	// set top left point
+					
+					this.bounding_rect = new Sprite(
+							this.pos.x,					// x pos
+							this.pos.y,					// y pos
+							(int) (b2.y - this.pos.y),	// height
+							(int) (b2.x - this.pos.x),  // width
+							color);						// color
+					this.inscribed_rect = new Sprite(
+							this.pos.x,					// x pos
+							b1.y,						// y pos
+							(int) (b2.y - b1.y),		// height
+							(int) (b2.x - this.pos.x),  // width
+							color);						// color
+					this.hat = new Geometry.Triangle(
+							this.pos.x, 				// ax
+							this.pos.y, 				// ay
+							this.pos.x, 				// bx
+							b1.y, 						// by
+							b1.x, 						// cx
+							b1.y);						// cy
+				} // end if a2 is lower (closer to the ground)
 				else
 				{
-					c = new Geometry.Point(
-							this.inscribed_rect.x + this.inscribed_rect.w,
-							this.bounding_rect.y + this.bounding_rect.h);
-				} // right side is taller
-			} // end else
-			
-			// define the hat
-			this.hat = new Geometry.Triangle(a, b, c);
+					// b1 is higher than a1
+					this.pos = new Geometry.Point(a1.x, b1.y);	// set top left point
+
+					this.bounding_rect = new Sprite(
+							this.pos.x,					// x pos
+							this.pos.y,					// y pos
+							(int) (b2.y - this.pos.y),	// height
+							(int) (b2.x - this.pos.x),  // width
+							color);						// color
+					this.inscribed_rect = new Sprite(
+							a1.x,						// x pos
+							a1.y,						// y pos
+							(int) (b2.y - a2.y),		// height
+							(int) (b2.x - this.pos.x),  // width
+							color);						// color
+					this.hat = new Geometry.Triangle(
+							a1.x, 						// ax
+							a1.y, 						// ay
+							b1.x, 						// bx
+							a1.y, 						// by
+							b1.x, 						// cx
+							b1.y);						// cy
+				} // end if b2 is lower
+			} // end else bottom points are level
 		} // end Constructor
 
-		public Chunk(Chunk chunk, int l_height, int w)
+		/**
+		 * Constructor for a chunk. Meant to extend a range of chunks given another chunk and a new
+		 * width and leg height.
+		 * @param chunk		Chunk	Chunk to extend to the right
+		 * @param r_height	int		Height of right leg
+		 * @param w			int		Width of base
+		 */
+		public Chunk(Chunk chunk, int r_height, int w)
 		{
 			// init chunk from values of other chunk and some new ones
-			this(chunk.pos.x + w, 
-				chunk.pos.y, 
-				w, 
-				l_height, 
-				chunk.l_height,
-				chunk.pointing_up, 
-				chunk.color);
+			this(
+					chunk.b1,
+					chunk.b2,
+					new Geometry.Point((chunk.b1.x + w), chunk.b1.y),
+					new Geometry.Point((chunk.b1.x + w), chunk.b1.y + r_height),
+					chunk.color);
 		} // end constructor given another chunk
+		
+		public void tick(int milliseconds)
+		{
+			
+		} // end tick
 		
 		public void draw(Graphics g)
 		{

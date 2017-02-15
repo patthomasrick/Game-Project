@@ -272,7 +272,7 @@ public class Map
 		
 		// spawning of "chunks" for floor and ceiling
 		// --------------FLOOR CHUNKS-----------------
-		if (this.next_spawn_floor_chunk >= 0)
+		if (this.next_spawn_floor_chunk <= 0)
 		{
 			// spawn new chunk
 			// random numbers for brevity
@@ -296,7 +296,7 @@ public class Map
 		} // end else, not time to spawn new chunk
 		
 		// --------------CEILING CHUNKS-----------------
-		if (this.next_spawn_floor_chunk >= 0)
+		if (this.next_spawn_ceiling_chunk <= 0)
 		{
 			// spawn new chunk
 			// random numbers for brevity
@@ -327,39 +327,47 @@ public class Map
 	 */
 	public void draw(Graphics g)
 	{	
-		// if  the object given is graphics2d:
-		if (g instanceof Graphics2D)
+		// draw stalagtites/mites
+		if (this.obstacles.size() > 0)
 		{
-			// first see if there are any objects in the arraylist
-			if (this.obstacles.size() > 0)
+			// iterate through all of the obstacles
+			Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+			while(obst_iter.hasNext())
 			{
-				// iterate through all of the obstacles
-				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-				while(obst_iter.hasNext())
-				{
-					// get obstacle
-					CaveObstacle co = obst_iter.next();
-					// use built-in draw method
-					co.draw(g);
-				} // end while draw obstacles
-			} // end if any obstacles
-		} // end if graphics2d
-		else
+				// get obstacle
+				CaveObstacle co = obst_iter.next();
+				// use built-in draw method
+				co.draw(g);
+			} // end while draw obstacles
+		} // end if any obstacles exist
+
+		// draw floor
+		if (this.map_floor.size() > 0)
 		{
-			// first see if there are any objects in the arraylist
-			if (this.obstacles.size() > 0)
+			// iterate through all of the obstacles
+			Iterator<CaveObstacle.Chunk> chunk_iter = this.map_floor.iterator();
+			while(chunk_iter.hasNext())
 			{
-				// iterate through all of the obstacles
-				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-				while(obst_iter.hasNext())
-				{
-					// get obstacle
-					CaveObstacle co = obst_iter.next();
-					// use built-in draw method
-					co.draw(g);
-				} // end while draw obstacles
-			} // end if any obstacles
-		} // end if only graphics
+				// get obstacle
+				CaveObstacle.Chunk chunk = chunk_iter.next();
+				// use built-in draw method
+				chunk.draw(g);
+			} // end while draw obstacles
+		} // end if any obstacles exist
+
+		// draw ceiling
+		if (this.map_ceiling.size() > 0)
+		{
+			// iterate through all of the obstacles
+			Iterator<CaveObstacle.Chunk> chunk_iter = this.map_ceiling.iterator();
+			while(chunk_iter.hasNext())
+			{
+				// get obstacle
+				CaveObstacle.Chunk chunk = chunk_iter.next();
+				// use built-in draw method
+				chunk.draw(g);
+			} // end while draw obstacles
+		} // end if any obstacles exist
 		
 		// draw floor and ceiling
 		g.setColor(Map.fg_color_1);
