@@ -24,39 +24,39 @@ import java.util.concurrent.ThreadLocalRandom; // allows for random int in a ran
 public class Map
 {
 	// variables
-	double scroll_speed; // how fast the map scrolls (placeholder)
-	double scroll_factor = 1.0; // how fast the map moves in accord to screen size
+	private double scroll_speed; // how fast the map scrolls (placeholder)
+	private double scroll_factor = 1.0; // how fast the map moves in accord to screen size
 	
 	// applet size
-	int a_width;
-	int a_height;
+	private int a_width;
+	private int a_height;
 	
 	// floor and ceiling
-	int ceiling;
-	int floor;
+	private int ceiling;
+	private int floor;
 	
 	// constants
-	int W_FACTOR = 800;
-	int H_FACTOR = 600;
-	double PCT_CEILING = 1.0/12.0;
-	double PCT_FLOOR = 10.0/12.0;
+	private final double W_FACTOR = 800.0;
+	private final double H_FACTOR = 600.0;
+	private final double PCT_CEILING = 1.0/12.0;
+	private double PCT_FLOOR = 10.0/12.0;
 	
 	// hardcode spawning
-	int distance_between_spawns = 150;
-	int distance_until_spawn = 0;
-	boolean next_spawn_is_ceiling = true;
+	private int distance_between_spawns = 150;
+	private int distance_until_spawn = 0;
+	private boolean next_spawn_is_ceiling = true;
 	
 	/** Defined colors of theme */
-	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
-	static Color bg_color_2 = new Color(48, 62, 115); // darker blue
-	static Color fg_color_1 = new Color(170, 135, 57); // sandy yellow
-	static Color fg_color_2 = new Color(128, 95, 21); // dark sandy yellow
+	public static Color bg_color_1 = new Color(23, 37, 87); // dark blue
+	public static Color bg_color_2 = new Color(48, 62, 115); // darker blue
+	public static Color fg_color_1 = new Color(170, 135, 57); // sandy yellow
+	public static Color fg_color_2 = new Color(128, 95, 21); // dark sandy yellow
 	
 	// arrays for game obstacles
-	ArrayList<CaveObstacle> obstacles;
-	
-	// create timer for events
-	Events.EventTimer etimer = new Events.EventTimer();
+	private ArrayList<CaveObstacle> obstacles;
+//	
+//	// create timer for events
+//	private Events.EventTimer etimer = new Events.EventTimer();
 	
 	/**
 	 * Constructor for the map.
@@ -126,8 +126,8 @@ public class Map
 			} // end iteration
 			
 			// also update distance between spawns and scroll speed
-			this.distance_between_spawns = 150 * a_width/800;
-			this.scroll_factor = a_width/800.0;
+			this.distance_between_spawns = (int) (150.0 * a_width/this.W_FACTOR);
+			this.scroll_factor = a_width/this.W_FACTOR;
 			
 			// update values after changes are done
 			this.a_width = a_width;
@@ -166,8 +166,8 @@ public class Map
 		if (this.distance_until_spawn <= 0)
 		{
 			// get applet screen factors
-			double x_shift = this.a_width/800.0;
-			double y_shift = this.a_height/600.0;
+			double x_shift = this.a_width/this.W_FACTOR;
+			double y_shift = this.a_height/this.H_FACTOR;
 			
 			// randomize values of the obstacle to be generated
 			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-40, 40 + 1) * x_shift);
