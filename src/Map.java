@@ -52,7 +52,9 @@ public class Map
 	private final int fc_max_height = 60;
 	private final int fc_min_height = 10;
 	
-	private int next_spawn; 
+	private int next_spawn_floor_chunk, next_spawn_ceiling_chunk; 
+	
+	private CaveObstacle.Chunk last_floor_chunk, last_ceiling_chunk;
 	
 	/** Defined colors of theme */
 	public static Color bg_color_1 = new Color(23, 37, 87); // dark blue
@@ -95,9 +97,51 @@ public class Map
 		
 		// creates an array for the points of ceiling 
 		this.obstacles = new ArrayList<CaveObstacle>();
+		// init arrays for chunks
+		this.map_floor = new ArrayList<CaveObstacle.Chunk>();
+		this.map_ceiling = new ArrayList<CaveObstacle.Chunk>();
 		
-		// initialize distance until floor/ceiling point
-		this.next_spawn = ThreadLocalRandom.current().nextInt(this.fc_min_dist, this.fc_max_dist);
+		// create preliminary chunks
+		// random numbers for brevity
+		int f_w, f_l, f_r;
+		f_w = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_dist, this.fc_max_dist));
+		f_l = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
+		f_r = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
+		
+		// create chunk
+		CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(
+				this.a_width + 200, // x-pos
+				this.floor,			// y-pos
+				f_w, 				// width (base)
+				f_l, 				// left side height
+				f_r,	 			// right side height
+				true,				// pointing up 
+				Map.fg_color_2);	// color
+		
+		// repeat process for ceiling chunk
+		// random numbers for brevity
+		int c_w, c_l, c_r;
+		c_w = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_dist, this.fc_max_dist));
+		c_l = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
+		c_r = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
+		
+		// create chunk
+		CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(
+				this.a_width + 200, // x-pos
+				this.ceiling,		// y-pos
+				c_w, 				// width (base)
+				c_l, 				// left side height
+				c_r,	 			// right side height
+				false,				// pointing down 
+				Map.fg_color_1);	// color
+		
+		// add chunks to arraylists
+		this.map_floor.add(floor_chunk);
+		this.map_ceiling.add(ceiling_chunk);
+		
+		// set the new chunks as the newly created chunks
+		this.last_ceiling_chunk = ceiling_chunk;
+		this.last_floor_chunk = floor_chunk;
 	} // end map constructor
 
 	
@@ -225,6 +269,55 @@ public class Map
 			// simulate the passage of cave
 			this.distance_until_spawn -= (this.scroll_speed * this.scroll_factor);
 		} // end else
+		
+		// spawning of "chunks" for floor and ceiling
+		// --------------FLOOR CHUNKS-----------------
+		if (this.next_spawn_floor_chunk >= 0)
+		{
+			// spawn new chunk
+			// random numbers for brevity
+			int f_l = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
+			
+			CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(
+					this.last_floor_chunk,			// create chunk from last chunk
+					f_l,							//
+					(int) (this.a_width - this.last_floor_chunk.pos.x));
+			this.last_floor_chunk = floor_chunk;	// set the new last chunk to the right one
+			this.map_floor.add(floor_chunk);		// add new chunk to the arraylist
+			
+			// reset distance until floor/ceiling point
+			this.next_spawn_floor_chunk = ThreadLocalRandom.current().nextInt(
+					this.fc_min_dist, 
+					this.fc_max_dist);
+		} // end if time to spawn chunk
+		else
+		{
+			this.next_spawn_floor_chunk -= (this.scroll_speed * this.scroll_factor);
+		} // end else, not time to spawn new chunk
+		
+		// --------------CEILING CHUNKS-----------------
+		if (this.next_spawn_floor_chunk >= 0)
+		{
+			// spawn new chunk
+			// random numbers for brevity
+			int f_l = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
+			
+			CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(
+					this.last_ceiling_chunk,			// create chunk from last chunk
+					f_l,							//
+					(int) (this.a_width - this.last_ceiling_chunk.pos.x));
+			this.last_ceiling_chunk = ceiling_chunk;	// set the new last chunk to the right one
+			this.map_ceiling.add(ceiling_chunk);		// add new chunk to the arraylist
+			
+			// reset distance until floor/ceiling point
+			this.next_spawn_ceiling_chunk = ThreadLocalRandom.current().nextInt(
+					this.fc_min_dist, 
+					this.fc_max_dist);
+		} // end if time to spawn chunk
+		else
+		{
+			this.next_spawn_ceiling_chunk -= (this.scroll_speed * this.scroll_factor);
+		} // end else, not time to spawn new chunk
 	} // end tick
 	
 	/**
