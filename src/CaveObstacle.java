@@ -113,4 +113,61 @@ public class CaveObstacle extends Sprite
 		this.h = (int) (this.h * y_factor);
 		this.w = (int) (this.w * x_factor);
 	} // end resize
+	
+	
+	public static class Chunk
+	{
+		private Geometry.Point pos;
+		public Geometry.Rect bounding_rect, inscribed_rect;
+		public Geometry.Triangle hat;
+		
+		public Chunk(double x, double y, int w, int l_height, int r_height, boolean pointing_up)
+		{
+			// get the greatest height to build the bounding rect
+			int max_height, min_height;
+			if (l_height > r_height)
+			{
+				max_height = l_height;
+				min_height = r_height;
+			} // end if 
+			else;
+			{
+				min_height = l_height;
+				max_height = r_height;
+			} // end else
+			
+			// get the factor to mult height by for pointing
+			byte h_mult;
+			if (pointing_up)
+				h_mult = 1;
+			else;
+				h_mult = -1;
+			
+			this.pos = new Geometry.Point(x, y);
+			this.bounding_rect = new Geometry.Rect(pos.x, pos.y, max_height*h_mult, w);
+			
+			// find inscribed rect
+			if (pointing_up)
+			{
+				this.inscribed_rect = new Geometry.Rect(
+						pos.x - (max_height - min_height),
+						pos.y,
+						min_height,
+						w
+				);
+			} // end if pointing up
+			else
+			{
+				this.inscribed_rect = new Geometry.Rect(
+						pos.x,
+						pos.y,
+						min_height,
+						w
+				);
+			} // end else
+			
+			// define the hat
+			int tri_h, tri_b;
+		} // end Chunk
+	} // end Chunk
 } // end GameObstacle

@@ -54,6 +54,7 @@ public class Map
 	
 	// arrays for game obstacles
 	private ArrayList<CaveObstacle> obstacles;
+	private ArrayList<CaveObstacle.Chunk> map_floor, map_ceiling;
 //	
 //	// create timer for events
 //	private Events.EventTimer etimer = new Events.EventTimer();
