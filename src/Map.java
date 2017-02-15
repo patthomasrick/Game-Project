@@ -46,6 +46,14 @@ public class Map
 	private int distance_until_spawn = 0;
 	private boolean next_spawn_is_ceiling = true;
 	
+	// harcode floor/ceiling generation
+	private final int fc_max_dist = 100;
+	private final int fc_min_dist = 40;
+	private final int fc_max_height = 60;
+	private final int fc_min_height = 10;
+	
+	private int next_spawn; 
+	
 	/** Defined colors of theme */
 	public static Color bg_color_1 = new Color(23, 37, 87); // dark blue
 	public static Color bg_color_2 = new Color(48, 62, 115); // darker blue
@@ -87,6 +95,9 @@ public class Map
 		
 		// creates an array for the points of ceiling 
 		this.obstacles = new ArrayList<CaveObstacle>();
+		
+		// initialize distance until floor/ceiling point
+		this.next_spawn = ThreadLocalRandom.current().nextInt(this.fc_min_dist, this.fc_max_dist);
 	} // end map constructor
 
 	

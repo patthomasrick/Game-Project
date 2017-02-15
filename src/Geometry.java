@@ -176,6 +176,32 @@ public class Geometry
 				// at least one vector is not in the same direction
 				return false;
 		}
+		
+
+		/**
+		 * Collides the triangle with a rectangle. Uses the collide point method with every single
+		 * point of a rectangle.
+		 * @param r		Geometry.Rect, used for its 4 corners
+		 * @return		boolean, true if colliding, false if not
+		 */
+		public boolean collide_rect(Geometry.Rect r)
+		{			
+			// get points of rect
+			Geometry.Point r1 = new Geometry.Point(r.x, r.y);
+			Geometry.Point r2 = new Geometry.Point(r.x + r.w, r.y);
+			Geometry.Point r3 = new Geometry.Point(r.x, r.y + r.h);
+			Geometry.Point r4 = new Geometry.Point(r.x + r.w, r.y + r.h);
+			
+			// collide points with triangle
+			boolean iscolliding = (
+					(this.contains_point(r1)) ||
+					(this.contains_point(r2)) ||
+					(this.contains_point(r3)) ||
+					(this.contains_point(r4))
+					);
+			
+			return iscolliding;
+		} // end collide as triangle
 	} // end class triangle
 	
 	/**

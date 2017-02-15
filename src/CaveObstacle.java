@@ -118,22 +118,37 @@ public class CaveObstacle extends Sprite
 	public static class Chunk
 	{
 		private Geometry.Point pos;
-		public Geometry.Rect bounding_rect, inscribed_rect;
+		public Sprite bounding_rect, inscribed_rect;
 		public Geometry.Triangle hat;
 		
-		public Chunk(double x, double y, int w, int l_height, int r_height, boolean pointing_up)
+		private Color color;
+		
+		public Chunk(
+				double x, 
+				double y, 
+				int w, 
+				int l_height, 
+				int r_height, 
+				boolean pointing_up, 
+				Color color)
 		{
+			// set color
+			this.color = color;
+			
 			// get the greatest height to build the bounding rect
 			int max_height, min_height;
+			boolean left_side;
 			if (l_height > r_height)
 			{
 				max_height = l_height;
 				min_height = r_height;
+				left_side = true;
 			} // end if 
 			else;
 			{
 				min_height = l_height;
 				max_height = r_height;
+				left_side = false;
 			} // end else
 			
 			// get the factor to mult height by for pointing
@@ -144,30 +159,107 @@ public class CaveObstacle extends Sprite
 				h_mult = -1;
 			
 			this.pos = new Geometry.Point(x, y);
-			this.bounding_rect = new Geometry.Rect(pos.x, pos.y, max_height*h_mult, w);
+			this.bounding_rect = new Sprite(pos.x, pos.y, max_height*h_mult, w, this.color);
 			
 			// find inscribed rect
 			if (pointing_up)
 			{
-				this.inscribed_rect = new Geometry.Rect(
+				this.inscribed_rect = new Sprite(
 						pos.x - (max_height - min_height),
 						pos.y,
 						min_height,
-						w
+						w,
+						this.color
 				);
 			} // end if pointing up
 			else
 			{
-				this.inscribed_rect = new Geometry.Rect(
+				this.inscribed_rect = new Sprite(
 						pos.x,
 						pos.y,
 						min_height,
-						w
+						w,
+						this.color
 				);
 			} // end else
 			
+			Geometry.Point a, b, c;
+			// get base
+			if (pointing_up)
+			{
+				a = new Geometry.Point(
+						this.inscribed_rect.x, 
+						this.inscribed_rect.y);
+				b = new Geometry.Point(
+						this.inscribed_rect.x + this.inscribed_rect.w, 
+						this.inscribed_rect.y);
+				if (left_side)
+				{
+					c = new Geometry.Point(
+							this.inscribed_rect.x,
+							this.bounding_rect.y);
+				} // end if left side is tallest
+				else
+				{
+					c = new Geometry.Point(
+							this.inscribed_rect.x + this.inscribed_rect.w,
+							this.bounding_rect.y);
+				} // right side is taller
+			} // end if
+			else
+			{
+				a = new Geometry.Point(
+						this.inscribed_rect.x, 
+						this.inscribed_rect.y + this.inscribed_rect.h);
+				b = new Geometry.Point(
+						this.inscribed_rect.x + this.inscribed_rect.w, 
+						this.inscribed_rect.y + this.inscribed_rect.h);
+				if (left_side)
+				{
+					c = new Geometry.Point(
+							this.inscribed_rect.x,
+							this.bounding_rect.y + this.bounding_rect.h);
+				} // end if left side is tallest
+				else
+				{
+					c = new Geometry.Point(
+							this.inscribed_rect.x + this.inscribed_rect.w,
+							this.bounding_rect.y + this.bounding_rect.h);
+				} // right side is taller
+			} // end else
+			
 			// define the hat
-			int tri_h, tri_b;
-		} // end Chunk
+			this.hat = new Geometry.Triangle(a, b, c);
+		} // end Constructor
+		
+		public void draw(Graphics g)
+		{
+			// draw rectangle of trapezoid
+			this.inscribed_rect.draw(g);
+			
+			// draw triangle (hat)
+			// get the points of the triangle
+			int[] x_values = {
+					(int) this.hat.a.x, 
+					(int) this.hat.b.x, 
+					(int) this.hat.c.x};
+			int[] y_values = {
+					(int) this.hat.a.y, 
+					(int) this.hat.b.y, 
+					(int) this.hat.c.y};
+			
+			if (g instanceof Graphics2D)
+			{
+				// draws based on color and points
+				g.setColor(this.color);
+				g.fillPolygon(x_values, y_values, 3);
+			} // end if graphics2d
+			else
+			{
+				// draws based on color and points
+				g.setColor(this.color);
+				g.fillPolygon(x_values, y_values, 3);
+			} // end if graphics
+		} // end draw
 	} // end Chunk
 } // end GameObstacle
