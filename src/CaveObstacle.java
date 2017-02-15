@@ -117,11 +117,19 @@ public class CaveObstacle extends Sprite
 	
 	public static class Chunk
 	{
-		private Geometry.Point pos;
+		// geometric containers
+		public Geometry.Point pos;
 		public Sprite bounding_rect, inscribed_rect;
 		public Geometry.Triangle hat;
 		
+		// color to render shapes as
 		private Color color;
+		
+		// variables to pass onto next chunk
+		double y;
+		int l_height;
+		int r_height;
+		boolean pointing_up;
 		
 		public Chunk(
 				double x, 
@@ -134,6 +142,12 @@ public class CaveObstacle extends Sprite
 		{
 			// set color
 			this.color = color;
+			
+			// set inheritable variables
+			this.y = y;
+			this.l_height = l_height;
+			this.r_height = r_height;
+			this.pointing_up = pointing_up;
 			
 			// get the greatest height to build the bounding rect
 			int max_height, min_height;
@@ -231,6 +245,18 @@ public class CaveObstacle extends Sprite
 			// define the hat
 			this.hat = new Geometry.Triangle(a, b, c);
 		} // end Constructor
+
+		public Chunk(Chunk chunk, int l_height, int w)
+		{
+			// init chunk from values of other chunk and some new ones
+			this(chunk.pos.x + w, 
+				chunk.pos.y, 
+				w, 
+				l_height, 
+				chunk.l_height,
+				chunk.pointing_up, 
+				chunk.color);
+		} // end constructor given another chunk
 		
 		public void draw(Graphics g)
 		{
