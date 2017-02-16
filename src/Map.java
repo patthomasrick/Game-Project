@@ -13,6 +13,7 @@
 
 import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
@@ -24,6 +25,7 @@ public class Map
 {
 	// variables
 	double scroll_speed; // how fast the map scrolls (placeholder)
+	double scroll_factor = 1.0; // how fast the map moves in accord to screen size
 	
 	// applet size
 	int a_width;
@@ -44,7 +46,7 @@ public class Map
 	int distance_until_spawn = 0;
 	boolean next_spawn_is_ceiling = true;
 	
-	/** Define colors used for the theme */
+	/** Defined colors of theme */
 	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
 	static Color bg_color_2 = new Color(48, 62, 115); // darker blue
 	static Color fg_color_1 = new Color(170, 135, 57); // sandy yellow
@@ -101,11 +103,36 @@ public class Map
 	 * @param a_height	The height of the applet
 	 * @param hg		The TestGlider object
 	 */
-	public void tick(int a_width, int a_height, TestGlider hg)
+	public void tick(int a_width, int a_height, TestGlider hg, double scroll_speed)
 	{
+		// set scroll speed to this
+		this.scroll_speed = scroll_speed;
 		// renew applet size. useful in case of screen size changes
-		this.a_width = a_width;
-		this.a_height = a_height;
+		// change current screen objects to update immediately to changes
+		if (!(this.a_width == a_width) || !(this.a_height == a_height))
+		{
+			// call iterator and loop through all objects in the iterator
+			for (Iterator<CaveObstacle> iter = obstacles.iterator(); iter.hasNext();)
+			{
+				// get the next item in the iterator
+				CaveObstacle go = iter.next();
+				
+				double[] factors = {
+						((float) a_width)/((float) this.a_width), 
+						((float) a_height)/((float) this.a_height)};
+				
+				// call the method that performs the resizing of the GO
+				go.resize(factors[0], factors[1]);
+			} // end iteration
+			
+			// also update distance between spawns and scroll speed
+			this.distance_between_spawns = 150 * a_width/800;
+			this.scroll_factor = a_width/800.0;
+			
+			// update values after changes are done
+			this.a_width = a_width;
+			this.a_height = a_height;
+		} // end if width changed
 		
 		// updates ceiling and floor to change to a percent of the applet size.
 		this.ceiling = 	(int) (this.a_height*this.PCT_CEILING);
@@ -115,18 +142,23 @@ public class Map
 		hg.color = Color.GREEN;
 		
 		// call iterator and loop through all objects in the iterator
-		Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-		while(obst_iter.hasNext())
+		for (Iterator<CaveObstacle> iter = obstacles.iterator(); iter.hasNext();)
 		{
 			// get the next item in the iterator
-			CaveObstacle go = obst_iter.next();
+			CaveObstacle go = iter.next();
 			
 			// internally tick the game object
-			go.tick(this.scroll_speed);
+			go.tick(this.scroll_speed * this.scroll_factor);
 			
 			// test for collisions, if colliding, turn hg red
 			if (go.collide_as_triangle(hg) == true)
 				hg.color = Color.RED;
+			
+			// if the obstacle is off-screen, delete it
+			if (go.x + go.w < 0)
+			{
+				iter.remove();
+			} // end if off-screen
 		} // end tick game objects
 		
 		// ---------- SPAWNING -------------
@@ -138,9 +170,9 @@ public class Map
 			double y_shift = this.a_height/600.0;
 			
 			// randomize values of the obstacle to be generated
-			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-50, 50 + 1) * x_shift);
-			int w_rand = (int) (ThreadLocalRandom.current().nextInt(60, 250 + 1) * x_shift);
-			int h_rand = (int) (ThreadLocalRandom.current().nextInt(80, 300 + 1) * y_shift);
+			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-40, 40 + 1) * x_shift);
+			int w_rand = (int) (ThreadLocalRandom.current().nextInt(60, 230 + 1) * x_shift);
+			int h_rand = (int) (ThreadLocalRandom.current().nextInt(80, 280 + 1) * y_shift);
 			
 			// init new obstacle
 			CaveObstacle co;
@@ -179,7 +211,7 @@ public class Map
 		else
 		{
 			// simulate the passage of cave
-			this.distance_until_spawn -= this.scroll_speed;
+			this.distance_until_spawn -= (this.scroll_speed * this.scroll_factor);
 		} // end else
 	} // end tick
 	
@@ -189,20 +221,40 @@ public class Map
 	 * @param g		Graphics object to draw to applet
 	 */
 	public void draw(Graphics g)
-	{		
-		// first see if there are any objects in the arraylist
-		if (this.obstacles.size() > 0)
+	{	
+		// if  the object given is graphics2d:
+		if (g instanceof Graphics2D)
 		{
-			// iterate through all of the obstacles
-			Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-			while(obst_iter.hasNext())
+			// first see if there are any objects in the arraylist
+			if (this.obstacles.size() > 0)
 			{
-				// get obstacle
-				CaveObstacle co = obst_iter.next();
-				// use built-in draw method
-				co.draw(g);
-			} // end while draw obstacles
-		} // end if any obstacles
+				// iterate through all of the obstacles
+				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+				while(obst_iter.hasNext())
+				{
+					// get obstacle
+					CaveObstacle co = obst_iter.next();
+					// use built-in draw method
+					co.draw(g);
+				} // end while draw obstacles
+			} // end if any obstacles
+		} // end if graphics2d
+		else
+		{
+			// first see if there are any objects in the arraylist
+			if (this.obstacles.size() > 0)
+			{
+				// iterate through all of the obstacles
+				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+				while(obst_iter.hasNext())
+				{
+					// get obstacle
+					CaveObstacle co = obst_iter.next();
+					// use built-in draw method
+					co.draw(g);
+				} // end while draw obstacles
+			} // end if any obstacles
+		} // end if only graphics
 		
 		// draw floor and ceiling
 		g.setColor(Map.fg_color_1);

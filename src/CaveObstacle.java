@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 /**
 Authors:	Patrick Thomas
@@ -39,9 +40,18 @@ public class CaveObstacle extends Sprite
 				(int) this.y, 
 				(int) (this.y + this.h)};
 		
-		// draws based on color and points
-		g.setColor(this.color);
-		g.fillPolygon(x_values, y_values, 3);;
+		if (g instanceof Graphics2D)
+		{
+			// draws based on color and points
+			g.setColor(this.color);
+			g.fillPolygon(x_values, y_values, 3);
+		} // end if graphics2d
+		else
+		{
+			// draws based on color and points
+			g.setColor(this.color);
+			g.fillPolygon(x_values, y_values, 3);
+		} // end if grahpcsi
 	} // end draw
 	
 	public void tick(double hg_speed)
@@ -58,14 +68,15 @@ public class CaveObstacle extends Sprite
 		this.push(-hg_speed, 0);	// method provided through Rect
 	} // end tick
 	
-	public boolean collide_as_triangle(Geometry.Rect r)
-	/*
-	 * 2/4/17
-	 * 
-	 * Collides with a rect (around the hang glider preferably) as an isosceles triangle.
+	/**
+	 * Collides the triangle with a rectangle. Uses the collide point method with every single
+	 * point of a rectangle.
+	 * @param r		Geometry.Rect, used for its 4 corners
+	 * @return		boolean, true if colliding, false if not
 	 */
+	public boolean collide_as_triangle(Geometry.Rect r)
 	{
-		// use the Geometry class to help
+		// uses the Geometry class to help
 		// define points of triangle
 		Geometry.Point a = new Geometry.Point(this.x, this.y);
 		Geometry.Point b = new Geometry.Point(this.x + this.w, this.y);
@@ -90,4 +101,16 @@ public class CaveObstacle extends Sprite
 		
 		return iscolliding;
 	} // end collide as triangle
+	
+	/**
+	 * Resize the object by a factor
+	 * @param factor	double
+	 */
+	public void resize(double x_factor, double y_factor)
+	{
+		this.x *= x_factor;
+		this.y *= y_factor;
+		this.h = (int) (this.h * y_factor);
+		this.w = (int) (this.w * x_factor);
+	} // end resize
 } // end GameObstacle

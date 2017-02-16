@@ -15,6 +15,8 @@ Purpose: 	play hang gliding
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -24,6 +26,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Date;
 
 import javax.swing.Timer;
 
@@ -43,6 +46,11 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private Image dbImage;
 	private Graphics dbg;
 	
+	/** timing */
+	Date date = new Date();
+	long lasttime = date.getTime();
+	int timesince = 1000/60;
+	
 	public Timer timer;
 	private int aWidth = 800, aHeight = 600;
 	
@@ -54,7 +62,9 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
-
+	public int mousex, mousey;
+	private double scrollspeed;
+	
 	// mouse events
 	public void mouseReleased(MouseEvent e) {}
 	public void mouseEntered(MouseEvent e) {}
@@ -66,8 +76,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		hg.move(125, e.getY()-15);
-		b.tick((double) e.getX(), (double) e.getY());
+		mousex = 300;
+		mousey = e.getY();
 	}
 	public void mouseDragged(MouseEvent e) {}
 	
@@ -104,9 +114,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		timer.start();
 		
 		/** Create map and hang glider */
-		m = new Map(aWidth, aHeight, 2.5);
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
-		b = new Menu.Button(10.0,10.0,50,50, Color.PINK, "Cats");
+		m = new Map(aWidth, aHeight, 2.5);
 	} // end initialization
 	
 	
@@ -116,17 +125,20 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	 */
 	public void paint(Graphics g)
 	{
+		// cast graphics object to graphics 2d
+		Graphics2D g2 = (Graphics2D) g;
+		// turn on antialiasing
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		// draw bg
-		g.setColor(Map.bg_color_1);
-		g.fillRect(0, 0, aWidth, aHeight);
+		g2.setColor(Map.bg_color_1);
+		g2.fillRect(0, 0, aWidth, aHeight);
 		
 		// draw map and its objects
-		m.draw(g);
+		m.draw(g2);
 		
 		// draw hangglider
-		hg.draw(g);
-		
-		b.draw(g);
+		hg.draw(g2);
 	} // end draw
 
 	
@@ -144,15 +156,19 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private class MyTimer implements ActionListener
 	{
 		/** Timed events (per frame). 
-		 * 
 		 * @param a			ActionEvent
 		 */
 		public void actionPerformed(ActionEvent a)
 		{
+			// get number of milliseconds that have passed since last call
+			timesince = (int) (date.getTime() - lasttime);
+			lasttime = date.getTime();
+			
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
-			m.tick(aWidth, aHeight, hg);
+			scrollspeed = hg.tick(mousex, mousey);
+			m.tick(aWidth, aHeight, hg, scrollspeed);
 			
 			// update screen
 			repaint();
