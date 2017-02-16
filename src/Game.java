@@ -50,6 +50,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	 * objects */
 	public Map m;
 	
+	public Menu.Button b;
+	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
 
@@ -65,6 +67,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	// track mouse movements
 	{
 		hg.move(125, e.getY()-15);
+		b.tick((double) e.getX(), (double) e.getY());
 	}
 	public void mouseDragged(MouseEvent e) {}
 	
@@ -103,6 +106,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		/** Create map and hang glider */
 		m = new Map(aWidth, aHeight, 2.5);
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+		b = new Menu.Button(10.0,10.0,50,50, Color.PINK, "Cats");
 	} // end initialization
 	
 	
@@ -121,6 +125,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		
 		// draw hangglider
 		hg.draw(g);
+		
+		b.draw(g);
 	} // end draw
 
 	
