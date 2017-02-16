@@ -108,15 +108,20 @@ public class Map
 		f_l = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
 		f_r = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
 		
+		// create floor points
+		Geometry.Point a1, a2, b1, b2;
+		a1 = new Geometry.Point(this.a_width + 200, this.floor);
+		a2 = new Geometry.Point(this.a_width + 200, this.floor + f_l);
+		b1 = new Geometry.Point(this.a_width + f_w + 200, this.floor);
+		b2 = new Geometry.Point(this.a_width + f_w + 200, this.floor + f_r);
+		
 		// create chunk
 		CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(
-				this.a_width + 200, // x-pos
-				this.floor,			// y-pos
-				f_w, 				// width (base)
-				f_l, 				// left side height
-				f_r,	 			// right side height
-				true,				// pointing up 
-				Map.fg_color_2);	// color
+				a1,
+				a2,
+				b1,
+				b2,
+				Color.WHITE);	// color
 		
 		// repeat process for ceiling chunk
 		// random numbers for brevity
@@ -125,15 +130,19 @@ public class Map
 		c_l = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
 		c_r = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
 		
+		// create ceiling points
+		a1 = new Geometry.Point(this.a_width + 200, this.ceiling);
+		a2 = new Geometry.Point(this.a_width + 200, this.ceiling - c_l);
+		b1 = new Geometry.Point(this.a_width + c_w + 200, this.ceiling);
+		b2 = new Geometry.Point(this.a_width + c_w + 200, this.ceiling - c_r);
+		
 		// create chunk
 		CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(
-				this.a_width + 200, // x-pos
-				this.ceiling,		// y-pos
-				c_w, 				// width (base)
-				c_l, 				// left side height
-				c_r,	 			// right side height
-				false,				// pointing down 
-				Map.fg_color_1);	// color
+				a1,
+				a2,
+				b1,
+				b2,
+				Color.WHITE);	// color
 		
 		// add chunks to arraylists
 		this.map_floor.add(floor_chunk);
