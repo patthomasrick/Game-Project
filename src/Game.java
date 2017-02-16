@@ -58,6 +58,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	 * objects */
 	public Map m;
 	
+	public Menu.Button b;
+	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
 	public int mousex, mousey;
