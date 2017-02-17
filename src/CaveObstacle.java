@@ -275,9 +275,7 @@ public class CaveObstacle extends Sprite
 		} // end constructor given another chunk
 		
 		public void tick(int milliseconds, double scrollspeed)
-		{
-			System.out.println(a1.x);
-			
+		{			
 			this.a1.x -= scrollspeed;
 			this.a2.x -= scrollspeed;
 			this.b1.x -= scrollspeed;
