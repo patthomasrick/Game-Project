@@ -118,7 +118,6 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	
 	/**Draw the objects in the game to the screen.
-	 * 
 	 * @param g		Graphics object to draw to
 	 */
 	public void paint(Graphics g)

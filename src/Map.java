@@ -121,7 +121,7 @@ public class Map
 				a2,
 				b1,
 				b2,
-				Color.WHITE);	// color
+				Map.fg_color_2);	// color
 		
 		// repeat process for ceiling chunk
 		// random numbers for brevity
@@ -142,7 +142,7 @@ public class Map
 				a2,
 				b1,
 				b2,
-				Color.WHITE);	// color
+				Map.fg_color_1);	// color
 		
 		// add chunks to arraylists
 		this.map_floor.add(floor_chunk);
@@ -225,6 +225,26 @@ public class Map
 				iter.remove();
 			} // end if off-screen
 		} // end tick game objects
+
+		// call iterator and loop through all objects in the iterator
+		for (Iterator<CaveObstacle.Chunk> iter = map_ceiling.iterator(); iter.hasNext();)
+		{
+			// get the next item in the iterator
+			CaveObstacle.Chunk chunk = iter.next();
+			
+			// internally tick the game object
+			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor * 0.5 );
+			
+			// test for collisions, if colliding, turn hg red
+//			if (go.collide_as_triangle(hg) == true)
+//				hg.color = Color.RED;
+			
+			// if the obstacle is off-screen, delete it
+//			if (go.x + go.w < 0)
+//			{
+//				iter.remove();
+//			} // end if off-screen
+		} // end tick game objects
 		
 		// ---------- SPAWNING -------------
 		// set to spawn obstacle every set distance
@@ -286,11 +306,12 @@ public class Map
 			// spawn new chunk
 			// random numbers for brevity
 			int f_l = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_height, this.fc_max_height));
+			int f_w = (int) (ThreadLocalRandom.current().nextInt(this.fc_min_dist, this.fc_max_dist));
 			
 			CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(
 					this.last_floor_chunk,			// create chunk from last chunk
 					f_l,							//
-					(int) (this.a_width - this.last_floor_chunk.pos.x));
+					f_w);
 			this.last_floor_chunk = floor_chunk;	// set the new last chunk to the right one
 			this.map_floor.add(floor_chunk);		// add new chunk to the arraylist
 			
@@ -305,7 +326,7 @@ public class Map
 		} // end else, not time to spawn new chunk
 		
 		// --------------CEILING CHUNKS-----------------
-		if (this.next_spawn_ceiling_chunk <= 0)
+		if ((this.last_ceiling_chunk.b1.x <= this.a_width+100) && (this.next_spawn_ceiling_chunk <= 0))
 		{
 			// spawn new chunk
 			// random numbers for brevity

@@ -2,8 +2,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import com.sun.javafx.font.directwrite.RECT;
-
 /**
 Authors:	Patrick Thomas
 Date:		2/4/17
@@ -276,9 +274,23 @@ public class CaveObstacle extends Sprite
 					chunk.color);
 		} // end constructor given another chunk
 		
-		public void tick(int milliseconds)
+		public void tick(int milliseconds, double scrollspeed)
 		{
+			System.out.println(a1.x);
 			
+			this.a1.x -= scrollspeed;
+			this.a2.x -= scrollspeed;
+			this.b1.x -= scrollspeed;
+			this.b2.x -= scrollspeed;
+			
+			this.pos.x -= scrollspeed;
+			
+			this.hat.a.x -= scrollspeed;
+			this.hat.b.x -= scrollspeed;
+			this.hat.c.x -= scrollspeed;
+			
+			this.bounding_rect.move(-scrollspeed, 0);
+			this.inscribed_rect.move(-scrollspeed, 0);
 		} // end tick
 		
 		public void draw(Graphics g)
@@ -289,26 +301,17 @@ public class CaveObstacle extends Sprite
 			// draw triangle (hat)
 			// get the points of the triangle
 			int[] x_values = {
-					(int) this.hat.a.x, 
-					(int) this.hat.b.x, 
-					(int) this.hat.c.x};
+					(int) this.a1.x, 
+					(int) this.a2.x, 
+					(int) this.b2.x,
+					(int) this.b1.x};
 			int[] y_values = {
-					(int) this.hat.a.y, 
-					(int) this.hat.b.y, 
-					(int) this.hat.c.y};
+					(int) this.a1.y, 
+					(int) this.a2.y, 
+					(int) this.b2.y,
+					(int) this.b1.y};
 			
-			if (g instanceof Graphics2D)
-			{
-				// draws based on color and points
-				g.setColor(this.color);
-				g.fillPolygon(x_values, y_values, 3);
-			} // end if graphics2d
-			else
-			{
-				// draws based on color and points
-				g.setColor(this.color);
-				g.fillPolygon(x_values, y_values, 3);
-			} // end if graphics
+			g.fillPolygon(x_values, y_values, 4);
 		} // end draw
 	} // end Chunk
 } // end GameObstacle
