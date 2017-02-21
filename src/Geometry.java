@@ -37,6 +37,12 @@ public class Geometry
 			this.x = x;
 			this.y = y;
 		} // end constructor
+		
+		public Point(Point p)
+		{
+			this.x = p.x;
+			this.y = p.y;
+		} // end duplicator
 	} // end class point
 	
 	/**
