@@ -117,16 +117,15 @@ public class Map
 		f_r = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
 		
 		// create floor points
-		int x1, x2, y1, y2, y3;
-		x1 = a_width + 200;
+		int x2, y1, y2, y3;
 		x2 = a_width + f_w + 200;
 		y1 = this.floor;
 		y2 = this.floor - f_l;
 		y3 = this.floor - f_r;
 
 		Geometry.Point a1, a2, b1, b2;
-		a1 = new Geometry.Point(x1, y1);
-		a2 = new Geometry.Point(x1, y2);
+		a1 = new Geometry.Point(0, y1);
+		a2 = new Geometry.Point(0, y2);
 		b1 = new Geometry.Point(x2, y1);
 		b2 = new Geometry.Point(x2, y3);
 		
@@ -141,14 +140,13 @@ public class Map
 		c_r = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
 		
 		// create floor points
-		x1 = a_width + 200;
 		x2 = a_width + c_w + 200;
 		y1 = this.ceiling;
 		y2 = this.ceiling + c_l;
 		y3 = this.ceiling + c_r;
 
-		a1 = new Geometry.Point(x1, y1);
-		a2 = new Geometry.Point(x1, y2);
+		a1 = new Geometry.Point(0, y1);
+		a2 = new Geometry.Point(0, y2);
 		b1 = new Geometry.Point(x2, y1);
 		b2 = new Geometry.Point(x2, y3);
 		
@@ -256,6 +254,17 @@ public class Map
 			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor * 0.5);
 		} // end tick game objects
 
+		// --------------------------------------
+		// -------- TICK FLOOR CHUNKS ---------
+		// --------------------------------------
+		for (Iterator<CaveObstacle.Chunk> iter = map_floor.iterator(); iter.hasNext();)
+		{
+			CaveObstacle.Chunk chunk = iter.next();
+			
+			// internally tick the game object
+			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor * 0.5);
+		} // end tick game objects
+		
 		// --------------------------------------
 		// -------- SPAWN GAME OBSTACLES --------
 		// --------------------------------------
