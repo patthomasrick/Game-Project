@@ -338,10 +338,16 @@ public class Map
 			f_l = (int) (ThreadLocalRandom.current().nextInt(
 					CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
 			
+			Geometry.Point c1, c2;
+			c1 = new Geometry.Point(last_floor_chunk.b1.x + f_w, floor - f_l);
+			c2 = new Geometry.Point(last_floor_chunk.b2.x + f_w, floor); 
+			
 			CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(
-					last_floor_chunk,			// create chunk from last chunk
-					f_l,
-					f_w);
+					last_floor_chunk.b1, // create chunk from last chunk
+					last_floor_chunk.b2,
+					c1,
+					c2,
+					Map.FG_COLOR_D);
 			
 			last_floor_chunk = floor_chunk;	// set the new last chunk to the right one
 			map_floor.add(floor_chunk);		// add new chunk to the arraylist
