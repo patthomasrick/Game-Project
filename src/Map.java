@@ -182,6 +182,10 @@ public class Map
 		// set scroll speed to this
 		this.scroll_speed = scroll_speed;
 		
+		
+		
+		
+		
 		// --------------------------------------
 		// ----------- RESIZE APPLET ------------
 		// --------------------------------------
@@ -221,6 +225,16 @@ public class Map
 		
 		// reset color incase of previous collisions
 		hg.color = Color.GREEN;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		// --------------------------------------
 		// -------- TICK GAME OBSTACLES ---------
@@ -264,6 +278,13 @@ public class Map
 			// internally tick the game object
 			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor * 0.5);
 		} // end tick game objects
+		
+		
+		
+		
+		
+		
+		
 		
 		// --------------------------------------
 		// -------- SPAWN GAME OBSTACLES --------
