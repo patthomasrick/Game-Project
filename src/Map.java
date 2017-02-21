@@ -130,7 +130,7 @@ public class Map
 		b2 = new Geometry.Point(x2, y3);
 		
 		// create chunk
-		CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(a1, a2, b1, b2, Map.FG_COLOR_D);
+		CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(a2, a1, b2, b1, Map.FG_COLOR_D);
 		
 		// -------- CEILING CHUNKS ----------------
 		
