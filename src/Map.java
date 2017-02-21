@@ -43,7 +43,7 @@ public class Map
 	private final double[] SCREEN_FACTOR = {800.0, 600.0};
 	
 	// the percent of the screen that is the ceiling or floor
-	private final double[] PCT_MAP = {1.0/12.0, 10.0/12.0};
+	private final double[] PCT_MAP = {0.75/12.0, 10.25/12.0};
 	
 	// hardcode spawning
 	private final int[] SPIKE_X_RANGE = {-40, 40};
@@ -279,6 +279,12 @@ public class Map
 			
 			// internally tick the game object
 			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
+			
+			// delete off-screen obstacles
+			if (chunk.b1.x < 0)
+			{
+				iter.remove();
+			} // end if off-screen
 		} // end tick game objects
 
 		// --------------------------------------
@@ -290,6 +296,12 @@ public class Map
 			
 			// internally tick the game object
 			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
+
+			// delete off-screen obstacles
+			if (chunk.b1.x < 0)
+			{
+				iter.remove();
+			} // end if off-screen
 		} // end tick game objects
 		
 		
