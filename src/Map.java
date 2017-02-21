@@ -195,6 +195,11 @@ public class Map
 		 */
 		if (!(this.a_width == a_width) || !(this.a_height == a_height))
 		{
+			// get the factors that the screen has changed by
+			double[] factors = {
+					((float) a_width)/((float) this.a_width), 
+					((float) a_height)/((float) this.a_height)};
+			
 			// updates ceiling and floor to change to a percent of the applet size.
 			this.ceiling = 	(int) (a_height*PCT_MAP[0]);
 			this.floor 	 = 	(int) (a_height*PCT_MAP[1]);
@@ -203,15 +208,23 @@ public class Map
 			for (Iterator<CaveObstacle> iter = obstacles.iterator(); iter.hasNext();)
 			{
 				CaveObstacle go = iter.next();
-				
-				// get the factors that the screen has changed by
-				double[] factors = {
-						((float) a_width)/((float) this.a_width), 
-						((float) a_height)/((float) this.a_height)};
-				
 				// resize the obstacle
 				go.resize(factors[0], factors[1]);
 			} // end iteration
+			
+			// Loop through all chunks
+			for (Iterator<CaveObstacle.Chunk> iter = map_floor.iterator(); iter.hasNext();)
+			{
+				CaveObstacle.Chunk chunk = iter.next();
+				chunk.resize(factors[0], factors[1]);
+			} // end for loop
+			
+			// Loop through all chunks
+			for (Iterator<CaveObstacle.Chunk> iter = map_ceiling.iterator(); iter.hasNext();)
+			{
+				CaveObstacle.Chunk chunk = iter.next();
+				chunk.resize(factors[0], factors[1]);
+			} // end for loop
 			
 			// also update distance between spawns and scroll speed
 			DIST_BETWEEN_SPIKES = (int) (150.0 * a_width/SCREEN_FACTOR[0]);
@@ -265,7 +278,7 @@ public class Map
 			CaveObstacle.Chunk chunk = iter.next();
 			
 			// internally tick the game object
-			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor * 0.5);
+			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
 		} // end tick game objects
 
 		// --------------------------------------
@@ -276,7 +289,7 @@ public class Map
 			CaveObstacle.Chunk chunk = iter.next();
 			
 			// internally tick the game object
-			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor * 0.5);
+			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
 		} // end tick game objects
 		
 		
