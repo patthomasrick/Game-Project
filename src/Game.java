@@ -128,7 +128,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// draw bg
-		g2.setColor(Map.bg_color_1);
+		g2.setColor(Map.BG_COLOR_L);
 		g2.fillRect(0, 0, aWidth, aHeight);
 		
 		// draw map and its objects
