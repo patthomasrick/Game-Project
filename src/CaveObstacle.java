@@ -141,10 +141,10 @@ public class CaveObstacle extends Sprite
 				Color color)
 		{
 			// define points in class
-			this.a1 = a1;
-			this.a2 = a2;
-			this.b1 = b1;
-			this.b2 = b2;
+			this.a1 = new Geometry.Point(a1);
+			this.a2 = new Geometry.Point(a2);
+			this.b1 = new Geometry.Point(b1);
+			this.b2 = new Geometry.Point(b2);
 			
 			// determine where the base is
 			if (a1.y - b1.y <= 0.01) // floating point equality testing
@@ -311,5 +311,41 @@ public class CaveObstacle extends Sprite
 			
 			g.fillPolygon(x_values, y_values, 4);
 		} // end draw
+		
+		public void resize(double x_factor, double y_factor)
+		{
+			// shift position
+			this.pos.x *= x_factor;
+			this.pos.y *= y_factor;
+			
+			// shift points
+			this.a1.x *= x_factor;
+			this.a2.x *= x_factor;
+			this.b1.x *= x_factor;
+			this.b2.x *= x_factor;
+			this.a1.y *= y_factor;
+			this.a2.y *= y_factor;
+			this.b1.y *= y_factor;
+			this.b2.y *= y_factor;
+			
+			// shift rects
+			this.bounding_rect.x *= x_factor;
+			this.bounding_rect.y *= y_factor;
+			this.bounding_rect.w *= x_factor;
+			this.bounding_rect.h *= y_factor;
+			
+			this.inscribed_rect.x *= x_factor;
+			this.inscribed_rect.y *= y_factor;
+			this.inscribed_rect.w *= x_factor;
+			this.inscribed_rect.h *= y_factor;
+			
+			// shift hat
+			this.hat.a.x *= x_factor;
+			this.hat.b.x *= x_factor;
+			this.hat.c.x *= x_factor;
+			this.hat.a.y *= y_factor;
+			this.hat.b.y *= y_factor;
+			this.hat.c.y *= y_factor;
+		}
 	} // end Chunk
 } // end GameObstacle
