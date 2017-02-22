@@ -181,9 +181,11 @@ public class Map
 	{
 		// set scroll speed to this
 		this.scroll_speed = scroll_speed;
-		
-		
-		
+
+		// get the factors that the screen has changed by
+		double[] factors = {
+				((float) a_width)/((float) this.a_width), 
+				((float) a_height)/((float) this.a_height)};
 		
 		
 		// --------------------------------------
@@ -194,12 +196,7 @@ public class Map
 		 * Change current screen objects to update immediately to changes.
 		 */
 		if (!(this.a_width == a_width) || !(this.a_height == a_height))
-		{
-			// get the factors that the screen has changed by
-			double[] factors = {
-					((float) a_width)/((float) this.a_width), 
-					((float) a_height)/((float) this.a_height)};
-			
+		{	
 			// updates ceiling and floor to change to a percent of the applet size.
 			this.ceiling = 	(int) (a_height*PCT_MAP[0]);
 			this.floor 	 = 	(int) (a_height*PCT_MAP[1]);
@@ -279,6 +276,11 @@ public class Map
 			
 			// internally tick the game object
 			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
+			
+			// test for collisions, if colliding, turn hg red
+			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
+				hg.color = Color.RED;
+			
 		} // end tick game objects
 
 		// --------------------------------------
@@ -290,7 +292,19 @@ public class Map
 			
 			// internally tick the game object
 			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
+			
+			// test for collisions, if colliding, turn hg red
+			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
+				hg.color = Color.RED;
 		} // end tick game objects
+
+		// --------------------------------------
+		// -------- COLLIDE FLOOR & CEILING -----
+		// --------------------------------------
+		if (hg.y < ceiling || hg.y+hg.h > floor)
+		{
+			hg.color = Color.RED;
+		} // end if
 		
 		
 		
@@ -362,15 +376,15 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN FLOOR CHUNKS ----------
 		// --------------------------------------
-		if (last_floor_chunk.b1.x <= this.a_width + 100)
+		if (last_floor_chunk.b1.x <= this.a_width + 100 * factors[0])
 		{
 			// spawn new chunk
 			// random numbers for brevity
 			int f_w, f_l;
 			f_w = (int) (ThreadLocalRandom.current().nextInt(
-					CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
+					CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]) * factors[0]) ;
 			f_l = (int) (ThreadLocalRandom.current().nextInt(
-					CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+					CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]) * factors[1]);
 			
 			Geometry.Point c1, c2;
 			c1 = new Geometry.Point(last_floor_chunk.b1.x + f_w, floor - f_l);
@@ -390,15 +404,15 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN CEILING CHUNKS --------
 		// --------------------------------------
-		if (this.last_ceiling_chunk.b1.x <= this.a_width + 100)
+		if (this.last_ceiling_chunk.b1.x <= this.a_width + 100 * factors[0])
 		{
 			// spawn new chunk
 			// random numbers for brevity
 			int c_w, c_l;
 			c_w = (int) (ThreadLocalRandom.current().nextInt(
-					CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
+					CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]) * factors[0]);
 			c_l = (int) (ThreadLocalRandom.current().nextInt(
-					CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+					CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]) * factors[1]);
 			
 			CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(
 					this.last_ceiling_chunk,	// create chunk from last chunk

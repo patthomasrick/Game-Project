@@ -346,6 +346,33 @@ public class CaveObstacle extends Sprite
 			this.hat.a.y *= y_factor;
 			this.hat.b.y *= y_factor;
 			this.hat.c.y *= y_factor;
-		}
+		} // end resize
+		
+		/**
+		 * Collides the triangle with a rectangle. Uses the collide point method with every single
+		 * point of a rectangle.
+		 * @param r		Geometry.Rect, used for its 4 corners
+		 * @return		boolean, true if colliding, false if not
+		 */
+		public boolean collide_hat_with_rect(Geometry.Rect r)
+		{
+			// uses the Geometry class to help
+			
+			// get points of rect
+			Geometry.Point r1 = new Geometry.Point(r.x, r.y);
+			Geometry.Point r2 = new Geometry.Point(r.x + r.w, r.y);
+			Geometry.Point r3 = new Geometry.Point(r.x, r.y + r.h);
+			Geometry.Point r4 = new Geometry.Point(r.x + r.w, r.y + r.h);
+			
+			// collide points with triangle
+			boolean iscolliding = (
+					(hat.contains_point(r1)) ||
+					(hat.contains_point(r2)) ||
+					(hat.contains_point(r3)) ||
+					(hat.contains_point(r4))
+					);
+			
+			return iscolliding;
+		} // end collide as triangle
 	} // end Chunk
 } // end GameObstacle
