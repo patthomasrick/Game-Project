@@ -37,7 +37,7 @@ public class Menu
 		for(Iterator<Button> iter = buttons.iterator(); iter.hasNext();)
 		{
 			Button b = iter.next();
-			b.tick(x,y);
+			b.tick(x, y);
 		}
 	} //end tick
 	
@@ -47,7 +47,7 @@ public class Menu
 		Color c, darker_c, current_c;
 		String s;
 		
-		public Button(double x,double y,int h,int w, Color c, String s)
+		public Button(double x,double y,int h, int w, Color c, String s)
 		{
 			super(x,y,h,w);
 			this.c = c;

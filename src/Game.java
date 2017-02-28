@@ -78,7 +78,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		//mouse_x = e.getX();
+		mouse_x = e.getX();
 		mouse_y = e.getY();
 	}
 	public void mouseDragged(MouseEvent e) {}
@@ -168,7 +168,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
-		  hg.tick(mouse_y);
+		    hg.tick(mouse_y);
 			scrollspeed = hg.v;
 			m.tick(aWidth, aHeight, hg, scrollspeed);
 			
