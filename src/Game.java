@@ -62,7 +62,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
-	public int mousex, mousey;
+  
+	public int mx, my;
 	private double scrollspeed;
 	
 	// mouse events
@@ -76,8 +77,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		mousex = 300;
-		mousey = e.getY();
+		mx = 200;
+		my = e.getY();
 	}
 	public void mouseDragged(MouseEvent e) {}
 	
@@ -120,7 +121,6 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	
 	/**Draw the objects in the game to the screen.
-	 * 
 	 * @param g		Graphics object to draw to
 	 */
 	public void paint(Graphics g)
@@ -131,7 +131,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// draw bg
-		g2.setColor(Map.bg_color_1);
+		g2.setColor(Map.BG_COLOR_L);
 		g2.fillRect(0, 0, aWidth, aHeight);
 		
 		// draw map and its objects
@@ -167,8 +167,10 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
-			scrollspeed = hg.tick(mousex, mousey);
+			hg.tick(mx, my);
+			scrollspeed = hg.v;
 			m.tick(aWidth, aHeight, hg, scrollspeed);
+			
 			
 			// update screen
 			repaint();

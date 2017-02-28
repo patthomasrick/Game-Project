@@ -13,7 +13,7 @@
 
 import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+// import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
@@ -21,42 +21,57 @@ import java.util.concurrent.ThreadLocalRandom; // allows for random int in a ran
 /** 
  * Creates a map object that stores and controls game obstacles.
  */
+
+
 public class Map
 {
 	// variables
-	double scroll_speed; // how fast the map scrolls (placeholder)
-	double scroll_factor = 1.0; // how fast the map moves in accord to screen size
+	private double scroll_speed; // how fast the map scrolls (placeholder)
+	private double scroll_factor = 1.0; // how fast the map moves in accord to screen x size
 	
 	// applet size
-	int a_width;
-	int a_height;
+	private int a_width;	// the current size of the applet
+	private int a_height;	
 	
 	// floor and ceiling
-	int ceiling;
-	int floor;
+	private int ceiling;	// the current y positions of the ceiling and floor
+	private int floor;
 	
 	// constants
-	int W_FACTOR = 800;
-	int H_FACTOR = 600;
-	double PCT_CEILING = 1.0/12.0;
-	double PCT_FLOOR = 10.0/12.0;
+	
+	// how large the window was originally designed to be
+	private final double[] SCREEN_FACTOR = {800.0, 600.0};
+	
+	// the percent of the screen that is the ceiling or floor
+	private final double[] PCT_MAP = {1.0/12.0, 10.0/12.0};
 	
 	// hardcode spawning
-	int distance_between_spawns = 150;
-	int distance_until_spawn = 0;
-	boolean next_spawn_is_ceiling = true;
+	private final int[] SPIKE_X_RANGE = {-40, 40};
+	private final int[] SPIKE_W_RANGE = {60, 230};
+	private final int[] SPIKE_H_RANGE = {80, 280};
+	private int DIST_BETWEEN_SPIKES = 150;
+	
+	private int dist_until_spike_spawn = 0;
+	private boolean next_spawn_is_ceiling = true;		// this toggles after every spawn
+	
+	// harcode floor/ceiling generation
+	private final int[] CHUNK_SPAWN_OFFSET = {40, 100};
+	private final int[] CHUNK_SPAWN_HEIGHT = {10, 60};
+	
+	private CaveObstacle.Chunk last_floor_chunk, last_ceiling_chunk;
 	
 	/** Defined colors of theme */
-	static Color bg_color_1 = new Color(23, 37, 87); // dark blue
-	static Color bg_color_2 = new Color(48, 62, 115); // darker blue
-	static Color fg_color_1 = new Color(170, 135, 57); // sandy yellow
-	static Color fg_color_2 = new Color(128, 95, 21); // dark sandy yellow
+	public static final Color BG_COLOR_L = new Color(23, 37, 87); 	// dark blue
+	public static final Color BG_COLOR_D = new Color(48, 62, 115); 	// darker blue
+	public static final Color FG_COLOR_L = new Color(170, 135, 57); // sandy yellow
+	public static final Color FG_COLOR_D = new Color(128, 95, 21); 	// dark sandy yellow
 	
 	// arrays for game obstacles
-	ArrayList<CaveObstacle> obstacles;
-	
-	// create timer for events
-	Events.EventTimer etimer = new Events.EventTimer();
+	private ArrayList<CaveObstacle> obstacles;
+	private ArrayList<CaveObstacle.Chunk> map_floor, map_ceiling;
+//	
+//	// create timer for events
+//	private Events.EventTimer etimer = new Events.EventTimer();
 	
 	/**
 	 * Constructor for the map.
@@ -81,11 +96,70 @@ public class Map
 		
 		// y-values of the ceiling and floor
 		// updates this to change to a percent of the applet size.
-		this.ceiling = 	(int) (this.a_height*this.PCT_CEILING);
-		this.floor 	 = 	(int) (this.a_height*this.PCT_FLOOR);
+		this.ceiling = 	(int) (a_height*PCT_MAP[0]);
+		this.floor 	 = 	(int) (a_height*PCT_MAP[1]);
 		
 		// creates an array for the points of ceiling 
 		this.obstacles = new ArrayList<CaveObstacle>();
+		
+		// init arrays for chunks
+		this.map_floor = new ArrayList<CaveObstacle.Chunk>();
+		this.map_ceiling = new ArrayList<CaveObstacle.Chunk>();
+		
+		// --------------------------------------
+		// -------- CREATE FIRST CHUNKS ---------
+		// --------------------------------------
+		
+		// -------- FLOOR CHUNKS ----------------
+		int f_w, f_l, f_r;
+		f_w = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
+		f_l = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		f_r = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		
+		// create floor points
+		int x2, y1, y2, y3;
+		x2 = a_width + f_w + 200;
+		y1 = this.floor;
+		y2 = this.floor - f_l;
+		y3 = this.floor - f_r;
+
+		Geometry.Point a1, a2, b1, b2;
+		a1 = new Geometry.Point(0, y1);
+		a2 = new Geometry.Point(0, y2);
+		b1 = new Geometry.Point(x2, y1);
+		b2 = new Geometry.Point(x2, y3);
+		
+		// create chunk
+		CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(a2, a1, b2, b1, Map.FG_COLOR_D);
+		
+		// -------- CEILING CHUNKS ----------------
+		
+		int c_w, c_l, c_r;
+		c_w = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
+		c_l = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		c_r = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		
+		// create floor points
+		x2 = a_width + c_w + 200;
+		y1 = this.ceiling;
+		y2 = this.ceiling + c_l;
+		y3 = this.ceiling + c_r;
+
+		a1 = new Geometry.Point(0, y1);
+		a2 = new Geometry.Point(0, y2);
+		b1 = new Geometry.Point(x2, y1);
+		b2 = new Geometry.Point(x2, y3);
+		
+		// create chunk
+		CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(a1, a2, b1, b2, Map.FG_COLOR_L);
+		
+		// add chunks to arraylists
+		this.map_floor.add(floor_chunk);
+		this.map_ceiling.add(ceiling_chunk);
+		
+		// set the new chunks as the newly created chunks
+		this.last_ceiling_chunk = ceiling_chunk;
+		this.last_floor_chunk = floor_chunk;
 	} // end map constructor
 
 	
@@ -107,44 +181,76 @@ public class Map
 	{
 		// set scroll speed to this
 		this.scroll_speed = scroll_speed;
-		// renew applet size. useful in case of screen size changes
-		// change current screen objects to update immediately to changes
+
+		// get the factors that the screen has changed by
+		double[] factors = {
+				((float) a_width)/((float) this.a_width), 
+				((float) a_height)/((float) this.a_height)};
+		
+		
+		// --------------------------------------
+		// ----------- RESIZE APPLET ------------
+		// --------------------------------------
+		/*
+		 * Renew applet size. useful in case of screen size changes.
+		 * Change current screen objects to update immediately to changes.
+		 */
 		if (!(this.a_width == a_width) || !(this.a_height == a_height))
-		{
-			// call iterator and loop through all objects in the iterator
+		{	
+			// updates ceiling and floor to change to a percent of the applet size.
+			this.ceiling = 	(int) (a_height*PCT_MAP[0]);
+			this.floor 	 = 	(int) (a_height*PCT_MAP[1]);
+			
+			// Loop through all of the CaveObstacles
 			for (Iterator<CaveObstacle> iter = obstacles.iterator(); iter.hasNext();)
 			{
-				// get the next item in the iterator
 				CaveObstacle go = iter.next();
-				
-				double[] factors = {
-						((float) a_width)/((float) this.a_width), 
-						((float) a_height)/((float) this.a_height)};
-				
-				// call the method that performs the resizing of the GO
+				// resize the obstacle
 				go.resize(factors[0], factors[1]);
 			} // end iteration
 			
+			// Loop through all chunks
+			for (Iterator<CaveObstacle.Chunk> iter = map_floor.iterator(); iter.hasNext();)
+			{
+				CaveObstacle.Chunk chunk = iter.next();
+				chunk.resize(factors[0], factors[1]);
+			} // end for loop
+			
+			// Loop through all chunks
+			for (Iterator<CaveObstacle.Chunk> iter = map_ceiling.iterator(); iter.hasNext();)
+			{
+				CaveObstacle.Chunk chunk = iter.next();
+				chunk.resize(factors[0], factors[1]);
+			} // end for loop
+			
 			// also update distance between spawns and scroll speed
-			this.distance_between_spawns = 150 * a_width/800;
-			this.scroll_factor = a_width/800.0;
+			DIST_BETWEEN_SPIKES = (int) (150.0 * a_width/SCREEN_FACTOR[0]);
+			this.scroll_factor = a_width/SCREEN_FACTOR[0];
 			
 			// update values after changes are done
 			this.a_width = a_width;
 			this.a_height = a_height;
 		} // end if width changed
 		
-		// updates ceiling and floor to change to a percent of the applet size.
-		this.ceiling = 	(int) (this.a_height*this.PCT_CEILING);
-		this.floor 	 = 	(int) (this.a_height*this.PCT_FLOOR);
 		
-		// reset color. useful in case if the hg is actually colliding with an object
+		// reset color incase of previous collisions
 		hg.color = Color.GREEN;
 		
-		// call iterator and loop through all objects in the iterator
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// --------------------------------------
+		// -------- TICK GAME OBSTACLES ---------
+		// --------------------------------------
 		for (Iterator<CaveObstacle> iter = obstacles.iterator(); iter.hasNext();)
 		{
-			// get the next item in the iterator
 			CaveObstacle go = iter.next();
 			
 			// internally tick the game object
@@ -154,65 +260,167 @@ public class Map
 			if (go.collide_as_triangle(hg) == true)
 				hg.color = Color.RED;
 			
-			// if the obstacle is off-screen, delete it
+			// delete off-screen obstacles
 			if (go.x + go.w < 0)
 			{
 				iter.remove();
 			} // end if off-screen
 		} // end tick game objects
+
+		// --------------------------------------
+		// -------- TICK CEILING CHUNKS ---------
+		// --------------------------------------
+		for (Iterator<CaveObstacle.Chunk> iter = map_ceiling.iterator(); iter.hasNext();)
+		{
+			CaveObstacle.Chunk chunk = iter.next();
+			
+			// internally tick the game object
+			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
+			
+			// test for collisions, if colliding, turn hg red
+			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
+				hg.color = Color.RED;
+			
+		} // end tick game objects
+
+		// --------------------------------------
+		// -------- TICK FLOOR CHUNKS ---------
+		// --------------------------------------
+		for (Iterator<CaveObstacle.Chunk> iter = map_floor.iterator(); iter.hasNext();)
+		{
+			CaveObstacle.Chunk chunk = iter.next();
+			
+			// internally tick the game object
+			chunk.tick(1000/60, this.scroll_speed * this.scroll_factor);
+			
+			// test for collisions, if colliding, turn hg red
+			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
+				hg.color = Color.RED;
+		} // end tick game objects
+
+		// --------------------------------------
+		// -------- COLLIDE FLOOR & CEILING -----
+		// --------------------------------------
+		if (hg.y < ceiling || hg.y+hg.h > floor)
+		{
+			hg.color = Color.RED;
+		} // end if
 		
-		// ---------- SPAWNING -------------
-		// set to spawn obstacle every set distance
-		if (this.distance_until_spawn <= 0)
+		
+		
+		
+		
+		
+		
+		
+		// --------------------------------------
+		// -------- SPAWN GAME OBSTACLES --------
+		// --------------------------------------
+		if (this.dist_until_spike_spawn <= 0)
 		{
 			// get applet screen factors
-			double x_shift = this.a_width/800.0;
-			double y_shift = this.a_height/600.0;
+			double x_shift = this.a_width/ SCREEN_FACTOR[0];
+			double y_shift = this.a_height/SCREEN_FACTOR[1];
 			
 			// randomize values of the obstacle to be generated
-			int x_rand = (int) (ThreadLocalRandom.current().nextInt(-40, 40 + 1) * x_shift);
-			int w_rand = (int) (ThreadLocalRandom.current().nextInt(60, 230 + 1) * x_shift);
-			int h_rand = (int) (ThreadLocalRandom.current().nextInt(80, 280 + 1) * y_shift);
+			int random_x = (int) (ThreadLocalRandom.current().nextInt(
+					SPIKE_X_RANGE[0], SPIKE_X_RANGE[1]) * x_shift);
+			int random_w = (int) (ThreadLocalRandom.current().nextInt(
+					SPIKE_W_RANGE[0], SPIKE_W_RANGE[1]) * x_shift);
+			int random_h = (int) (ThreadLocalRandom.current().nextInt(
+					SPIKE_H_RANGE[0], SPIKE_H_RANGE[1]) * y_shift);
+			
 			
 			// init new obstacle
 			CaveObstacle co;
-			// spawning on ceilings
-			if (this.next_spawn_is_ceiling == true)
+			Color new_color;
+			int new_y;
+			
+			// spawn on ceiling
+			if (next_spawn_is_ceiling == true)
 			{
-				co = new CaveObstacle(
-						(double) (this.a_width + 50*x_shift + x_rand),
-						(double) this.ceiling,
-						h_rand,
-						w_rand,
-						Map.fg_color_1);
+				new_y = this.ceiling;
+				new_color = Map.FG_COLOR_L;
 			} // end if time to spawn on ceiling
-			// spawning on floors
+			// otherwise spawn on floor
+			
 			else
 			{
-				co = new CaveObstacle(
-						(double) (this.a_width + 50*x_shift + x_rand),
-						(double) this.floor,
-						-h_rand,
-						w_rand,
-						Map.fg_color_2);
+				new_y = this.floor;
+				random_h = -random_h;
+				new_color = Map.FG_COLOR_D;
 			} // end if time to spawn on floor
 			
-			// add new obj to obstacles
-			this.obstacles.add(co);
+			// create obstacle
+			co = new CaveObstacle(
+					(double) (this.a_width + 50*x_shift + random_x),
+					(double) new_y,
+					random_h,
+					random_w,
+					new_color);
+			obstacles.add(co);	// add new obj to obstacles
 			
 			// switch spawn plane for next time
-			this.next_spawn_is_ceiling = !this.next_spawn_is_ceiling;
+			next_spawn_is_ceiling = !next_spawn_is_ceiling;
 			
 			// reset spawn timer
-			this.distance_until_spawn = this.distance_between_spawns;
+			dist_until_spike_spawn = DIST_BETWEEN_SPIKES;
 		} // end if spawn
 		
 		// nothing is supposed to be spawned, so just tick down distance
 		else
 		{
-			// simulate the passage of cave
-			this.distance_until_spawn -= (this.scroll_speed * this.scroll_factor);
+			this.dist_until_spike_spawn -= (this.scroll_speed * this.scroll_factor);
 		} // end else
+		
+		// --------------------------------------
+		// -------- SPAWN FLOOR CHUNKS ----------
+		// --------------------------------------
+		if (last_floor_chunk.b1.x <= this.a_width + 100 * factors[0])
+		{
+			// spawn new chunk
+			// random numbers for brevity
+			int f_w, f_l;
+			f_w = (int) (ThreadLocalRandom.current().nextInt(
+					CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]) * factors[0]) ;
+			f_l = (int) (ThreadLocalRandom.current().nextInt(
+					CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]) * factors[1]);
+			
+			Geometry.Point c1, c2;
+			c1 = new Geometry.Point(last_floor_chunk.b1.x + f_w, floor - f_l);
+			c2 = new Geometry.Point(last_floor_chunk.b2.x + f_w, floor); 
+			
+			CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(
+					last_floor_chunk.b1, // create chunk from last chunk
+					last_floor_chunk.b2,
+					c1,
+					c2,
+					Map.FG_COLOR_D);
+			
+			last_floor_chunk = floor_chunk;	// set the new last chunk to the right one
+			map_floor.add(floor_chunk);		// add new chunk to the arraylist
+		} // end if time to spawn chunk
+
+		// --------------------------------------
+		// -------- SPAWN CEILING CHUNKS --------
+		// --------------------------------------
+		if (this.last_ceiling_chunk.b1.x <= this.a_width + 100 * factors[0])
+		{
+			// spawn new chunk
+			// random numbers for brevity
+			int c_w, c_l;
+			c_w = (int) (ThreadLocalRandom.current().nextInt(
+					CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]) * factors[0]);
+			c_l = (int) (ThreadLocalRandom.current().nextInt(
+					CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]) * factors[1]);
+			
+			CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(
+					this.last_ceiling_chunk,	// create chunk from last chunk
+					c_l,						// ceiling left side height
+					c_w);						// ceiling width
+			this.map_ceiling.add(ceiling_chunk);		// add new chunk to the arraylist
+			this.last_ceiling_chunk = ceiling_chunk;	// set the new last chunk to the right one
+		} // end if time to spawn chunk
 	} // end tick
 	
 	/**
@@ -222,44 +430,63 @@ public class Map
 	 */
 	public void draw(Graphics g)
 	{	
-		// if  the object given is graphics2d:
-		if (g instanceof Graphics2D)
+		// --------------------------------------
+		// ------------ DRAW SPIKES -------------
+		// --------------------------------------
+		if (this.obstacles.size() > 0)
 		{
-			// first see if there are any objects in the arraylist
-			if (this.obstacles.size() > 0)
+			// iterate through all of the obstacles
+			Iterator<CaveObstacle> obst_iter = obstacles.iterator();
+			while(obst_iter.hasNext())
 			{
-				// iterate through all of the obstacles
-				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-				while(obst_iter.hasNext())
-				{
-					// get obstacle
-					CaveObstacle co = obst_iter.next();
-					// use built-in draw method
-					co.draw(g);
-				} // end while draw obstacles
-			} // end if any obstacles
-		} // end if graphics2d
-		else
+				// get obstacle
+				CaveObstacle co = obst_iter.next();
+				// use built-in draw method
+				co.draw(g);
+			} // end while draw obstacles
+		} // end if any obstacles exist
+
+
+		// --------------------------------------
+		// --------- DRAW FLOOR CHUNKS ----------
+		// --------------------------------------
+		if (this.map_floor.size() > 0)
 		{
-			// first see if there are any objects in the arraylist
-			if (this.obstacles.size() > 0)
+			// iterate through all of the obstacles
+			Iterator<CaveObstacle.Chunk> chunk_iter = this.map_floor.iterator();
+			while(chunk_iter.hasNext())
 			{
-				// iterate through all of the obstacles
-				Iterator<CaveObstacle> obst_iter = obstacles.iterator();
-				while(obst_iter.hasNext())
-				{
-					// get obstacle
-					CaveObstacle co = obst_iter.next();
-					// use built-in draw method
-					co.draw(g);
-				} // end while draw obstacles
-			} // end if any obstacles
-		} // end if only graphics
+				// get obstacle
+				CaveObstacle.Chunk chunk = chunk_iter.next();
+				// use built-in draw method
+				chunk.draw(g);
+			} // end while draw obstacles
+		} // end if any obstacles exist
+
+
+		// --------------------------------------
+		// -------- DRAW CEILING CHUNKS ---------
+		// --------------------------------------
+		if (this.map_ceiling.size() > 0)
+		{
+			// iterate through all of the obstacles
+			Iterator<CaveObstacle.Chunk> chunk_iter = this.map_ceiling.iterator();
+			while(chunk_iter.hasNext())
+			{
+				// get obstacle
+				CaveObstacle.Chunk chunk = chunk_iter.next();
+				// use built-in draw method
+				chunk.draw(g);
+			} // end while draw obstacles
+		} // end if any obstacles exist
 		
-		// draw floor and ceiling
-		g.setColor(Map.fg_color_1);
+
+		// --------------------------------------
+		// ------------ DRAW BOXES --------------
+		// --------------------------------------
+		g.setColor(Map.FG_COLOR_L);
 		g.fillRect(0, 0, this.a_width, ceiling);
-        g.setColor(Map.fg_color_2);
-		g.fillRect(0, this.floor, this.a_width, floor);
+        g.setColor(Map.FG_COLOR_D);
+		g.fillRect(0, this.floor, this.a_width, 1000);
 	} // end draw
 } // end class
