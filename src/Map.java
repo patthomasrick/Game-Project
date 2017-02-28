@@ -28,6 +28,7 @@ public class Map
 	// variables
 	private double scroll_speed; // how fast the map scrolls (placeholder)
 	private double scroll_factor = 1.0; // how fast the map moves in accord to screen x size
+	private double dist_travelled = 0;
 	
 	// applet size
 	private int a_width;	// the current size of the applet
@@ -187,6 +188,8 @@ public class Map
 				((float) a_width)/((float) this.a_width), 
 				((float) a_height)/((float) this.a_height)};
 		
+		// keep track of distance travelled for high scores
+		this.dist_travelled += this.scroll_speed*this.scroll_factor;
 		
 		// --------------------------------------
 		// ----------- RESIZE APPLET ------------
