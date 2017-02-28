@@ -64,7 +64,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
 	public int mouse_x = 200;
-	public int mouse_y = 0
+	public int mouse_y = 0;
 	private double scrollspeed;
 	
 	// mouse events
