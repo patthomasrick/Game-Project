@@ -45,6 +45,7 @@ public class Map
 	
 	// how large the window was originally designed to be
 	private final double[] SCREEN_FACTOR = {800.0, 600.0};
+	public double[] factors = {1.0, 1.0}; 
 	
 	// the percent of the screen that is the ceiling or floor
 	private final double[] PCT_MAP = {1.0/12.0, 10.0/12.0};
@@ -190,9 +191,8 @@ public class Map
 		this.scroll_speed = scroll_speed;
 
 		// get the factors that the screen has changed by
-		double[] factors = {
-				((float) a_width)/((float) this.a_width), 
-				((float) a_height)/((float) this.a_height)};
+		this.factors[0] = ((float) a_width)/((float) this.a_width);
+		this.factors[1] = ((float) a_height)/((float) this.a_height);
 		
 		// keep track of distance travelled for high scores
 		this.dist_travelled += this.scroll_speed;
@@ -502,17 +502,27 @@ public class Map
 		// --------------------------------------
 		// ------------ DRAW HUD --------------
 		// --------------------------------------
+		this.dist_font = new Font("Dialog", Font.PLAIN, (int) (20*Math.sqrt(this.factors[1])));
 		
 		// distance
 		g.setFont(this.dist_font);
 		g.setColor(Color.BLACK);
 		g.drawString("Distance: " + ((int) this.dist_travelled / 10) + "m",
-				20,
-				this.floor + 20);
+				(int) (21*this.factors[0]),
+				this.floor + (int) (21*this.factors[1]));
+		g.setColor(Color.WHITE);
+		g.drawString("Distance: " + ((int) this.dist_travelled / 10) + "m",
+				(int) (20*this.factors[0]),
+				this.floor + (int) (20*this.factors[1]));
 		
 		// speed
-		g.drawString("Speed: " + ((int) ((this.scroll_speed/ 5) * (1000/60.0))) + "m/s",
-				20,
-				this.floor + 40);
+		g.setColor(Color.BLACK);
+		g.drawString("Speed: " + ((int) ((this.scroll_speed * (1000/60.0))/ 5)) + "m/s",
+				(int) (21*this.factors[0]),
+				this.floor + (int) (41*this.factors[1]));
+		g.setColor(Color.WHITE);
+		g.drawString("Speed: " + ((int) ((this.scroll_speed * (1000/60.0))/ 5)) + "m/s",
+				(int) (20*this.factors[0]),
+				this.floor + (int) (40*this.factors[1]));
 	} // end draw
 } // end class
