@@ -14,6 +14,7 @@
 import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
 // import java.awt.Graphics2D;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
@@ -29,6 +30,8 @@ public class Map
 	private double scroll_speed; // how fast the map scrolls (placeholder)
 	private double scroll_factor = 1.0; // how fast the map moves in accord to screen x size
 	private double dist_travelled = 0;
+	
+	public Font dist_font;
 	
 	// applet size
 	private int a_width;	// the current size of the applet
@@ -88,6 +91,9 @@ public class Map
 	 */
 	public Map(int screensize_x, int screensize_y, double scroll_speed)
 	{
+		// init font
+		this.dist_font = new Font("Dialog", Font.PLAIN, 20);
+		
 		// set scroll speed to an initial value
 		this.scroll_speed = scroll_speed;
 		
@@ -189,7 +195,7 @@ public class Map
 				((float) a_height)/((float) this.a_height)};
 		
 		// keep track of distance travelled for high scores
-		this.dist_travelled += this.scroll_speed*this.scroll_factor;
+		this.dist_travelled += this.scroll_speed;
 		
 		// --------------------------------------
 		// ----------- RESIZE APPLET ------------
@@ -491,5 +497,22 @@ public class Map
 		g.fillRect(0, 0, this.a_width, ceiling);
         g.setColor(Map.FG_COLOR_D);
 		g.fillRect(0, this.floor, this.a_width, 1000);
+
+
+		// --------------------------------------
+		// ------------ DRAW HUD --------------
+		// --------------------------------------
+		
+		// distance
+		g.setFont(this.dist_font);
+		g.setColor(Color.BLACK);
+		g.drawString("Distance: " + ((int) this.dist_travelled / 10) + "m",
+				20,
+				this.floor + 20);
+		
+		// speed
+		g.drawString("Speed: " + ((int) ((this.scroll_speed/ 5) * (1000/60.0))) + "m/s",
+				20,
+				this.floor + 40);
 	} // end draw
 } // end class
