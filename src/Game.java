@@ -168,9 +168,12 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			update_applet_size();
 			
 			// tick map and map objects
-			hg.tick(mx, my);
-			scrollspeed = hg.v;
-			m.tick(aWidth, aHeight, hg, scrollspeed);
+			if (hg.alive != false)
+			{
+				hg.tick(mx, my);
+				scrollspeed = hg.v;
+				m.tick(aWidth, aHeight, hg, scrollspeed);
+			} // run game if running
 			
 			// update screen
 			repaint();

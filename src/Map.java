@@ -430,6 +430,11 @@ public class Map
 			this.map_ceiling.add(ceiling_chunk);		// add new chunk to the arraylist
 			this.last_ceiling_chunk = ceiling_chunk;	// set the new last chunk to the right one
 		} // end if time to spawn chunk
+		
+		if (hg.color == Color.RED)
+		{
+			hg.kill();
+		} // end game if collision
 	} // end tick
 	
 	/**
