@@ -290,6 +290,11 @@ public class Map
 			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
 				hg.color = Color.RED;
 			
+			if (chunk.b1.y <= 0)
+			{
+				iter.remove();
+			} // end gc
+			
 		} // end tick game objects
 
 		// --------------------------------------
@@ -305,6 +310,11 @@ public class Map
 			// test for collisions, if colliding, turn hg red
 			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
 				hg.color = Color.RED;
+			
+			if (chunk.b1.y <= 0)
+			{
+				iter.remove();
+			} // end gc
 		} // end tick game objects
 
 		// --------------------------------------
