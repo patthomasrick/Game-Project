@@ -53,8 +53,8 @@ public class Map
 	// hardcode spawning
 	private final int[] SPIKE_X_RANGE = {-40, 40};
 	private final int[] SPIKE_W_RANGE = {60, 230};
-	private final int[] SPIKE_H_RANGE = {80, 280};
-	private int DIST_BETWEEN_SPIKES = 150;
+	private final int[] SPIKE_H_RANGE = {80, 230};
+	private int DIST_BETWEEN_SPIKES = 120;
 	
 	private int dist_until_spike_spawn = 0;
 	private boolean next_spawn_is_ceiling = true;		// this toggles after every spawn
