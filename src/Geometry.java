@@ -1,3 +1,5 @@
+import Geometry.Triangle.InvalidVectors;
+
 /**
  * This provides the tools for advanced collisions (triangles and such). As well as rectangles
  * for sprites and other objects.
@@ -126,6 +128,26 @@ public class Geometry
 		} // end constructor
 		
 		/**
+		 * Constructor of triangle. Needs 2 vectors, with the tails being equal.
+		 * @param a		Vector
+		 * @param b		Vector
+		 * @throws InvalidVectors 
+		 */
+		public Triangle(Vector a, Vector b) throws InvalidVectors
+		{
+			if (a.a != b.a)
+			{
+				throw new Geometry.Triangle.InvalidVectors("Vector tails not equal");
+			} // end if tails not equal
+			else
+			{
+				this.a = a.a;
+				this.b = a.b;
+				this.c = b.b;
+			} // end else
+		} // end constructor
+		
+		/**
 		 * Constructor for triangle. Creates triangle from points broken into components.
 		 * @param a1	double of x-value
 		 * @param a2	double of y-value
@@ -218,6 +240,19 @@ public class Geometry
 			
 			return iscolliding;
 		} // end collide as triangle
+		
+		public static class InvalidVectors extends Exception
+		{
+			  /**
+			 * 
+			 */
+			private static final long serialVersionUID = 2510996784592698720L;
+
+			public InvalidVectors(String message)
+			  {
+			     super(message);
+			  } // end constructor
+		} // end custom exception
 	} // end class triangle
 	
 	/**
