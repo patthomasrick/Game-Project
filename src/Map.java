@@ -156,7 +156,8 @@ public class Map
 		y1 = this.ceiling;
 		y2 = this.ceiling + c_l;
 		y3 = this.ceiling + c_r;
-
+		
+		// now in Geometry.Point form
 		a1 = new Geometry.Point(0, y1);
 		a2 = new Geometry.Point(0, y2);
 		b1 = new Geometry.Point(x2, y1);
