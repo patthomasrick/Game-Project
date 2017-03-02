@@ -43,6 +43,11 @@ public class Geometry
 			this.x = p.x;
 			this.y = p.y;
 		} // end duplicator
+		
+		public static Point add(Point p1, Point p2)
+		{
+			return new Point(p1.x + p2.x, p1.y + p2.y);
+		} // end add method
 	} // end class point
 	
 	/**
@@ -89,6 +94,11 @@ public class Geometry
 		{
 			return a.v.x * b.v.y - a.v.y * b.v.x;
 		} // end cross product
+		
+		public static Vector add(Vector a, Vector b)
+		{
+			return new Vector(Point.add(a.a, b.a), Point.add(b.a, b.b));
+		} // end add vectors
 	} // end class point
 	
 	/**
