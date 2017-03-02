@@ -15,6 +15,7 @@ import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
 // import java.awt.Graphics2D;
 import java.awt.Font;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
@@ -26,6 +27,9 @@ import java.util.concurrent.ThreadLocalRandom; // allows for random int in a ran
 
 public class Map
 {
+	// create decimal format
+	DecimalFormat fmt = new DecimalFormat ("0.00");
+	
 	// variables
 	private double scroll_speed; // how fast the map scrolls (placeholder)
 	private double scroll_factor = 1.0; // how fast the map moves in accord to screen x size
@@ -395,7 +399,7 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN FLOOR CHUNKS ----------
 		// --------------------------------------
-		if (last_floor_chunk.b1.x <= this.a_width + 100 * factors[0])
+		if (last_floor_chunk.b1.x <= this.a_width + (100 * factors[0]))
 		{
 			// spawn new chunk
 			// random numbers for brevity
@@ -423,7 +427,7 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN CEILING CHUNKS --------
 		// --------------------------------------
-		if (this.last_ceiling_chunk.b1.x <= this.a_width + 100 * factors[0])
+		if (this.last_ceiling_chunk.b1.x <= this.a_width + (100 * factors[0]))
 		{
 			// spawn new chunk
 			// random numbers for brevity
@@ -440,6 +444,8 @@ public class Map
 			this.map_ceiling.add(ceiling_chunk);		// add new chunk to the arraylist
 			this.last_ceiling_chunk = ceiling_chunk;	// set the new last chunk to the right one
 		} // end if time to spawn chunk
+		
+		// KILL THE HANG GLIDER IF HE HITS ANYTHING
 		
 		if (hg.color == Color.RED)
 		{
@@ -515,28 +521,38 @@ public class Map
 
 
 		// --------------------------------------
-		// ------------ DRAW HUD --------------
+		// ------------ DRAW HUD ----------------
 		// --------------------------------------
 		this.dist_font = new Font("Dialog", Font.PLAIN, (int) (20*Math.sqrt(this.factors[1])));
 		
 		// distance
+		
+		// convert distance to string
+		double d_dist = this.dist_travelled / 10 / 1000 * 0.62137119;
+		String s_dist = fmt.format(d_dist);
+		
 		g.setFont(this.dist_font);
 		g.setColor(Color.BLACK);
-		g.drawString("Distance: " + ((int) this.dist_travelled / 10) + "m",
+		g.drawString("Distances " + s_dist + " mi",
 				(int) (21*this.factors[0]),
 				this.floor + (int) (21*this.factors[1]));
 		g.setColor(Color.WHITE);
-		g.drawString("Distance: " + ((int) this.dist_travelled / 10) + "m",
+		g.drawString("Distance: " + s_dist + " mi",
 				(int) (20*this.factors[0]),
 				this.floor + (int) (20*this.factors[1]));
 		
 		// speed
+		
+		// convert speed to string
+		double d_speed = this.scroll_speed * 1000.0 / 60.0 / 10.0 * 2.23693629;
+		String s_speed = fmt.format(d_speed);
+		
 		g.setColor(Color.BLACK);
-		g.drawString("Speed: " + ((int) ((this.scroll_speed * (1000/60.0))/ 5)) + "m/s",
+		g.drawString("Speed: " + s_speed + " mi/h",
 				(int) (21*this.factors[0]),
 				this.floor + (int) (41*this.factors[1]));
 		g.setColor(Color.WHITE);
-		g.drawString("Speed: " + ((int) ((this.scroll_speed * (1000/60.0))/ 5)) + "m/s",
+		g.drawString("Speed: " + s_speed + " mi/h",
 				(int) (20*this.factors[0]),
 				this.floor + (int) (40*this.factors[1]));
 	} // end draw
