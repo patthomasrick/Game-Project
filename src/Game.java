@@ -166,12 +166,11 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			
 			// update applet size
 			update_applet_size();
-			// tick map and map objects
 			
+			// tick map and map objects
 			hg.tick(mx, my);
 			scrollspeed = hg.v;
 			m.tick(aWidth, aHeight, hg, scrollspeed);
-			
 			
 			// update screen
 			repaint();
