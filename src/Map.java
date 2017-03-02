@@ -534,7 +534,7 @@ public class Map
 		
 		g.setFont(this.dist_font);
 		g.setColor(Color.BLACK);
-		g.drawString("Distances " + s_dist + " mi",
+		g.drawString("Distance: " + s_dist + " mi",
 				(int) (21*this.factors[0]),
 				this.floor + (int) (21*this.factors[1]));
 		g.setColor(Color.WHITE);
