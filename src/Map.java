@@ -56,7 +56,7 @@ public class Map
 	
 	// hardcode spawning
 	private final int[] SPIKE_X_RANGE = {-40, 40};
-	private final int[] SPIKE_W_RANGE = {60, 230};
+	private final int[] SPIKE_W_RANGE = {60, 300};
 	private final int[] SPIKE_H_RANGE = {80, 230};
 	private int DIST_BETWEEN_SPIKES = 120;
 	
@@ -317,18 +317,14 @@ public class Map
 				hg.color = Color.RED;
 			
 			if (chunk.b1.y <= 0)
-			{
 				iter.remove();
-			} // end gc
 		} // end tick game objects
 
 		// --------------------------------------
 		// -------- COLLIDE FLOOR & CEILING -----
 		// --------------------------------------
 		if (hg.y < ceiling || hg.y+hg.h > floor)
-		{
 			hg.color = Color.RED;
-		} // end if
 		
 		
 		
