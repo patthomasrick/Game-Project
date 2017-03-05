@@ -1,5 +1,3 @@
-import Geometry.Triangle.InvalidVectors;
-
 /**
  * This provides the tools for advanced collisions (triangles and such). As well as rectangles
  * for sprites and other objects.
