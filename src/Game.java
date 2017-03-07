@@ -64,8 +64,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
   
-	public int mx = 0;
-	public int my = 0;
+	public int mouse_x = 0;
+	public int mouse_y = 0;
 	public boolean clicked = false;
 	private double scrollspeed;
 	
@@ -199,7 +199,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// tick map and map objects
 			if (gamerunning == true && hg.alive == true)
 			{
-				hg.tick(300, mouse_y);
+				hg.tick(mouse_y);
 				scrollspeed = hg.v;
 				m.tick(aWidth, aHeight, hg, scrollspeed);
 			}
