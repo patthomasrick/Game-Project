@@ -2,7 +2,7 @@
 Authors:	Isaac Payne
 Date:		2/9/17
 Purpose: 	Create menu for game
-Version:	2/14/17
+Version:	2/28/17
 */
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,6 +12,7 @@ import java.util.Iterator;
 public class Menu 
 {
 	ArrayList<Button> buttons;
+	public static Button noButton = new Button(0,0,0,0,Color.white,"");
 	
 	public Menu()
 	{
@@ -32,13 +33,23 @@ public class Menu
 		}
 	} //end draw
 	
-	public void tick(double x, double y)
+	
+	public Menu.Button tick(double x, double y, boolean clicked)
 	{
+		Menu.Button clickedbutton = noButton;
+		
 		for(Iterator<Button> iter = buttons.iterator(); iter.hasNext();)
 		{
 			Button b = iter.next();
-			b.tick(x,y);
+			boolean hasbeenclicked = b.tick(x,y,clicked);
+			
+			if(hasbeenclicked == true)
+			{
+				clickedbutton = b;
+			}
 		}
+		
+		return clickedbutton;
 	} //end tick
 	
 	public static class Button extends Geometry.Rect 
@@ -62,13 +73,25 @@ public class Menu
 			g.fillRect((int)x, (int)y, w, h);
 		} //end draw
 		
-		public void tick(double x,double y)
+		public boolean tick(double x,double y, boolean clicked)
 		{
 			if (this.collide_point(x,y))
 			{
 				this.current_c = this.darker_c;
+				
+				if(clicked == true)
+				{
+					return true;
+				}
+				else return false;
 			}
-			else this.current_c = c;
+			
+			else
+			{
+				this.current_c = c;
+				return false;
+			}
+			
 		} //end tick
 		
 	} //end Button
