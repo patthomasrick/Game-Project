@@ -63,21 +63,38 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
   
-	public int mx, my;
+	public int mx = 0;
+	public int my = 0;
+	public boolean clicked = false;
 	private double scrollspeed;
 	
+	//Variables for menu
+	private boolean gamerunning = false;
+	private boolean inmainmenu = true;
+	private Menu mainmenu = new Menu();
+	private Menu pausemenu = new Menu();
+	private Menu.Button mm_start_button;
+	private Menu.Button pm_resume_button;
+	private Sprite menubackground;
+	
 	// mouse events
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) 
+	{
+		this.clicked = false;
+	}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseClicked(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) 
+	{
+		this.clicked = true;
+	}
 	public void mouseExited(MouseEvent e) {}
 	
 	// mouse moved events
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		mx = 200;
+		mx = e.getX();
 		my = e.getY();
 	}
 	public void mouseDragged(MouseEvent e) {}
@@ -117,6 +134,12 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		/** Create map and hang glider */
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
 		m = new Map(aWidth, aHeight, 2.5);
+		
+		// menu
+		mm_start_button = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Map.FG_COLOR_L, "Start");
+		pm_resume_button = new Menu.Button(aWidth*0.3, aHeight*0.45, (int) (aHeight*0.1), (int) (aWidth*0.4), Map.FG_COLOR_L, "Resume");
+		mainmenu.add_button(mm_start_button);
+		menubackground = new Sprite(aWidth*0.2, aHeight*0.3, (int) (aHeight*0.35), (int) (aWidth*0.6), Map.FG_COLOR_D);
 	} // end initialization
 	
 	
@@ -139,6 +162,13 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		
 		// draw hangglider
 		hg.draw(g2);
+		
+		// draw main menu
+		if (inmainmenu == true)
+		{
+			menubackground.draw(g2);
+			mainmenu.draw(g2);
+		}
 	} // end draw
 
 	
@@ -167,10 +197,24 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
-			hg.tick(mx, my);
-			scrollspeed = hg.v;
-			m.tick(aWidth, aHeight, hg, scrollspeed);
+			if (gamerunning == true)
+			{
+				hg.tick(300, my);
+				scrollspeed = hg.v;
+				m.tick(aWidth, aHeight, hg, scrollspeed);
+			}
 			
+			if (inmainmenu == true)
+			{
+				Menu.Button clickedbutton = mainmenu.tick(mx, my, clicked);
+				
+				
+				if(clickedbutton == mm_start_button)
+				{
+					inmainmenu = false;
+					gamerunning = true;
+				}
+			}
 			
 			// update screen
 			repaint();
