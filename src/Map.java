@@ -14,6 +14,8 @@
 import java.awt.Color; // imported to define custom colors
 import java.awt.Graphics;
 // import java.awt.Graphics2D;
+import java.awt.Font;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom; // allows for random int in a range
@@ -25,9 +27,15 @@ import java.util.concurrent.ThreadLocalRandom; // allows for random int in a ran
 
 public class Map
 {
+	// create decimal format
+	DecimalFormat fmt = new DecimalFormat ("0.00");
+	
 	// variables
 	private double scroll_speed; // how fast the map scrolls (placeholder)
 	private double scroll_factor = 1.0; // how fast the map moves in accord to screen x size
+	private double dist_travelled = 0;
+	
+	public Font dist_font;
 	
 	// applet size
 	private int a_width;	// the current size of the applet
@@ -41,15 +49,16 @@ public class Map
 	
 	// how large the window was originally designed to be
 	private final double[] SCREEN_FACTOR = {800.0, 600.0};
+	public double[] factors = {1.0, 1.0}; 
 	
 	// the percent of the screen that is the ceiling or floor
 	private final double[] PCT_MAP = {1.0/12.0, 10.0/12.0};
 	
 	// hardcode spawning
 	private final int[] SPIKE_X_RANGE = {-40, 40};
-	private final int[] SPIKE_W_RANGE = {60, 230};
-	private final int[] SPIKE_H_RANGE = {80, 280};
-	private int DIST_BETWEEN_SPIKES = 150;
+	private final int[] SPIKE_W_RANGE = {60, 300};
+	private final int[] SPIKE_H_RANGE = {80, 230};
+	private int DIST_BETWEEN_SPIKES = 120;
 	
 	private int dist_until_spike_spawn = 0;
 	private boolean next_spawn_is_ceiling = true;		// this toggles after every spawn
@@ -87,6 +96,9 @@ public class Map
 	 */
 	public Map(int screensize_x, int screensize_y, double scroll_speed)
 	{
+		// init font
+		this.dist_font = new Font("Dialog", Font.PLAIN, 20);
+		
 		// set scroll speed to an initial value
 		this.scroll_speed = scroll_speed;
 		
@@ -144,7 +156,8 @@ public class Map
 		y1 = this.ceiling;
 		y2 = this.ceiling + c_l;
 		y3 = this.ceiling + c_r;
-
+		
+		// now in Geometry.Point form
 		a1 = new Geometry.Point(0, y1);
 		a2 = new Geometry.Point(0, y2);
 		b1 = new Geometry.Point(x2, y1);
@@ -183,10 +196,11 @@ public class Map
 		this.scroll_speed = scroll_speed;
 
 		// get the factors that the screen has changed by
-		double[] factors = {
-				((float) a_width)/((float) this.a_width), 
-				((float) a_height)/((float) this.a_height)};
+		this.factors[0] = ((float) a_width)/((float) this.a_width);
+		this.factors[1] = ((float) a_height)/((float) this.a_height);
 		
+		// keep track of distance travelled for high scores
+		this.dist_travelled += this.scroll_speed;
 		
 		// --------------------------------------
 		// ----------- RESIZE APPLET ------------
@@ -281,6 +295,11 @@ public class Map
 			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
 				hg.color = Color.RED;
 			
+			if (chunk.b1.y <= 0)
+			{
+				iter.remove();
+			} // end gc
+			
 		} // end tick game objects
 
 		// --------------------------------------
@@ -296,15 +315,16 @@ public class Map
 			// test for collisions, if colliding, turn hg red
 			if (chunk.collide_hat_with_rect(hg) == true || chunk.inscribed_rect.collide_rect(hg) == true)
 				hg.color = Color.RED;
+			
+			if (chunk.b1.y <= 0)
+				iter.remove();
 		} // end tick game objects
 
 		// --------------------------------------
 		// -------- COLLIDE FLOOR & CEILING -----
 		// --------------------------------------
 		if (hg.y < ceiling || hg.y+hg.h > floor)
-		{
 			hg.color = Color.RED;
-		} // end if
 		
 		
 		
@@ -376,7 +396,7 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN FLOOR CHUNKS ----------
 		// --------------------------------------
-		if (last_floor_chunk.b1.x <= this.a_width + 100 * factors[0])
+		if (last_floor_chunk.b1.x <= this.a_width + (100 * factors[0]))
 		{
 			// spawn new chunk
 			// random numbers for brevity
@@ -404,7 +424,7 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN CEILING CHUNKS --------
 		// --------------------------------------
-		if (this.last_ceiling_chunk.b1.x <= this.a_width + 100 * factors[0])
+		if (this.last_ceiling_chunk.b1.x <= this.a_width + (100 * factors[0]))
 		{
 			// spawn new chunk
 			// random numbers for brevity
@@ -421,6 +441,13 @@ public class Map
 			this.map_ceiling.add(ceiling_chunk);		// add new chunk to the arraylist
 			this.last_ceiling_chunk = ceiling_chunk;	// set the new last chunk to the right one
 		} // end if time to spawn chunk
+		
+		// KILL THE HANG GLIDER IF HE HITS ANYTHING
+		
+		if (hg.color == Color.RED)
+		{
+			hg.kill();
+		} // end game if collision
 	} // end tick
 	
 	/**
@@ -488,5 +515,42 @@ public class Map
 		g.fillRect(0, 0, this.a_width, ceiling);
         g.setColor(Map.FG_COLOR_D);
 		g.fillRect(0, this.floor, this.a_width, 1000);
+
+
+		// --------------------------------------
+		// ------------ DRAW HUD ----------------
+		// --------------------------------------
+		this.dist_font = new Font("Dialog", Font.PLAIN, (int) (20*Math.sqrt(this.factors[1])));
+		
+		// distance
+		
+		// convert distance to string
+		double d_dist = this.dist_travelled / 10 / 1000 * 0.62137119;
+		String s_dist = fmt.format(d_dist);
+		
+		g.setFont(this.dist_font);
+		g.setColor(Color.BLACK);
+		g.drawString("Distance: " + s_dist + " mi",
+				(int) (21*this.factors[0]),
+				this.floor + (int) (21*this.factors[1]));
+		g.setColor(Color.WHITE);
+		g.drawString("Distance: " + s_dist + " mi",
+				(int) (20*this.factors[0]),
+				this.floor + (int) (20*this.factors[1]));
+		
+		// speed
+		
+		// convert speed to string
+		double d_speed = this.scroll_speed * 1000.0 / 60.0 / 10.0 * 2.23693629;
+		String s_speed = fmt.format(d_speed);
+		
+		g.setColor(Color.BLACK);
+		g.drawString("Speed: " + s_speed + " mi/h",
+				(int) (21*this.factors[0]),
+				this.floor + (int) (41*this.factors[1]));
+		g.setColor(Color.WHITE);
+		g.drawString("Speed: " + s_speed + " mi/h",
+				(int) (20*this.factors[0]),
+				this.floor + (int) (40*this.factors[1]));
 	} // end draw
 } // end class

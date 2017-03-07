@@ -1,3 +1,4 @@
+
 /*
 Authors:	Isaac Payne, Chris Martin, Patrick Thomas
 Date:		1/26/17
@@ -56,12 +57,12 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates map. Stores GameObstacles and handles the ticking of game
 	 * objects */
-	public Map m;
+	public Map m = new Map(aWidth, aHeight, 2.5);
 	
 	public Menu.Button b;
 	
 	/** Creates hang glider. This is the player that the user controls. */
-	public TestGlider hg;
+	public TestGlider hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
   
 	public int mx = 0;
 	public int my = 0;
@@ -94,8 +95,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		mx = e.getX();
-		my = e.getY();
+		mouse_x = e.getX();
+		mouse_y = e.getY();
 	}
 	public void mouseDragged(MouseEvent e) {}
 	
@@ -130,7 +131,6 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		/** Start timer */
 		timer = new Timer(1000/60, new MyTimer());
 		timer.start();
-		
 		/** Create map and hang glider */
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
 		m = new Map(aWidth, aHeight, 2.5);
@@ -197,16 +197,16 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
-			if (gamerunning == true)
+			if (gamerunning == true && hg.alive == true)
 			{
-				hg.tick(300, my);
+				hg.tick(300, mouse_y);
 				scrollspeed = hg.v;
 				m.tick(aWidth, aHeight, hg, scrollspeed);
 			}
 			
 			if (inmainmenu == true)
 			{
-				Menu.Button clickedbutton = mainmenu.tick(mx, my, clicked);
+				Menu.Button clickedbutton = mainmenu.tick(mouse_x, mouse_y, clicked);
 				
 				
 				if(clickedbutton == mm_start_button)

@@ -52,7 +52,7 @@ public class Menu
 		return clickedbutton;
 	} //end tick
 	
-	public static class Button extends Geometry.Rect
+	public static class Button extends Geometry.Rect 
 	{
 		//Variables
 		Color c, darker_c, current_c;
