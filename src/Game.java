@@ -57,14 +57,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates map. Stores GameObstacles and handles the ticking of game
 	 * objects */
-	public Map m;
+	public Map m = new Map(aWidth, aHeight, 2.5);
 	
 	public Menu.Button b;
 	
 	/** Creates hang glider. This is the player that the user controls. */
-	public TestGlider hg;
-	public int mouse_x = 200;
-	public int mouse_y = 0;
+	public TestGlider hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+  
+	public int mx, my;
 	private double scrollspeed;
 	
 	// mouse events
@@ -114,10 +114,6 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		/** Start timer */
 		timer = new Timer(1000/60, new MyTimer());
 		timer.start();
-		
-		/** Create map and hang glider */
-		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
-		m = new Map(aWidth, aHeight, 2.5);
 	} // end initialization
 	
 	
@@ -167,11 +163,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			
 			// update applet size
 			update_applet_size();
-			// tick map and map objects
-		  hg.tick(mouse_y);
-			scrollspeed = hg.v;
-			m.tick(aWidth, aHeight, hg, scrollspeed);
 			
+			// tick map and map objects
+			if (hg.alive != false)
+			{
+				hg.tick(mx, my);
+				scrollspeed = hg.v;
+				m.tick(aWidth, aHeight, hg, scrollspeed);
+			} // run game if running
 			
 			// update screen
 			repaint();
