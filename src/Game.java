@@ -1,3 +1,4 @@
+
 /*
 Authors:	Isaac Payne, Chris Martin, Patrick Thomas
 Date:		1/26/17
@@ -77,8 +78,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void mouseMoved(MouseEvent e)
 	// track mouse movements
 	{
-		mx = 200;
-		my = e.getY();
+		//mouse_x = e.getX();
+		mouse_y = e.getY();
 	}
 	public void mouseDragged(MouseEvent e) {}
 	
