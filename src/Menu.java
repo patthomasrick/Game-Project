@@ -13,6 +13,8 @@ public class Menu
 {
 	ArrayList<Button> buttons;
 	public static Button noButton = new Button(0,0,0,0,Color.white,"");
+	public static Color bg_color = new Color(30,30,37);
+	public static Color button_color = new Color(43,42,62);
 	
 	public Menu()
 	{
@@ -62,7 +64,7 @@ public class Menu
 		{
 			super(x,y,h,w);
 			this.c = c;
-			this.darker_c = c.darker();
+			this.darker_c = new Color(51,48,93);
 			this.current_c = c;
 			this.s = s;
 		} //end Button
