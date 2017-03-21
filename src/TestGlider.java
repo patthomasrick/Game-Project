@@ -101,7 +101,5 @@ public class TestGlider extends Sprite
 			}
 			return(simmouse_y);
 		}
-		
-		
 	}
 }
