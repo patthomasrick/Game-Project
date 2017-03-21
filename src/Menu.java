@@ -5,6 +5,7 @@ Purpose: 	Create menu for game
 Version:	2/28/17
 */
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,6 +60,7 @@ public class Menu
 		//Variables
 		Color c, darker_c, current_c;
 		String s;
+		public static Font button_font = new Font("Dialog", Font.BOLD, 48);
 		
 		public Button(double x,double y,int h,int w, Color c, String s)
 		{
@@ -73,6 +75,14 @@ public class Menu
 		{
 			g.setColor(this.current_c);
 			g.fillRect((int)x, (int)y, w, h);
+			
+			g.setFont(button_font);
+			int w1 = (g.getFontMetrics().stringWidth(this.s))/2;
+			int h1 = (g.getFontMetrics().getHeight())/4;
+			g.setColor(Color.BLACK);
+			g.drawString(this.s, (int)((this.x+(this.w/2))-w1+2), (int)((this.y+(this.h/2))+h1+2));
+			g.setColor(Color.WHITE);
+			g.drawString(this.s, (int)((this.x+(this.w/2))-w1), (int)((this.y+(this.h/2))+h1));
 		} //end draw
 		
 		public boolean tick(double x,double y, boolean clicked)

@@ -15,6 +15,7 @@ Purpose: 	play hang gliding
 // import statements
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -28,7 +29,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Date;
-
 import javax.swing.Timer;
 
 /**
@@ -85,6 +85,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private Menu.Button em_restart_b; //create end menu restart button
 	private Menu.Button em_reload_b; //create end menu reload button
 	private Sprite mb; //create menu background
+	private Font button_font;
 	
 	// mouse events
 	public void mouseReleased(MouseEvent e) 
@@ -156,10 +157,10 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		//Creates all buttons, backgrounds, and assigns buttons to their respective menus
 		mm_start_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Start");
 		mm_quit_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Quit");
-		pm_resume_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Resume");
-		pm_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Return to main menu");
+		pm_resume_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Restart");
+		pm_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
 		em_restart_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Restart");
-		em_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Return to main menu");
+		em_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
 		mm.add_button(mm_start_b);
 		mm.add_button(mm_quit_b);
 		pm.add_button(pm_resume_b);
@@ -181,7 +182,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// draw bg
-		g2.setColor(Map.BG_COLOR_D);
+		g2.setColor(Map.BG_COLOR_L);
 		g2.fillRect(0, 0, aWidth, aHeight);
 		
 		// draw map and its objects
