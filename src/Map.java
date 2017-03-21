@@ -306,9 +306,10 @@ public class Map
 			dist_mi = 1;
 		
 		// calculate percentage through scale range
-		double dist_pct = (dist_mi - diff_min_max_dist[0])/(diff_min_max_dist[1] - diff_min_max_dist[0]);
-		double diff_scale_pct = dist_pct * (diff_min_max_difficulty_factor[1] - diff_min_max_dist[0]) + diff_min_max_dist[0];
-		
+		this.current_difficulty = ((dist_mi - diff_min_max_dist[0])/
+				(this.diff_min_max_dist[1]-this.diff_min_max_dist[0]))*
+				(this.diff_min_max_difficulty_factor[1]-this.diff_min_max_difficulty_factor[0])+
+				this.diff_min_max_difficulty_factor[0];
 		// --------------------------------------
 		// ----------- RESIZE APPLET ------------
 		// --------------------------------------
@@ -536,11 +537,11 @@ public class Map
 			
 			// randomize values of the obstacle to be generated
 			int random_x = (int) (ThreadLocalRandom.current().nextInt(
-					SPIKE_X_RANGE[0], SPIKE_X_RANGE[1]) * x_shift * diff_scale_pct);
+					SPIKE_X_RANGE[0], SPIKE_X_RANGE[1]) * x_shift * this.current_difficulty);
 			int random_w = (int) (ThreadLocalRandom.current().nextInt(
-					SPIKE_W_RANGE[0], SPIKE_W_RANGE[1]) * x_shift * diff_scale_pct);
+					SPIKE_W_RANGE[0], SPIKE_W_RANGE[1]) * x_shift * this.current_difficulty);
 			int random_h = (int) (ThreadLocalRandom.current().nextInt(
-					SPIKE_H_RANGE[0], SPIKE_H_RANGE[1]) * y_shift * diff_scale_pct);
+					SPIKE_H_RANGE[0], SPIKE_H_RANGE[1]) * y_shift * this.current_difficulty);
 			
 			
 			// init new obstacle
