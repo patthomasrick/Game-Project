@@ -67,16 +67,24 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public int mouse_x = 0;
 	public int mouse_y = 0;
 	public boolean clicked = false;
+	public boolean pressed = false;
 	private double scrollspeed;
 	
 	//Variables for menu
-	private boolean gamerunning = false;
-	private boolean inmainmenu = true;
-	private Menu mainmenu = new Menu();
-	private Menu pausemenu = new Menu();
-	private Menu.Button mm_start_button;
-	private Menu.Button pm_resume_button;
-	private Sprite menubackground;
+	private boolean gr = false; //game running
+	private boolean in_mm = true; //in main menu
+	private boolean in_pm = false; //in pause menu
+	private boolean in_em = false; //in end menu
+	private Menu mm = new Menu(); //create main menu
+	private Menu pm = new Menu(); //create pause menu
+	private Menu em = new Menu(); //create end menu
+	private Menu.Button mm_start_b; //create main menu start button
+	private Menu.Button mm_quit_b; //create main menu quit button
+	private Menu.Button pm_resume_b; //create pause menu resume button
+	private Menu.Button pm_reload_b; //create pause menu reload button
+	private Menu.Button em_restart_b; //create end menu restart button
+	private Menu.Button em_reload_b; //create end menu reload button
+	private Sprite mb; //create menu background
 	
 	// mouse events
 	public void mouseReleased(MouseEvent e) 
@@ -106,7 +114,17 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	//keyboard events
 	public void keyReleased(java.awt.event.KeyEvent e) {}
-	public void keyPressed(java.awt.event.KeyEvent e) {}
+	public void keyPressed(java.awt.event.KeyEvent p1) 
+	{
+		//Allows space bar to initiate pause menu
+		if(p1.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE && in_mm != true && in_em != true)
+		{
+			in_pm = true;
+			gr = false;
+			in_mm = false;
+			in_em = false;
+		}
+	}
 	public void keyTyped(java.awt.event.KeyEvent e) {}
 	
 	
@@ -135,11 +153,20 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
 		m = new Map(aWidth, aHeight, 2.5);
 		
-		// menu
-		mm_start_button = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Map.FG_COLOR_L, "Start");
-		pm_resume_button = new Menu.Button(aWidth*0.3, aHeight*0.45, (int) (aHeight*0.1), (int) (aWidth*0.4), Map.FG_COLOR_L, "Resume");
-		mainmenu.add_button(mm_start_button);
-		menubackground = new Sprite(aWidth*0.2, aHeight*0.3, (int) (aHeight*0.35), (int) (aWidth*0.6), Map.FG_COLOR_D);
+		//Creates all buttons, backgrounds, and assigns buttons to their respective menus
+		mm_start_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Start");
+		mm_quit_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Quit");
+		pm_resume_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Resume");
+		pm_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Return to main menu");
+		em_restart_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Restart");
+		em_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Return to main menu");
+		mm.add_button(mm_start_b);
+		mm.add_button(mm_quit_b);
+		pm.add_button(pm_resume_b);
+		pm.add_button(pm_reload_b);
+		em.add_button(em_restart_b);
+		em.add_button(em_reload_b);
+		mb = new Sprite(aWidth*0.2, aHeight*0.3, (int) (aHeight*0.55), (int) (aWidth*0.6), Menu.bg_color);
 	} // end initialization
 	
 	
@@ -164,10 +191,24 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		hg.draw(g2);
 		
 		// draw main menu
-		if (inmainmenu == true)
+		if (in_mm == true)
 		{
-			menubackground.draw(g2);
-			mainmenu.draw(g2);
+			mb.draw(g2);
+			mm.draw(g2);
+		}
+		
+		//draw end menu
+		if (in_em == true)
+		{
+			mb.draw(g2);
+			em.draw(g2);
+		}
+		
+		//draw pause menu
+		if (in_pm == true)
+		{
+			mb.draw(g2);
+			pm.draw(g2);
 		}
 	} // end draw
 
@@ -197,24 +238,85 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			// tick map and map objects
-			if (gamerunning == true && hg.alive == true)
+			if (gr == true && hg.alive == true)
 			{
 				hg.tick(mouse_y);
 				scrollspeed = hg.v;
 				m.tick(aWidth, aHeight, hg, scrollspeed);
 			}
 			
-			if (inmainmenu == true)
+			//tick the main menu and set button actions
+			else if (in_mm == true && in_pm == false && in_em == false)
 			{
-				Menu.Button clickedbutton = mainmenu.tick(mouse_x, mouse_y, clicked);
+				Menu.Button clickedbutton = mm.tick(mouse_x, mouse_y, clicked);
 				
-				
-				if(clickedbutton == mm_start_button)
+				if(clickedbutton == mm_start_b)
 				{
-					inmainmenu = false;
-					gamerunning = true;
+					clicked = false;
+					in_mm = false;
+					gr = true;
 				}
-			}
+				
+				if(clickedbutton == mm_quit_b)
+				{
+					clicked = false;
+					System.exit(0);
+				}
+			}//end main menu
+			
+			//tick pause menu and set button actions
+			else if (in_pm == true && in_mm == false && in_em == false)
+			{
+				Menu.Button clickedbutton = pm.tick(mouse_x, mouse_y, clicked);
+				
+				if(clickedbutton == pm_resume_b)
+				{
+					clicked = false;
+					in_pm = false;
+					gr = true;
+				}
+				
+				if(clickedbutton == pm_reload_b)
+				{
+					clicked = false;
+					in_pm = false;
+					in_mm = true;
+					gr = false;
+					in_em = false;
+					hg.alive = true;
+					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					m = new Map(aWidth, aHeight, 2.5);
+				}
+			}//end pause menu
+			
+			//tick end menu and set button actions
+			else if (hg.alive == false)
+			{
+				in_em = true;
+				Menu.Button clickedbutton = em.tick(mouse_x, mouse_y, clicked);
+				
+				if(clickedbutton == em_restart_b)
+				{
+					clicked = false;
+					in_mm = false;
+					gr = true;
+					in_em = false;
+					hg.alive = true;
+					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					m = new Map(aWidth, aHeight, 2.5);
+				}
+				
+				if(clickedbutton == em_reload_b)
+				{
+					clicked = false;
+					in_mm = true;
+					gr = false;
+					in_em = false;
+					hg.alive = true;
+					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					m = new Map(aWidth, aHeight, 2.5);
+				}
+			}//end end menu
 			
 			// update screen
 			repaint();
