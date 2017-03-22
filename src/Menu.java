@@ -62,7 +62,7 @@ public class Menu
 		String s;
 		public static Font button_font = new Font("Dialog", Font.BOLD, 48);
 		
-		public Button(double x,double y,int h,int w, Color c, String s)
+		public Button(double x,double y,int h, int w, Color c, String s)
 		{
 			super(x,y,h,w);
 			this.c = c;
