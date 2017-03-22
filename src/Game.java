@@ -59,6 +59,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
+	public TestGlider DEFAULT_HG;
   
 	public int mouse_x = 0;
 	public int mouse_y = 0;
@@ -143,7 +144,9 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		    hg_img = ImageIO.read(url);
 		} // end try
 		catch (IOException e) {}
-		hg = new TestGlider(100.0, 300.0, 30, 30, hg_img);
+		
+		DEFAULT_HG = new TestGlider(100.0, 300.0, 15, 30, hg_img);
+		hg = new TestGlider(DEFAULT_HG);
 		
 		// focus window
 		setFocusable(true);
@@ -155,8 +158,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		/** Start timer */
 		timer = new Timer(1000/60, new MyTimer());
 		timer.start();
+		
 		/** Create map and hang glider */
-		hg = new TestGlider(100.0, 300.0, 30, 30, hg_img);
 		m = new Map(aWidth, aHeight, 2.5);
 		
 		//Creates all buttons, backgrounds, and assigns buttons to their respective menus
@@ -314,7 +317,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					gr = false;
 					in_em = false;
 					hg.alive = true;
-					hg = new TestGlider(100.0, 300.0, 30, 30, hg_img);
+					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
 				}
 			}//end pause menu
@@ -332,7 +335,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					gr = true;
 					in_em = false;
 					hg.alive = true;
-					hg = new TestGlider(100.0, 300.0, 30, 30, hg_img);
+					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
 				}
 				
@@ -343,7 +346,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					gr = false;
 					in_em = false;
 					hg.alive = true;
-					hg = new TestGlider(100.0, 300.0, 30, 30, hg_img);
+					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
 				}
 			}//end end menu

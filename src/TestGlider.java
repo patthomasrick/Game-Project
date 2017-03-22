@@ -1,5 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 /**
@@ -12,6 +15,9 @@ import java.awt.image.BufferedImage;
 
 public class TestGlider extends Sprite
 {
+	// enable/disable debug tools
+	private final boolean DEBUG = true;
+	
 	double r = 0;//radius
 	double vx = 0;//x-axis velocity
 	double vy = 0;//y-axis velocity
@@ -19,6 +25,7 @@ public class TestGlider extends Sprite
 	double v = 0; //velocity
 	
 	BufferedImage img = null;
+	AffineTransform at = new AffineTransform();
 	//double mouse_y = 0;
 	//double mouse_x = 0;
 //	double mouse_acceleration= 2.0;
@@ -26,6 +33,7 @@ public class TestGlider extends Sprite
 //	double simmouse_y = 0; //simulated mouse y
 //	double simmouse_maxa = 0; //maximum acceleration for simulated mouse
 	Simulated_mouse sm;
+	
 	public TestGlider(double x, double y, int h, int w, BufferedImage img)
 	{
 		// initialize Sprite
@@ -35,12 +43,31 @@ public class TestGlider extends Sprite
 		
 		// initialize all variables to current state
 		// r = ((18 * Math.sqrt(2 * this.y)) / Math.PI);
-		a = Math.atan(vy / vx);
+		a = 0;
 		v = Math.sqrt(this.y / 5);
 		vy = v * Math.sin(a);
 		vx = v * Math.cos(a);
 		sm = new Simulated_mouse(this);
-	}
+	} // end constructor
+	
+	public TestGlider(TestGlider tg)
+	{
+		// call sprite constructor
+		super(tg.x, tg.y, tg.h, tg.w, tg.color);
+		
+		// copy all of the values from the other hang glider
+		this.x = tg.x;
+		this.y = tg.y;
+		this.w = tg.w;
+		this.h = tg.h;
+		this.img = tg.img;
+		this.a = tg.a;
+		this.v = tg.v;
+		this.vy = tg.vy;
+		this.vx = tg.vx;
+		this.sm = new Simulated_mouse(this);
+	} // end copy constructor
+	
 	public double tick(int mouse_y)
 	{
 		sm.chase_mouse(mouse_y);
@@ -69,11 +96,29 @@ public class TestGlider extends Sprite
 	 */
 	public void draw(Graphics g)
 	{// get obstacle
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON) ;
+	    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC) ;
+	    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY) ;
+
 		if (this.alive == true)
 		{
-			g.drawImage(img,
-	                (int) x, (int) y,
+			// draw the collision rectangle if debugging is enabled in file
+			if (DEBUG) super.draw(g);
+			
+			// refresh at
+			at = new AffineTransform();
+			
+			// 3. move to hang glider
+			at.translate(((int) this.x) + this.w/2, ((int) this.y) + this.h/2);			
+			// 2. rotate
+			at.rotate(this.a/1.5);
+			// 1. center image for rotation
+			at.translate(-24, -8);
+			
+			((Graphics2D) g).drawImage(img,
+	                at,
 	                null);
+			
 		} // end if alive
 	} // end draw
 

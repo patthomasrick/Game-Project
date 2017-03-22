@@ -31,7 +31,7 @@ public class Map
 	DecimalFormat fmt = new DecimalFormat ("0.00");
 
 	// debug printout
-	private final boolean DEBUG_TEXT = true;
+	private final boolean DEBUG = true;
 	
 	// difficulty factors
 	private double diff_min = 0.7;
@@ -78,7 +78,7 @@ public class Map
 	private final int[] SPIKE_X_RANGE = {-60, 60};
 	private final int[] SPIKE_W_RANGE = {130, 300};
 	private final int[] SPIKE_H_RANGE = {80, 280};
-	private int DIST_BETWEEN_SPIKES = 280;
+	private int DIST_BETWEEN_SPIKES = 350;
 	
 	private int dist_until_spike_spawn = 0;
 	private boolean next_spawn_is_ceiling = true;		// this toggles after every spawn
@@ -929,7 +929,7 @@ public class Map
 		
 		// ######### ######## debug ######### ##########
 		
-		if (this.DEBUG_TEXT)
+		if (this.DEBUG)
 		{
 			// convert speed to string
 			double dist_mi = this.dist_travelled / 10 / 1000 * 0.62137119;
@@ -937,13 +937,11 @@ public class Map
 			if (dist_mi > 1)
 				dist_mi = 1;
 			
+			String s_diff = fmt.format(this.current_difficulty);
+			
 			// calculate percentage through scale range
-			g.setColor(Color.BLACK);
-			g.drawString("Difficulty: " + this.current_difficulty,
-					(int) (21*this.factors[0]),
-					this.floor + (int) (61*this.factors[1]));
-			g.setColor(Color.WHITE);
-			g.drawString("Difficulty: " + this.current_difficulty,
+			g.setColor(Color.YELLOW);
+			g.drawString("Difficulty: " + s_diff,
 					(int) (20*this.factors[0]),
 					this.floor + (int) (60*this.factors[1]));
 		} // end debug drawing
