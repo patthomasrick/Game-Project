@@ -51,7 +51,7 @@ public class CaveObstacle extends Sprite
 			// draws based on color and points
 			g.setColor(this.color);
 			g.fillPolygon(x_values, y_values, 3);
-		} // end if grahpcsi
+		} // end if graphics
 	} // end draw
 	
 	public void tick(double hg_speed)
