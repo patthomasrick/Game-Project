@@ -76,7 +76,7 @@ public class TestGlider extends Sprite
 		this.a = Math.atan2(dy, dx);
 		
 		// velocity is based on the current height of the hang glider
-		this.v = Math.sqrt(y / 5);
+		this.v = Math.sqrt(y / 3);
 		
 		// break velocity into components with trig
 		vy = this.v * Math.sin(this.a);
@@ -100,26 +100,22 @@ public class TestGlider extends Sprite
 	    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC) ;
 	    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY) ;
 
-		if (this.alive == true)
-		{
-			// draw the collision rectangle if debugging is enabled in file
-			if (DEBUG) super.draw(g);
-			
-			// refresh at
-			at = new AffineTransform();
-			
-			// 3. move to hang glider
-			at.translate(((int) this.x) + this.w/2, ((int) this.y) + this.h/2);			
-			// 2. rotate
-			at.rotate(this.a/1.5);
-			// 1. center image for rotation
-			at.translate(-24, -8);
-			
-			((Graphics2D) g).drawImage(img,
-	                at,
-	                null);
-			
-		} // end if alive
+		// draw the collision rectangle if debugging is enabled in file
+		if (DEBUG) super.draw(g);
+		
+		// refresh at
+		at = new AffineTransform();
+		
+		// 3. move to hang glider
+		at.translate(((int) this.x) + this.w/2, ((int) this.y) + this.h/2);			
+		// 2. rotate
+		at.rotate(this.a/1.5);
+		// 1. center image for rotation
+		at.translate(-24, -8);
+		
+		((Graphics2D) g).drawImage(img,
+	            at,
+	            null);
 	} // end draw
 
 	
