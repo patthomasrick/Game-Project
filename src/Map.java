@@ -75,10 +75,10 @@ public class Map
 	
 	
 	// hardcode spawning
-	private final int[] SPIKE_X_RANGE = {-40, 40};
-	private final int[] SPIKE_W_RANGE = {60, 300};
-	private final int[] SPIKE_H_RANGE = {80, 230};
-	private int DIST_BETWEEN_SPIKES = 120;
+	private final int[] SPIKE_X_RANGE = {-60, 60};
+	private final int[] SPIKE_W_RANGE = {130, 300};
+	private final int[] SPIKE_H_RANGE = {80, 280};
+	private int DIST_BETWEEN_SPIKES = 280;
 	
 	private int dist_until_spike_spawn = 0;
 	private boolean next_spawn_is_ceiling = true;		// this toggles after every spawn
@@ -531,7 +531,7 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN GAME OBSTACLES --------
 		// --------------------------------------
-		if (this.dist_until_spike_spawn <= 0)
+		if (this.dist_until_spike_spawn/this.current_difficulty <= 0)
 		{
 			// get applet screen factors
 			double x_shift = this.a_width/ SCREEN_FACTOR[0];
@@ -753,7 +753,6 @@ public class Map
 			this.bg_map_ceiling.add(ceiling_chunk);		// add new chunk to the arraylist
 			this.bg_last_ceiling_chunk = ceiling_chunk;	// set the new last chunk to the right one
 		} // end if time to spawn chunk
-		
 		// KILL THE HANG GLIDER IF HE HITS ANYTHING
 		
 		if (hg.color == Color.RED)
@@ -771,8 +770,6 @@ public class Map
 	{	
 		// ############# BACKGROUND ############################################
 		
-		System.out.println(this.bg_obstacles.size());
-
 		// --------------------------------------
 		// ------------ DRAW SPIKES -------------
 		// --------------------------------------
