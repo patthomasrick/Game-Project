@@ -61,6 +61,14 @@ public class Sprite extends Geometry.Rect
 		} // end if alive
 	} // end draw
 	
+	public void resize(double x_factor, double y_factor)
+	{
+		this.x *= x_factor;
+		this.w *= x_factor;
+		this.y *= y_factor;
+		this.h *= y_factor;
+	}
+	
 	/**
 	 * Disables the Sprite from being draw through calling the Sprite.draw() method.
 	 */

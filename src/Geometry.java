@@ -43,6 +43,11 @@ public class Geometry
 			this.x = p.x;
 			this.y = p.y;
 		} // end duplicator
+		
+		public static Point add(Point p1, Point p2)
+		{
+			return new Point(p1.x + p2.x, p1.y + p2.y);
+		} // end add method
 	} // end class point
 	
 	/**
@@ -89,6 +94,11 @@ public class Geometry
 		{
 			return a.v.x * b.v.y - a.v.y * b.v.x;
 		} // end cross product
+		
+		public static Vector add(Vector a, Vector b)
+		{
+			return new Vector(Point.add(a.a, b.a), Point.add(b.a, b.b));
+		} // end add vectors
 	} // end class point
 	
 	/**
@@ -113,6 +123,26 @@ public class Geometry
 			this.a = a;
 			this.b = b;
 			this.c = c;
+		} // end constructor
+		
+		/**
+		 * Constructor of triangle. Needs 2 vectors, with the tails being equal.
+		 * @param a		Vector
+		 * @param b		Vector
+		 * @throws InvalidVectors 
+		 */
+		public Triangle(Vector a, Vector b) throws InvalidVectors
+		{
+			if (a.a != b.a)
+			{
+				throw new Geometry.Triangle.InvalidVectors("Vector tails not equal");
+			} // end if tails not equal
+			else
+			{
+				this.a = a.a;
+				this.b = a.b;
+				this.c = b.b;
+			} // end else
 		} // end constructor
 		
 		/**
@@ -208,6 +238,19 @@ public class Geometry
 			
 			return iscolliding;
 		} // end collide as triangle
+		
+		public static class InvalidVectors extends Exception
+		{
+			  /**
+			 * 
+			 */
+			private static final long serialVersionUID = 2510996784592698720L;
+
+			public InvalidVectors(String message)
+			  {
+			     super(message);
+			  } // end constructor
+		} // end custom exception
 	} // end class triangle
 	
 	/**
