@@ -1,9 +1,15 @@
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 /**
  * A class that performs as a hang glider.
  * @author Christopher Martin
  */
+
+
+// hang glider picture credits: CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=531761
+
 public class TestGlider extends Sprite
 {
 	double r = 0;//radius
@@ -11,6 +17,8 @@ public class TestGlider extends Sprite
 	double vy = 0;//y-axis velocity
 	double a = 0; //angle
 	double v = 0; //velocity
+	
+	BufferedImage img = null;
 	//double mouse_y = 0;
 	//double mouse_x = 0;
 //	double mouse_acceleration= 2.0;
@@ -18,10 +26,12 @@ public class TestGlider extends Sprite
 //	double simmouse_y = 0; //simulated mouse y
 //	double simmouse_maxa = 0; //maximum acceleration for simulated mouse
 	Simulated_mouse sm;
-	public TestGlider(double x, double y, int h, int w, Color color)
+	public TestGlider(double x, double y, int h, int w, BufferedImage img)
 	{
 		// initialize Sprite
-		super(x, y, h, w, color);
+		super(x, y, h, w, Color.WHITE);
+		
+		this.img = img;
 		
 		// initialize all variables to current state
 		// r = ((18 * Math.sqrt(2 * this.y)) / Math.PI);
@@ -51,6 +61,24 @@ public class TestGlider extends Sprite
 		// return the speed that the screen should scroll at
 		return vx;
 	}
+
+	/**
+	 * Draw the sprite as a simple rectangle to the screen.
+	 * 
+	 * @param g		Graphics object to draw to
+	 */
+	public void draw(Graphics g)
+	{// get obstacle
+		if (this.alive == true)
+		{
+			g.drawImage(img,
+	                (int) x, (int) y,
+	                null);
+		} // end if alive
+	} // end draw
+
+	
+	
 	/*
 	 * if the user wants to move down:
 	 * 		move the point down
