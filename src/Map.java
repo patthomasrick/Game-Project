@@ -31,7 +31,7 @@ public class Map
 	DecimalFormat fmt = new DecimalFormat ("0.00");
 
 	// debug printout
-	private final boolean DEBUG_TEXT = true;
+	private final boolean DEBUG = true;
 	
 	// difficulty factors
 	private double diff_min = 0.7;
@@ -75,10 +75,10 @@ public class Map
 	
 	
 	// hardcode spawning
-	private final int[] SPIKE_X_RANGE = {-40, 40};
-	private final int[] SPIKE_W_RANGE = {60, 300};
-	private final int[] SPIKE_H_RANGE = {80, 230};
-	private int DIST_BETWEEN_SPIKES = 120;
+	private final int[] SPIKE_X_RANGE = {-60, 60};
+	private final int[] SPIKE_W_RANGE = {130, 300};
+	private final int[] SPIKE_H_RANGE = {80, 280};
+	private int DIST_BETWEEN_SPIKES = 350;
 	
 	private int dist_until_spike_spawn = 0;
 	private boolean next_spawn_is_ceiling = true;		// this toggles after every spawn
@@ -117,10 +117,20 @@ public class Map
 	
 	
 	/** Defined colors of theme */
-	public static final Color BG_COLOR_L = new Color(48, 62, 115); 	// dark blue
-	public static final Color BG_COLOR_D = new Color(23, 37, 87); 	// darker blue
+	public static final Color BG_COLOR_L = new Color(11, 29, 74); 	// dark blue
+	public static final Color BG_COLOR_D = new Color(7, 23, 64); 	// darker blue
+//	public static final Color BG_COLOR_L = new Color(48, 62, 115); 	// dark blue
+//	public static final Color BG_COLOR_D = new Color(23, 37, 87); 	// darker blue
+	
 	public static final Color FG_COLOR_L = new Color(170, 135, 57); // sandy yellow
 	public static final Color FG_COLOR_D = new Color(128, 95, 21); 	// dark sandy yellow
+	public static final Color FG_COLOR_L_ORANGE = 	new Color(74, 34, 23); // dark orange/brown
+	public static final Color FG_COLOR_D_ORANGE = 	new Color(55, 20, 11); // darker orange/brown
+	public static final Color FG_COLOR_L_GREY = 	new Color(77, 70, 69); // grey
+	public static final Color FG_COLOR_D_GREY = 	new Color(56, 51, 50); // dark grey
+	
+	public Color fg_color_l; 
+	public Color fg_color_d; 
 	
 	/**
 	 * Constructor for the map.
@@ -136,6 +146,24 @@ public class Map
 	 */
 	public Map(int screensize_x, int screensize_y, double scroll_speed)
 	{
+		// select color randomly
+		int color_choice = ThreadLocalRandom.current().nextInt(1, 3);
+		if (color_choice == 1)
+		{
+			this.fg_color_l = Map.FG_COLOR_L;
+			this.fg_color_d = Map.FG_COLOR_D;
+		} // end if color is yellow
+		else if (color_choice == 2)
+		{
+			this.fg_color_l = Map.FG_COLOR_L_ORANGE;
+			this.fg_color_d = Map.FG_COLOR_D_ORANGE;
+		} // end if color is orange
+		else //if (color_choice == 3)
+		{
+			this.fg_color_l = Map.FG_COLOR_L_GREY;
+			this.fg_color_d = Map.FG_COLOR_D_GREY;
+		} // end if color is grey
+		
 		// init font
 		this.dist_font = new Font("Dialog", Font.PLAIN, 20);
 		
@@ -190,7 +218,7 @@ public class Map
 		b2 = new Geometry.Point(x2, y3);
 		
 		// create chunk
-		CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(a2, a1, b2, b1, Map.FG_COLOR_D);
+		CaveObstacle.Chunk floor_chunk = new CaveObstacle.Chunk(a2, a1, b2, b1, fg_color_d);
 		
 		// -------- CEILING CHUNKS ----------------
 		
@@ -212,7 +240,7 @@ public class Map
 		b2 = new Geometry.Point(x2, y3);
 		
 		// create chunk
-		CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(a1, a2, b1, b2, Map.FG_COLOR_L);
+		CaveObstacle.Chunk ceiling_chunk = new CaveObstacle.Chunk(a1, a2, b1, b2, fg_color_l);
 		
 		// add chunks to arraylists
 		this.map_floor.add(floor_chunk);
@@ -531,7 +559,7 @@ public class Map
 		// --------------------------------------
 		// -------- SPAWN GAME OBSTACLES --------
 		// --------------------------------------
-		if (this.dist_until_spike_spawn <= 0)
+		if (this.dist_until_spike_spawn/this.current_difficulty <= 0)
 		{
 			// get applet screen factors
 			double x_shift = this.a_width/ SCREEN_FACTOR[0];
@@ -555,7 +583,7 @@ public class Map
 			if (next_spawn_is_ceiling == true)
 			{
 				new_y = this.ceiling;
-				new_color = Map.FG_COLOR_L;
+				new_color = fg_color_l;
 			} // end if time to spawn on ceiling
 			// otherwise spawn on floor
 			
@@ -563,7 +591,7 @@ public class Map
 			{
 				new_y = this.floor;
 				random_h = -random_h;
-				new_color = Map.FG_COLOR_D;
+				new_color = fg_color_d;
 			} // end if time to spawn on floor
 			
 			// create obstacle
@@ -610,7 +638,7 @@ public class Map
 					last_floor_chunk.b2,
 					c1,
 					c2,
-					Map.FG_COLOR_D);
+					fg_color_d);
 			
 			last_floor_chunk = floor_chunk;	// set the new last chunk to the right one
 			map_floor.add(floor_chunk);		// add new chunk to the arraylist
@@ -753,7 +781,6 @@ public class Map
 			this.bg_map_ceiling.add(ceiling_chunk);		// add new chunk to the arraylist
 			this.bg_last_ceiling_chunk = ceiling_chunk;	// set the new last chunk to the right one
 		} // end if time to spawn chunk
-		
 		// KILL THE HANG GLIDER IF HE HITS ANYTHING
 		
 		if (hg.color == Color.RED)
@@ -771,8 +798,6 @@ public class Map
 	{	
 		// ############# BACKGROUND ############################################
 		
-		System.out.println(this.bg_obstacles.size());
-
 		// --------------------------------------
 		// ------------ DRAW SPIKES -------------
 		// --------------------------------------
@@ -888,9 +913,9 @@ public class Map
 		// --------------------------------------
 		// ------------ DRAW BOXES --------------
 		// --------------------------------------
-		g.setColor(Map.FG_COLOR_L);
+		g.setColor(fg_color_l);
 		g.fillRect(0, 0, this.a_width, ceiling);
-        g.setColor(Map.FG_COLOR_D);
+        g.setColor(fg_color_d);
 		g.fillRect(0, this.floor, this.a_width, 1000);
 
 
@@ -932,7 +957,7 @@ public class Map
 		
 		// ######### ######## debug ######### ##########
 		
-		if (this.DEBUG_TEXT)
+		if (this.DEBUG)
 		{
 			// convert speed to string
 			double dist_mi = this.dist_travelled / 10 / 1000 * 0.62137119;
@@ -940,13 +965,11 @@ public class Map
 			if (dist_mi > 1)
 				dist_mi = 1;
 			
+			String s_diff = fmt.format(this.current_difficulty);
+			
 			// calculate percentage through scale range
-			g.setColor(Color.BLACK);
-			g.drawString("Difficulty: " + this.current_difficulty,
-					(int) (21*this.factors[0]),
-					this.floor + (int) (61*this.factors[1]));
-			g.setColor(Color.WHITE);
-			g.drawString("Difficulty: " + this.current_difficulty,
+			g.setColor(Color.YELLOW);
+			g.drawString("Difficulty: " + s_diff,
 					(int) (20*this.factors[0]),
 					this.floor + (int) (60*this.factors[1]));
 		} // end debug drawing

@@ -17,8 +17,8 @@ import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +27,17 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
+
+import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Timer;
 
 /**
@@ -46,6 +56,19 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private Image dbImage;
 	private Graphics dbg;
 	
+	// audio clips
+	Clip current_clip;
+	
+	// song names:
+	private final String MUSIC_MENU = "menu1.wav";
+	private final String MUSIC_GAME = "game1.wav";
+	private final String SOUND_CRASH = "crash1.wav";
+	private final String SOUND_CLICK = "click1.wav";
+	private String music_current = "none";
+	
+	// hang glider image
+	BufferedImage hg_img;
+	
 	/** timing */
 	Date date = new Date();
 	long lasttime = date.getTime();
@@ -61,7 +84,10 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public Menu.Button b;
 	
 	/** Creates hang glider. This is the player that the user controls. */
-	public TestGlider hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+	public TestGlider hg;
+	public TestGlider DEFAULT_HG;
+	
+	public boolean died_yet = false;
   
 	public int mouse_x = 0;
 	public int mouse_y = 0;
@@ -148,6 +174,17 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		addMouseMotionListener(this);
 		addKeyListener(this);
 		
+		// load image of hang glider
+		try
+		{
+	        URL url = new URL(getCodeBase(), "Hang glider white scaled.png");
+		    hg_img = ImageIO.read(url);
+		} // end try
+		catch (IOException e) {}
+		
+		DEFAULT_HG = new TestGlider(100.0, 300.0, 15, 30, hg_img);
+		hg = new TestGlider(DEFAULT_HG);
+		
 		// focus window
 		setFocusable(true);
 		
@@ -158,8 +195,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		/** Start timer */
 		timer = new Timer(1000/60, new MyTimer());
 		timer.start();
+		
 		/** Create map and hang glider */
-		hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
 		m = new Map(aWidth, aHeight, 2.5);
 		
 		//Creates all buttons, backgrounds, and assigns buttons to their respective menus
@@ -196,7 +233,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// draw bg
-		g2.setColor(Map.BG_COLOR_L);
+		g2.setColor(Map.BG_COLOR_D);
 		g2.fillRect(0, 0, aWidth, aHeight);
 		
 		// draw map and its objects
@@ -366,28 +403,55 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			
 			// update applet size
 			update_applet_size();
+			
+			if (!died_yet && !hg.alive)
+			{
+				playSound(SOUND_CRASH);
+				died_yet = true;
+			} // play death noise once
+			else if (hg.alive)
+			{
+				died_yet = false;
+			} // end if hg still alive
+			
 			// tick map and map objects
 			if (gr == true && hg.alive == true)
 			{
+				// play menu music if not already playing
+				if (music_current != MUSIC_GAME)
+				{
+					playSong(MUSIC_GAME);
+					music_current = MUSIC_GAME;
+				} // end play clip
+				
 				hg.tick(mouse_y);
 				scrollspeed = hg.v;
 				m.tick(aWidth, aHeight, hg, scrollspeed);
-			}
+			} // end if game is running and hang glider is active
 			
 			//tick the main menu and set button actions
 			else if (in_mm == true && in_pm == false && in_em == false)
 			{
+				// play menu music if not already playing
+				if (music_current != MUSIC_MENU)
+				{
+					playSong(MUSIC_MENU);
+					music_current = MUSIC_MENU;
+				} // end play clip
+				
 				Menu.Button clickedbutton = mm.tick(mouse_x, mouse_y, clicked);
 				
-				if(clickedbutton == mm_start_b)
+				if (clickedbutton == mm_start_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_mm = false;
 					gr = true;
-				}
+				} // end start game
 				
-				if(clickedbutton == mm_quit_b)
+				if (clickedbutton == mm_quit_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					System.exit(0);
 				}
@@ -405,24 +469,26 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			{
 				Menu.Button clickedbutton = pm.tick(mouse_x, mouse_y, clicked);
 				
-				if(clickedbutton == pm_resume_b)
+				if (clickedbutton == pm_resume_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_pm = false;
 					gr = true;
-				}
+				} // end if resume clicked
 				
-				if(clickedbutton == pm_reload_b)
+				if (clickedbutton == pm_reload_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_pm = false;
 					in_mm = true;
 					gr = false;
 					in_em = false;
 					hg.alive = true;
-					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
-				}
+				} // end if reload button clicked
 			}//end pause menu
 			
 			//tick end menu and set button actions
@@ -433,23 +499,25 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				
 				if(clickedbutton == em_restart_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_mm = false;
 					gr = true;
 					in_em = false;
 					hg.alive = true;
-					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
 				}
 				
 				if(clickedbutton == em_reload_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_mm = true;
 					gr = false;
 					in_em = false;
 					hg.alive = true;
-					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
 				}
 			}//end end menu
@@ -502,4 +570,71 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		g.drawImage(dbImage, 0, 0, this);
 		Toolkit.getDefaultToolkit().sync(); // fixes lag on Ubuntu
 	} // end update
+	
+	public synchronized void playSong(String filename)
+	{
+		try
+		{
+			try 
+			{
+				if (current_clip.isRunning()) current_clip.stop();
+			}
+			
+			catch(NullPointerException e) {};
+			
+		    // open audio stream
+		    URL url = this.getClass().getClassLoader().getResource(filename);
+		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+		    
+		    // get sound clip
+		    current_clip = AudioSystem.getClip();
+		    
+		    // open clip and start playing
+		    current_clip.open(audioIn);
+		    current_clip.loop(Clip.LOOP_CONTINUOUSLY);
+		} // end try
+		
+		catch (UnsupportedAudioFileException e)
+		{
+		    e.printStackTrace();
+		} // end catch
+		catch (IOException e) 
+		{    
+			e.printStackTrace();
+		} // end catch
+		catch (LineUnavailableException e)
+		{
+		    e.printStackTrace();
+		} // end catch
+	} // end play sound
+	
+	public synchronized void playSound(String filename)
+	{
+		try
+		{
+		    // open audio stream
+		    URL url = this.getClass().getClassLoader().getResource(filename);
+		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+		    
+		    // get sound clip
+		    current_clip = AudioSystem.getClip();
+		    
+		    // open clip and start playing
+		    current_clip.open(audioIn);
+		    current_clip.loop(0);
+		} // end try
+		
+		catch (UnsupportedAudioFileException e)
+		{
+		    e.printStackTrace();
+		} // end catch
+		catch (IOException e) 
+		{    
+			e.printStackTrace();
+		} // end catch
+		catch (LineUnavailableException e)
+		{
+		    e.printStackTrace();
+		} // end catch
+	} // end play sound
 } // end Game
