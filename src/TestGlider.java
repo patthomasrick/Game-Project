@@ -37,14 +37,8 @@ public class TestGlider extends Sprite
 	// for rendering of the image
 	BufferedImage img = null;
 	AffineTransform at = new AffineTransform();
-	/*
-	double mouse_y = 0;
-	double mouse_x = 0;
-	double mouse_acceleration= 2.0;
-	double mouse_speed = 0;
-	double simmouse_y = 0; //simulated mouse y
-	double simmouse_maxa = 0; //maximum acceleration for simulated mouse
-	 */
+	
+	// simulated mouse code
 	Simulated_mouse sm;
 	double t = 0.0;
   
@@ -178,16 +172,13 @@ public class TestGlider extends Sprite
 		// draw trail points
 		for (int i = 1; i < 9; i++)
 		{
-			
-//			float alpha = 0.5f;
-//			int type = AlphaComposite.SRC_OVER; 
-//			AlphaComposite composite = AlphaComposite.getInstance(type, alpha);
-			
+			// create color based on alpha
 			Color draw_color = new Color(255, 255, 255, 
 					(int) (200 * ((float) this.trail_points[i].l.frame_life/ (float) _TrailPoint.MAX_FRAME_LIFE)));
 			
 			g.setColor(draw_color);
-			
+
+			// get points and draw line
 			int x1, y1, x2, y2;
 			x1 = (int) this.trail_points[i].l.x;
 			x2 = (int) this.trail_points[i-1].l.x;
@@ -195,13 +186,13 @@ public class TestGlider extends Sprite
 			y2 = (int) this.trail_points[i-1].l.y;
 			((Graphics2D) g).draw(new Line2D.Double(x1, y1, x2-1, y2));
 
+			// get points and draw line
 			x1 = (int) this.trail_points[i].r.x;
 			x2 = (int) this.trail_points[i-1].r.x;
 			y1 = (int) this.trail_points[i].r.y;
 			y2 = (int) this.trail_points[i-1].r.y;
 			((Graphics2D) g).draw(new Line2D.Double(x1, y1, x2-1, y2));
 		} // end for loop
-		
 	} // end draw
 	
 	
@@ -260,7 +251,7 @@ public class TestGlider extends Sprite
 		{
 			simmouse_x = hg.x + 100;
 			simmouse_y = hg.y;
-		}
+		} // end constructor
 		
 		public double chase_mouse(int mouse_y)
 		{
@@ -285,12 +276,14 @@ public class TestGlider extends Sprite
 			if (mouse_y <= .01)
 			{
 				simmouse_y = 0;
-			}
+			} // end if
+			
 			if ((simmouse_y == 0) && (t == 2))
 			{
 				simmouse_y = simmouse_y - 10;
-			}
+			} // end if
+			
 			return(simmouse_y);
-		}
-	}
-}
+		} // end chase mouse
+	} // end Simulated_mouse
+} // end TestGlider

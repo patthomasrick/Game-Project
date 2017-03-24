@@ -518,11 +518,11 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				playSound(SOUND_CRASH);
 				died_yet = true;
 			} // play death noise once
-			
 			else if (hg.alive)
 			{
 				died_yet = false;
 			} // end if hg still alive
+			
 			
 			// tick map and map objects
 			if (gr == true && hg.alive == true)
@@ -542,6 +542,9 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			//tick the main menu and set button actions
 			else if (in_mm == true && in_pm == false && in_em == false)
 			{
+				// tick menu with 0 speed so it resizes with applet
+				m.tick(aWidth, aHeight, hg, 0.0);
+				
 				// play menu music if not already playing
 				if (music_current != MUSIC_MENU)
 				{
@@ -564,14 +567,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					playSound(SOUND_CLICK);
 					clicked = false;
 					System.exit(0);
-				}
+				} // end if quit clicked
 				
 				if(clickedbutton == mm_credits_b)
 				{
 					clicked = false;
 					in_cm = true;
 					in_mm = false;
-				}
+				} // end if credits clicked
 			}//end main menu
 			
 			//tick pause menu and set button actions
@@ -617,7 +620,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					hg.alive = true;
 					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
-				}
+				} // end if restart clicked
 				
 				if(clickedbutton == em_reload_b)
 				{
@@ -629,7 +632,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					hg.alive = true;
 					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
-				}
+				} // end if reload clicked
 			}//end end menu
 			
 			//tick credits menu and set button actions
@@ -645,11 +648,12 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					hg.alive = true;
 					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
-				}
-			}
+				} // end if reload clicked
+			} // end if in credits menu
 			
 			// update screen
 			repaint();
+			
 		} // end actionPerformed
 	} // end class MyTimer
 
@@ -688,7 +692,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			try 
 			{
 				if (current_clip.isRunning()) current_clip.stop();
-			}
+			} // end try
 			
 			catch(NullPointerException e) {};
 			

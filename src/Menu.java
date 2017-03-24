@@ -33,7 +33,7 @@ public class Menu
 		{
 			Button b = iter.next();
 			b.draw(g);
-		}
+		}// end iterator
 	} //end draw
 	
 	
@@ -49,8 +49,8 @@ public class Menu
 			if(hasbeenclicked == true)
 			{
 				clickedbutton = b;
-			}
-		}
+			} // end if button clicked
+		} // end iterator
 		
 		return clickedbutton;
 	} //end tick
@@ -91,21 +91,18 @@ public class Menu
 			{
 				this.current_c = this.darker_c;
 				
-				if(clicked == true)
+				if (clicked == true)
 				{
 					return true;
-				}
+				} // end if clicked 
 				else return false;
-			}
+			} // end if point colliding
 			
 			else
 			{
 				this.current_c = c;
 				return false;
-			}
-			
+			} // end not colliding
 		} //end tick
-		
 	} //end Button
-	
 } //end menu
