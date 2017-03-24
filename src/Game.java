@@ -9,7 +9,6 @@ Purpose: 	play hang gliding
  * @author Patrick Thomas
  * @author Isaac Payne
  * @author Chris Martin
- * @version 2/5/17
  */
 
 // import statements
@@ -60,7 +59,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	// audio clips
 	Clip current_clip;
 	
-	// song names:
+	// song names
 	private final String MUSIC_MENU = "menu1.wav";
 	private final String MUSIC_GAME = "game1.wav";
 	private final String SOUND_CRASH = "crash1.wav";
@@ -97,30 +96,33 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private double scrollspeed;
 	
 	//Variables for menu
-	private boolean gr = false; //game running
-	private boolean in_mm = true; //in main menu
-	private boolean in_pm = false; //in pause menu
-	private boolean in_em = false; //in end menu
-	private boolean in_cm = false; //in credits menu
-	private Menu mm = new Menu(); //create main menu
-	private Menu pm = new Menu(); //create pause menu
-	private Menu em = new Menu(); //create end menu
-	private Menu cm = new Menu(); //create credits menu
-	private Menu.Button mm_start_b; //create main menu start button
-	private Menu.Button mm_quit_b; //create main menu quit button
-	private Menu.Button mm_credits_b; //create main menu credits button
-	private Menu.Button pm_resume_b; //create pause menu resume button
-	private Menu.Button pm_reload_b; //create pause menu reload button
-	private Menu.Button em_restart_b; //create end menu restart button
-	private Menu.Button em_reload_b; //create end menu reload button
-	private Menu.Button cm_reload_b; //create credits menu reload button
-	private Sprite mb; //create general menu background
-	private Sprite cb; //create credits menu background
+	private boolean gr = false; 		//game running
+	private boolean in_mm = true; 		//in main menu
+	private boolean in_pm = false; 		//in pause menu
+	private boolean in_em = false; 		//in end menu
+	private boolean in_cm = false; 		//in credits menu
 	
-	public static Font title_font = new Font("Dialog", Font.BOLD, 70); //create title font
-	public static Font credits_font1 = new Font("Dialog", Font.BOLD, 55); //create credits title font
-	public static Font credits_font2 = new Font("Dialog", Font.PLAIN, 20); //create credits body font
-
+	private Menu mm = new Menu(); 		//create main menu
+	private Menu pm = new Menu(); 		//create pause menu
+	private Menu em = new Menu(); 		//create end menu
+	private Menu cm = new Menu(); 		//create credits menu
+	
+	private Menu.Button mm_start_b; 	//create main menu start button
+	private Menu.Button mm_quit_b; 		//create main menu quit button
+	private Menu.Button mm_credits_b; 	//create main menu credits button
+	private Menu.Button pm_resume_b; 	//create pause menu resume button
+	private Menu.Button pm_reload_b; 	//create pause menu reload button
+	private Menu.Button em_restart_b; 	//create end menu restart button
+	private Menu.Button em_reload_b; 	//create end menu reload button
+	private Menu.Button cm_reload_b; 	//create credits menu reload button
+	
+	private Sprite mb; 					//create general menu background
+	private Sprite cb; 					//create credits menu background
+	
+	// Menu fonts
+	public static Font title_font = new Font("Dialog", Font.BOLD, 70); 		//create title font
+	public static Font credits_font1 = new Font("Dialog", Font.BOLD, 55); 	//create credits title font
+	public static Font credits_font2 = new Font("Dialog", Font.PLAIN, 20); 	//create credits body font
 	
 	// mouse events
 	public void mouseReleased(MouseEvent e) 
@@ -152,7 +154,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	public void keyReleased(java.awt.event.KeyEvent e) {}
 	public void keyPressed(java.awt.event.KeyEvent p1) 
 	{
-		//Allows space bar to initiate pause menu
+		// Allows space bar to initiate pause menu
 		if (p1.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE && in_mm != true && in_em != true)
 		{
 			in_pm = true;
@@ -179,12 +181,15 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		// load image of hang glider
 		try
 		{
-	        URL url = new URL(getCodeBase(), "Hang glider white scaled.png");
+	        URL url = new URL(getCodeBase(), "hangglider.png");
 		    hg_img = ImageIO.read(url);
 		} // end try
+		
 		catch (IOException e) {}
 		
+		// Define a default hang glider to copy whenever the game is reset
 		DEFAULT_HG = new TestGlider(100.0, 300.0, 15, 30, hg_img);
+		// the current hang glider is copied like so:
 		hg = new TestGlider(DEFAULT_HG);
 		
 		// focus window
@@ -201,16 +206,50 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		/** Create map and hang glider */
 		m = new Map(aWidth, aHeight, 2.5);
 		
-		//Creates all buttons, backgrounds, and assigns buttons to their respective menus
-		mm_start_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Start");
-		mm_quit_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Quit");
-		mm_credits_b = new Menu.Button(aWidth*0.75, aHeight*0.9, (int) (aHeight*0.1), (int) (aWidth*0.25), Menu.button_color, "Credits");
-		pm_resume_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Resume");
-		pm_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
-		em_restart_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Restart");
-		em_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
-		cm_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.8, (int) (aHeight*0.1), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
+		// Creates all buttons, backgrounds, and assigns buttons to their respective menus
+		mm_start_b = new Menu.Button(
+				aWidth*0.3, aHeight*0.4, 		// x and y position
+				(int) (aHeight*0.15), 			// height
+				(int) (aWidth*0.4), 			// width
+				Menu.button_color, "Start");	// color and text
+		mm_quit_b = new Menu.Button(
+				aWidth*0.3, aHeight*0.6, 
+				(int) (aHeight*0.15), 
+				(int) (aWidth*0.4), 
+				Menu.button_color, "Quit");
+		mm_credits_b = new Menu.Button(
+				aWidth*0.75, aHeight*0.9, 
+				(int) (aHeight*0.1), 
+				(int) (aWidth*0.25), 
+				Menu.button_color, "Credits");
+		pm_resume_b = new Menu.Button(
+				aWidth*0.3, aHeight*0.4, 
+				(int) (aHeight*0.15), 
+				(int) (aWidth*0.4), 
+				Menu.button_color, "Resume");
+		pm_reload_b = new Menu.Button(
+				aWidth*0.3, aHeight*0.6, 
+				(int) (aHeight*0.15), 
+				(int) (aWidth*0.4), 
+				Menu.button_color, 
+				"Main Menu");
+		em_restart_b = new Menu.Button(
+				aWidth*0.3, aHeight*0.4, 
+				(int) (aHeight*0.15), 
+				(int) (aWidth*0.4), 
+				Menu.button_color, "Restart");
+		em_reload_b = new Menu.Button(
+				aWidth*0.3, aHeight*0.6, 
+				(int) (aHeight*0.15), 
+				(int) (aWidth*0.4), 
+				Menu.button_color, "Main Menu");
+		cm_reload_b = new Menu.Button(
+				aWidth*0.3, aHeight*0.8, 
+				(int) (aHeight*0.1), 
+				(int) (aWidth*0.4), 
+				Menu.button_color, "Main Menu");
 
+		// add the buttons to their respective menus
 		mm.add_button(mm_start_b);
 		mm.add_button(mm_quit_b);
 		mm.add_button(mm_credits_b);
@@ -219,6 +258,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		em.add_button(em_restart_b);
 		em.add_button(em_reload_b);
 		cm.add_button(cm_reload_b);
+		
+		// make menu backgrounds
 		mb = new Sprite(aWidth*0.2, aHeight*0.3, (int) (aHeight*0.55), (int) (aWidth*0.6), Menu.bg_color);
 		cb = new Sprite(aWidth*0.1, aHeight*0.1, (int) (aHeight*0.75), (int) (aWidth*0.8), Menu.bg_color);
 	} // end initialization
@@ -231,6 +272,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	{	
 		// cast graphics object to graphics 2d
 		Graphics2D g2 = (Graphics2D) g;
+		
 		// turn on antialiasing
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
@@ -325,16 +367,15 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			int w4 = (g2.getFontMetrics().stringWidth("Hang Glider Credit: CC BY-SA 3.0,"))/2;
 			int h4 = (g2.getFontMetrics().getHeight())/4;
 			g2.setColor(Color.BLACK);
-			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.365)-w4+2), (int)((aHeight/3.3)+h4+2));
+			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.5)-w4+2), (int)((aHeight/3.3)+h4+2));
 			g2.setColor(Color.WHITE);
-			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.365)-w4), (int)((aHeight/3.3)+h4));
+			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.5)-w4), (int)((aHeight/3.3)+h4));
 			int w5 = (g2.getFontMetrics().stringWidth("https://commons.wikimedia.org/w/index.php?curid=531761"))/2;
 			int h5 = (g2.getFontMetrics().getHeight())/4;
 			g2.setColor(Color.BLACK);
 			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5+2), (int)((aHeight/3)+h5+2));
 			g2.setColor(Color.WHITE);
 			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5), (int)((aHeight/3)+h5));
-			
 			
 			//Menu Music Credits
 			int w6 = (g2.getFontMetrics().stringWidth("Menu Music Credit: Hobo Pride by FRAIL is licensed under a"))/2;
@@ -386,8 +427,74 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	 */
 	public void update_applet_size()
 	{
-		this.aWidth = this.getWidth();
-		this.aHeight = this.getHeight();
+		if (this.getWidth() != this.aWidth && this.getHeight() != this.aHeight)
+		{
+			this.aWidth = this.getWidth();
+			this.aHeight = this.getHeight();
+			
+			// make menu backgrounds
+			mb = new Sprite(aWidth*0.2, aHeight*0.3, (int) (aHeight*0.55), (int) (aWidth*0.6), Menu.bg_color);
+			cb = new Sprite(aWidth*0.1, aHeight*0.1, (int) (aHeight*0.75), (int) (aWidth*0.8), Menu.bg_color);
+			
+			// reset menus
+			mm = new Menu(); 		//create main menu
+			pm = new Menu(); 		//create pause menu
+			em = new Menu(); 		//create end menu
+			cm = new Menu(); 		//create credits menu
+			
+			// Creates all buttons, backgrounds, and assigns buttons to their respective menus
+			mm_start_b = new Menu.Button(
+					aWidth*0.3, aHeight*0.4, 		// x and y position
+					(int) (aHeight*0.15), 			// height
+					(int) (aWidth*0.4), 			// width
+					Menu.button_color, "Start");	// color and text
+			mm_quit_b = new Menu.Button(
+					aWidth*0.3, aHeight*0.6, 
+					(int) (aHeight*0.15), 
+					(int) (aWidth*0.4), 
+					Menu.button_color, "Quit");
+			mm_credits_b = new Menu.Button(
+					aWidth*0.75, aHeight*0.9, 
+					(int) (aHeight*0.1), 
+					(int) (aWidth*0.25), 
+					Menu.button_color, "Credits");
+			pm_resume_b = new Menu.Button(
+					aWidth*0.3, aHeight*0.4, 
+					(int) (aHeight*0.15), 
+					(int) (aWidth*0.4), 
+					Menu.button_color, "Resume");
+			pm_reload_b = new Menu.Button(
+					aWidth*0.3, aHeight*0.6, 
+					(int) (aHeight*0.15), 
+					(int) (aWidth*0.4), 
+					Menu.button_color, 
+					"Main Menu");
+			em_restart_b = new Menu.Button(
+					aWidth*0.3, aHeight*0.4, 
+					(int) (aHeight*0.15), 
+					(int) (aWidth*0.4), 
+					Menu.button_color, "Restart");
+			em_reload_b = new Menu.Button(
+					aWidth*0.3, aHeight*0.6, 
+					(int) (aHeight*0.15), 
+					(int) (aWidth*0.4), 
+					Menu.button_color, "Main Menu");
+			cm_reload_b = new Menu.Button(
+					aWidth*0.3, aHeight*0.8, 
+					(int) (aHeight*0.1), 
+					(int) (aWidth*0.4), 
+					Menu.button_color, "Main Menu");
+
+			// add the buttons to their respective menus
+			mm.add_button(mm_start_b);
+			mm.add_button(mm_quit_b);
+			mm.add_button(mm_credits_b);
+			pm.add_button(pm_resume_b);
+			pm.add_button(pm_reload_b);
+			em.add_button(em_restart_b);
+			em.add_button(em_reload_b);
+			cm.add_button(cm_reload_b);
+		} // end if screen has changed
 	} // end update applet size
 
 	
@@ -411,6 +518,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				playSound(SOUND_CRASH);
 				died_yet = true;
 			} // play death noise once
+			
 			else if (hg.alive)
 			{
 				died_yet = false;
