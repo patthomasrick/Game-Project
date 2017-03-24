@@ -573,7 +573,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		Toolkit.getDefaultToolkit().sync(); // fixes lag on Ubuntu
 	} // end update
 	
-	public synchronized void playSong(String filename)
+	public void playSong(String filename)
 	{
 		try
 		{
@@ -610,7 +610,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		} // end catch
 	} // end play sound
 	
-	public synchronized void playSound(String filename)
+	public void playSound(String filename)
 	{
 		try
 		{
@@ -619,11 +619,11 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
 		    
 		    // get sound clip
-		    current_clip = AudioSystem.getClip();
+		    Clip clip = AudioSystem.getClip();
 		    
 		    // open clip and start playing
-		    current_clip.open(audioIn);
-		    current_clip.loop(0);
+		    clip.open(audioIn);
+		    clip.loop(0);
 		} // end try
 		
 		catch (UnsupportedAudioFileException e)
