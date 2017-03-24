@@ -18,6 +18,7 @@ public class TestGlider extends Sprite
 //	double simmouse_y = 0; //simulated mouse y
 //	double simmouse_maxa = 0; //maximum acceleration for simulated mouse
 	Simulated_mouse sm;
+	double t = 0.0;
 	public TestGlider(double x, double y, int h, int w, Color color)
 	{
 		// initialize Sprite
@@ -37,6 +38,7 @@ public class TestGlider extends Sprite
 		double dx = 100;
 		double dy = sm.simmouse_y - this.y;
 		this.a = Math.atan2(dy, dx);
+		t = t + (1 / 60);
 		
 		// velocity is based on the current height of the hang glider
 		this.v = Math.sqrt(y / 5);
@@ -98,6 +100,10 @@ public class TestGlider extends Sprite
 			if (mouse_y <= .01)
 			{
 				simmouse_y = 0;
+			}
+			if ((simmouse_y == 0) && (t == 2))
+			{
+				simmouse_y = simmouse_y - 10;
 			}
 			return(simmouse_y);
 		}
