@@ -31,7 +31,7 @@ public class Map
 	DecimalFormat fmt = new DecimalFormat ("0.00");
 
 	// debug printout
-	private final boolean DEBUG = true;
+	private final boolean DEBUG = false;
 	
 	// difficulty factors
 	private double diff_min = 0.7;

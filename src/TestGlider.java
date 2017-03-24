@@ -46,9 +46,9 @@ public class TestGlider extends Sprite
 	double simmouse_maxa = 0; //maximum acceleration for simulated mouse
 	 */
 	Simulated_mouse sm;
+	double t = 0.0;
   
 	public TestGlider(double x, double y, int h, int w, BufferedImage img)
-	double t = 0.0;
 	{
 		// initialize Sprite
 		super(x, y, h, w, Color.WHITE);
