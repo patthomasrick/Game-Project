@@ -74,16 +74,25 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private boolean in_mm = true; //in main menu
 	private boolean in_pm = false; //in pause menu
 	private boolean in_em = false; //in end menu
+	private boolean in_cm = false; //in credits menu
 	private Menu mm = new Menu(); //create main menu
 	private Menu pm = new Menu(); //create pause menu
 	private Menu em = new Menu(); //create end menu
+	private Menu cm = new Menu(); //create credits menu
 	private Menu.Button mm_start_b; //create main menu start button
 	private Menu.Button mm_quit_b; //create main menu quit button
+	private Menu.Button mm_credits_b; //create main menu credits button
 	private Menu.Button pm_resume_b; //create pause menu resume button
 	private Menu.Button pm_reload_b; //create pause menu reload button
 	private Menu.Button em_restart_b; //create end menu restart button
 	private Menu.Button em_reload_b; //create end menu reload button
-	private Sprite mb; //create menu background
+	private Menu.Button cm_reload_b; //create credits menu reload button
+	private Sprite mb; //create general menu background
+	private Sprite cb; //create credits menu background
+	public static Font title_font = new Font("Dialog", Font.BOLD, 70); //create title font
+	public static Font credits_font1 = new Font("Dialog", Font.BOLD, 55); //create credits title font
+	public static Font credits_font2 = new Font("Dialog", Font.PLAIN, 20); //create credits body font
+
 	
 	// mouse events
 	public void mouseReleased(MouseEvent e) 
@@ -154,43 +163,25 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		m = new Map(aWidth, aHeight, 2.5);
 		
 		//Creates all buttons, backgrounds, and assigns buttons to their respective menus
-		mm_start_b = new Menu.Button(
-				aWidth*0.3, aHeight*0.4, 
-				(int) (aHeight*0.15), 
-				(int) (aWidth*0.4), 
-				Menu.button_color, "Start");
-		mm_quit_b = new Menu.Button(
-				aWidth*0.3, aHeight*0.6, 
-				(int) (aHeight*0.15), 
-				(int) (aWidth*0.4), 
-				Menu.button_color, "Quit");
-		pm_resume_b = new Menu.Button(
-				aWidth*0.3, aHeight*0.4, 
-				(int) (aHeight*0.15), 
-				(int) (aWidth*0.4), 
-				Menu.button_color, "Restart");
-		pm_reload_b = new Menu.Button(
-				aWidth*0.3, aHeight*0.6, 
-				(int) (aHeight*0.15), 
-				(int) (aWidth*0.4), 
-				Menu.button_color, "Main Menu");
-		em_restart_b = new Menu.Button(
-				aWidth*0.3, aHeight*0.4, 
-				(int) (aHeight*0.15), 
-				(int) (aWidth*0.4), 
-				Menu.button_color, "Restart");
-		em_reload_b = new Menu.Button(
-				aWidth*0.3, aHeight*0.6, 
-				(int) (aHeight*0.15), 
-				(int) (aWidth*0.4), 
-				Menu.button_color, "Main Menu");
+		mm_start_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Start");
+		mm_quit_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Quit");
+		mm_credits_b = new Menu.Button(aWidth*0.75, aHeight*0.9, (int) (aHeight*0.1), (int) (aWidth*0.25), Menu.button_color, "Credits");
+		pm_resume_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Resume");
+		pm_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
+		em_restart_b = new Menu.Button(aWidth*0.3, aHeight*0.4, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Restart");
+		em_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.6, (int) (aHeight*0.15), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
+		cm_reload_b = new Menu.Button(aWidth*0.3, aHeight*0.8, (int) (aHeight*0.1), (int) (aWidth*0.4), Menu.button_color, "Main Menu");
+
 		mm.add_button(mm_start_b);
 		mm.add_button(mm_quit_b);
+		mm.add_button(mm_credits_b);
 		pm.add_button(pm_resume_b);
 		pm.add_button(pm_reload_b);
 		em.add_button(em_restart_b);
 		em.add_button(em_reload_b);
+		cm.add_button(cm_reload_b);
 		mb = new Sprite(aWidth*0.2, aHeight*0.3, (int) (aHeight*0.55), (int) (aWidth*0.6), Menu.bg_color);
+		cb = new Sprite(aWidth*0.1, aHeight*0.1, (int) (aHeight*0.75), (int) (aWidth*0.8), Menu.bg_color);
 	} // end initialization
 	
 	
@@ -198,7 +189,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	 * @param g		Graphics object to draw to
 	 */
 	public void paint(Graphics g)
-	{
+	{	
 		// cast graphics object to graphics 2d
 		Graphics2D g2 = (Graphics2D) g;
 		// turn on antialiasing
@@ -219,6 +210,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		{
 			mb.draw(g2);
 			mm.draw(g2);
+			
+			g2.setFont(title_font);
+			int w1 = (g2.getFontMetrics().stringWidth("Cave Glider"))/2;
+			int h1 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1+2), (int)((aHeight/5)+h1+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1), (int)((aHeight/5)+h1));
 		}
 		
 		//draw end menu
@@ -226,6 +225,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		{
 			mb.draw(g2);
 			em.draw(g2);
+			
+			g2.setFont(title_font);
+			int w1 = (g2.getFontMetrics().stringWidth("Cave Glider"))/2;
+			int h1 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1+2), (int)((aHeight/5))+h1+2);
+			g2.setColor(Color.WHITE);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1), (int)((aHeight/5))+h1);
 		}
 		
 		//draw pause menu
@@ -233,6 +240,104 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		{
 			mb.draw(g2);
 			pm.draw(g2);
+			
+			g2.setFont(title_font);
+			int w1 = (g2.getFontMetrics().stringWidth("Cave Glider"))/2;
+			int h1 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1+2), (int)((aHeight/5)+h1+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1), (int)((aHeight/5)+h1));
+		}
+		
+		//draw credits menu
+		if (in_cm == true)
+		{
+			cb.draw(g2);
+			cm.draw(g2);
+			
+			g2.setFont(title_font);
+			int w1 = (g2.getFontMetrics().stringWidth("Cave Glider"))/2;
+			int h1 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1+2), (int)((aHeight/20)+h1+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Cave Glider", (int)((aWidth/2)-w1), (int)((aHeight/20)+h1));
+			
+			//Credits title
+			g2.setFont(credits_font1);
+			int w2 = (g2.getFontMetrics().stringWidth("Credits"))/2;
+			int h2 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Credits", (int)((aWidth/2)-w2+2), (int)((aHeight/6)+h2+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Credits", (int)((aWidth/2)-w2), (int)((aHeight/6)+h2));
+			
+			//Author Credits
+			g2.setFont(credits_font2);
+			int w3 = (g2.getFontMetrics().stringWidth("Created By: Patrick Thomas, Isaac Payne, and Chris Martin"))/2;
+			int h3 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Created By: Patrick Thomas, Isaac Payne, and Chris Martin", (int)((aWidth/2)-w3+2), (int)((aHeight/4)+h3+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Created By: Patrick Thomas, Isaac Payne, and Chris Martin", (int)((aWidth/2)-w3), (int)((aHeight/4)+h3));
+			
+			//Hang Glider Credits
+			int w4 = (g2.getFontMetrics().stringWidth("Hang Glider Credit: CC BY-SA 3.0,"))/2;
+			int h4 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.365)-w4+2), (int)((aHeight/3.3)+h4+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.365)-w4), (int)((aHeight/3.3)+h4));
+			int w5 = (g2.getFontMetrics().stringWidth("https://commons.wikimedia.org/w/index.php?curid=531761"))/2;
+			int h5 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5+2), (int)((aHeight/3)+h5+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5), (int)((aHeight/3)+h5));
+			
+			
+			//Menu Music Credits
+			int w6 = (g2.getFontMetrics().stringWidth("Menu Music Credit: Hobo Pride by FRAIL is licensed under a"))/2;
+			int h6 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Menu Music Credit: Hobo Pride by FRAIL is licensed under a", (int)((aWidth*0.5)-w6+2), (int)((aHeight/2.5)+h6+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Menu Music Credit: Hobo Pride by FRAIL is licensed under a", (int)((aWidth*0.5)-w6), (int)((aHeight/2.5)+h6));
+			int w7 = (g2.getFontMetrics().stringWidth("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License"))/2;
+			int h7 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License", (int)((aWidth*0.5)-w7+2), (int)((aHeight/2.3)+h7+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License", (int)((aWidth*0.5)-w7), (int)((aHeight/2.3)+h7));
+			
+			//Game Music Credits
+			int w8 = (g2.getFontMetrics().stringWidth("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)"))/2;
+			int h8 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)", (int)((aWidth*0.5)-w8+2), (int)((aHeight/2)+h8+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)", (int)((aWidth*0.5)-w8), (int)((aHeight/2)+h8));
+			int w9 = (g2.getFontMetrics().stringWidth("Licensed under Creative Commons: By Attribution 3.0 License"))/2;
+			int h9 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Licensed under Creative Commons: By Attribution 3.0 License", (int)((aWidth*0.5)-w9+2), (int)((aHeight*.53)+h9+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Licensed under Creative Commons: By Attribution 3.0 License", (int)((aWidth*0.5)-w9), (int)((aHeight*.53)+h9));
+			
+			//Sound effect credits
+			int w10 = (g2.getFontMetrics().stringWidth("Cymbal noises: No machine-readable author provided. Clngre"))/2;
+			int h10 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("Cymbal noises: No machine-readable author provided. Clngre", (int)((aWidth*0.5)-w10+2), (int)((aHeight*.58)+h10+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Cymbal noises: No machine-readable author provided. Clngre", (int)((aWidth*0.5)-w10), (int)((aHeight*.58)+h10));
+			int w11 = (g2.getFontMetrics().stringWidth("(http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0"))/2;
+			int h11 = (g2.getFontMetrics().getHeight())/4;
+			g2.setColor(Color.BLACK);
+			g2.drawString("assumed (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0", (int)((aWidth*0.45)-w11+2), (int)((aHeight*.61)+h11+2));
+			g2.setColor(Color.WHITE);
+			g2.drawString("assumed (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0", (int)((aWidth*0.45)-w11), (int)((aHeight*.61)+h11));
 		}
 	} // end draw
 
@@ -285,6 +390,13 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				{
 					clicked = false;
 					System.exit(0);
+				}
+				
+				if(clickedbutton == mm_credits_b)
+				{
+					clicked = false;
+					in_cm = true;
+					in_mm = false;
 				}
 			}//end main menu
 			
@@ -341,6 +453,22 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					m = new Map(aWidth, aHeight, 2.5);
 				}
 			}//end end menu
+			
+			//tick credits menu and set button actions
+			else if (in_cm == true)
+			{
+				Menu.Button clickedbutton = cm.tick(mouse_x, mouse_y, clicked);
+				
+				if(clickedbutton == cm_reload_b)
+				{
+					clicked = false;
+					in_mm = true;
+					in_cm = false;
+					hg.alive = true;
+					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					m = new Map(aWidth, aHeight, 2.5);
+				}
+			}
 			
 			// update screen
 			repaint();
