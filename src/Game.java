@@ -445,39 +445,39 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	
 	public synchronized void playSong(String filename)
 	{
-//		try
-//		{
-//			try 
-//			{
-//				if (current_clip.isRunning()) current_clip.stop();
-//			}
-//			
-//			catch(NullPointerException e) {};
-//			
-//		    // open audio stream
-//		    URL url = this.getClass().getClassLoader().getResource(filename);
-//		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-//		    
-//		    // get sound clip
-//		    current_clip = AudioSystem.getClip();
-//		    
-//		    // open clip and start playing
-//		    current_clip.open(audioIn);
-//		    current_clip.loop(Clip.LOOP_CONTINUOUSLY);
-//		} // end try
-//		
-//		catch (UnsupportedAudioFileException e)
-//		{
-//		    e.printStackTrace();
-//		} // end catch
-//		catch (IOException e) 
-//		{    
-//			e.printStackTrace();
-//		} // end catch
-//		catch (LineUnavailableException e)
-//		{
-//		    e.printStackTrace();
-//		} // end catch
+		try
+		{
+			try 
+			{
+				if (current_clip.isRunning()) current_clip.stop();
+			}
+			
+			catch(NullPointerException e) {};
+			
+		    // open audio stream
+		    URL url = this.getClass().getClassLoader().getResource(filename);
+		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+		    
+		    // get sound clip
+		    current_clip = AudioSystem.getClip();
+		    
+		    // open clip and start playing
+		    current_clip.open(audioIn);
+		    current_clip.loop(Clip.LOOP_CONTINUOUSLY);
+		} // end try
+		
+		catch (UnsupportedAudioFileException e)
+		{
+		    e.printStackTrace();
+		} // end catch
+		catch (IOException e) 
+		{    
+			e.printStackTrace();
+		} // end catch
+		catch (LineUnavailableException e)
+		{
+		    e.printStackTrace();
+		} // end catch
 	} // end play sound
 	
 	public synchronized void playSound(String filename)
