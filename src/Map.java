@@ -147,7 +147,7 @@ public class Map
 	public Map(int screensize_x, int screensize_y, double scroll_speed)
 	{
 		// select color randomly
-		int color_choice = ThreadLocalRandom.current().nextInt(1, 3);
+		int color_choice = ThreadLocalRandom.current().nextInt(1, 4);
 		if (color_choice == 1)
 		{
 			this.fg_color_l = Map.FG_COLOR_L;
