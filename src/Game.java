@@ -62,6 +62,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	// song names:
 	private final String MUSIC_MENU = "menu1.wav";
 	private final String MUSIC_GAME = "game1.wav";
+	private final String SOUND_CRASH = "crash1.wav";
+	private final String SOUND_CLICK = "click1.wav";
 	private String music_current = "none";
 	
 	// hang glider image
@@ -84,6 +86,8 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	/** Creates hang glider. This is the player that the user controls. */
 	public TestGlider hg;
 	public TestGlider DEFAULT_HG;
+	
+	public boolean died_yet = false;
   
 	public int mouse_x = 0;
 	public int mouse_y = 0;
@@ -295,13 +299,23 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			// update applet size
 			update_applet_size();
 			
+			if (!died_yet && !hg.alive)
+			{
+				playSound(SOUND_CRASH);
+				died_yet = true;
+			} // play death noise once
+			else if (hg.alive)
+			{
+				died_yet = false;
+			} // end if hg still alive
+			
 			// tick map and map objects
 			if (gr == true && hg.alive == true)
 			{
 				// play menu music if not already playing
 				if (music_current != MUSIC_GAME)
 				{
-					playSound(MUSIC_GAME);
+					playSong(MUSIC_GAME);
 					music_current = MUSIC_GAME;
 				} // end play clip
 				
@@ -316,7 +330,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				// play menu music if not already playing
 				if (music_current != MUSIC_MENU)
 				{
-					playSound(MUSIC_MENU);
+					playSong(MUSIC_MENU);
 					music_current = MUSIC_MENU;
 				} // end play clip
 				
@@ -324,13 +338,15 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				
 				if (clickedbutton == mm_start_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_mm = false;
 					gr = true;
 				} // end start game
 				
-				if(clickedbutton == mm_quit_b)
+				if (clickedbutton == mm_quit_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					System.exit(0);
 				} // end quit
@@ -341,15 +357,17 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			{
 				Menu.Button clickedbutton = pm.tick(mouse_x, mouse_y, clicked);
 				
-				if(clickedbutton == pm_resume_b)
+				if (clickedbutton == pm_resume_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_pm = false;
 					gr = true;
-				}
+				} // end if resume clicked
 				
-				if(clickedbutton == pm_reload_b)
+				if (clickedbutton == pm_reload_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_pm = false;
 					in_mm = true;
@@ -358,7 +376,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					hg.alive = true;
 					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
-				}
+				} // end if reload button clicked
 			}//end pause menu
 			
 			//tick end menu and set button actions
@@ -369,6 +387,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				
 				if(clickedbutton == em_restart_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_mm = false;
 					gr = true;
@@ -380,6 +399,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 				
 				if(clickedbutton == em_reload_b)
 				{
+					playSound(SOUND_CLICK);
 					clicked = false;
 					in_mm = true;
 					gr = false;
@@ -423,16 +443,47 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		Toolkit.getDefaultToolkit().sync(); // fixes lag on Ubuntu
 	} // end update
 	
+	public synchronized void playSong(String filename)
+	{
+//		try
+//		{
+//			try 
+//			{
+//				if (current_clip.isRunning()) current_clip.stop();
+//			}
+//			
+//			catch(NullPointerException e) {};
+//			
+//		    // open audio stream
+//		    URL url = this.getClass().getClassLoader().getResource(filename);
+//		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+//		    
+//		    // get sound clip
+//		    current_clip = AudioSystem.getClip();
+//		    
+//		    // open clip and start playing
+//		    current_clip.open(audioIn);
+//		    current_clip.loop(Clip.LOOP_CONTINUOUSLY);
+//		} // end try
+//		
+//		catch (UnsupportedAudioFileException e)
+//		{
+//		    e.printStackTrace();
+//		} // end catch
+//		catch (IOException e) 
+//		{    
+//			e.printStackTrace();
+//		} // end catch
+//		catch (LineUnavailableException e)
+//		{
+//		    e.printStackTrace();
+//		} // end catch
+	} // end play sound
+	
 	public synchronized void playSound(String filename)
 	{
 		try
 		{
-			try 
-			{
-				if (current_clip.isRunning()) current_clip.stop();
-			}
-			catch(NullPointerException e) {};
-			
 		    // open audio stream
 		    URL url = this.getClass().getClassLoader().getResource(filename);
 		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
@@ -442,7 +493,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		    
 		    // open clip and start playing
 		    current_clip.open(audioIn);
-		    current_clip.loop(Clip.LOOP_CONTINUOUSLY);
+		    current_clip.loop(0);
 		} // end try
 		
 		catch (UnsupportedAudioFileException e)
