@@ -124,8 +124,8 @@ public class Map
 	
 	public static final Color FG_COLOR_L = new Color(170, 135, 57); // sandy yellow
 	public static final Color FG_COLOR_D = new Color(128, 95, 21); 	// dark sandy yellow
-	public static final Color FG_COLOR_L_ORANGE = 	new Color(74, 34, 23); // dark orange/brown
-	public static final Color FG_COLOR_D_ORANGE = 	new Color(55, 20, 11); // darker orange/brown
+	public static final Color FG_COLOR_L_ORANGE = 	new Color(74, 34, 23).brighter(); // dark orange/brown
+	public static final Color FG_COLOR_D_ORANGE = 	new Color(55, 20, 11).brighter(); // darker orange/brown
 	public static final Color FG_COLOR_L_GREY = 	new Color(77, 70, 69); // grey
 	public static final Color FG_COLOR_D_GREY = 	new Color(56, 51, 50); // dark grey
 	
