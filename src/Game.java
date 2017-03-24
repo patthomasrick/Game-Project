@@ -15,6 +15,7 @@ Purpose: 	play hang gliding
 // import statements
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -115,6 +116,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	private Menu.Button cm_reload_b; //create credits menu reload button
 	private Sprite mb; //create general menu background
 	private Sprite cb; //create credits menu background
+	
 	public static Font title_font = new Font("Dialog", Font.BOLD, 70); //create title font
 	public static Font credits_font1 = new Font("Dialog", Font.BOLD, 55); //create credits title font
 	public static Font credits_font2 = new Font("Dialog", Font.PLAIN, 20); //create credits body font
@@ -533,7 +535,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 					in_mm = true;
 					in_cm = false;
 					hg.alive = true;
-					hg = new TestGlider(100.0, 300.0, 30, 30, Color.GREEN);
+					hg = new TestGlider(DEFAULT_HG);
 					m = new Map(aWidth, aHeight, 2.5);
 				}
 			}
