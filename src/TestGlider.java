@@ -29,7 +29,7 @@ public class TestGlider extends Sprite
 	private static final int[] _R_TRAIL_OFFSET = {2, 10};
 	private static final int[] _L_TRAIL_OFFSET = {4, 5};
 	
-	private _TrailPointPair[] trail_points = new _TrailPointPair[10];
+	private _TrailPointPair[] trail_points = new _TrailPointPair[_TrailPoint.MAX_FRAME_LIFE];
 	
 	private _TrailPoint hg_point_spawn_l;
 	private _TrailPoint hg_point_spawn_r;
@@ -54,7 +54,7 @@ public class TestGlider extends Sprite
 		this.hg_point_spawn_l = new _TrailPoint(this.x + TestGlider._L_TRAIL_OFFSET[0], this.y + TestGlider._L_TRAIL_OFFSET[1]);
 		this.hg_point_spawn_r = new _TrailPoint(this.x + TestGlider._R_TRAIL_OFFSET[0], this.y + TestGlider._R_TRAIL_OFFSET[1]);
 		
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < _TrailPoint.MAX_FRAME_LIFE; i++)
 		{
 			this.trail_points[i] = new _TrailPointPair(hg_point_spawn_l, hg_point_spawn_r);
 		} // end for loop
@@ -77,7 +77,7 @@ public class TestGlider extends Sprite
 		this.hg_point_spawn_l = new _TrailPoint(this.x + TestGlider._L_TRAIL_OFFSET[0], this.y + TestGlider._L_TRAIL_OFFSET[1]);
 		this.hg_point_spawn_r = new _TrailPoint(this.x + TestGlider._R_TRAIL_OFFSET[0], this.y + TestGlider._R_TRAIL_OFFSET[1]);
 		
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < _TrailPoint.MAX_FRAME_LIFE; i++)
 		{
 			this.trail_points[i] = new _TrailPointPair(hg_point_spawn_l, hg_point_spawn_r);
 		} // end for loop
@@ -123,7 +123,7 @@ public class TestGlider extends Sprite
 		this.hg_point_spawn_l = new _TrailPoint(this.x + TestGlider._L_TRAIL_OFFSET[0], this.y + TestGlider._L_TRAIL_OFFSET[1]);
 		this.hg_point_spawn_r = new _TrailPoint(this.x + TestGlider._R_TRAIL_OFFSET[0], this.y + TestGlider._R_TRAIL_OFFSET[1]);		
 		
-		for (int i = 9; i > 0; i--)
+		for (int i = _TrailPoint.MAX_FRAME_LIFE-1; i > 0; i--)
 		{
 			this.trail_points[i-1].l.x -= v;
 			this.trail_points[i-1].r.x -= v;
@@ -170,7 +170,7 @@ public class TestGlider extends Sprite
 	            null);
 		
 		// draw trail points
-		for (int i = 1; i < 9; i++)
+		for (int i = 1; i < _TrailPoint.MAX_FRAME_LIFE-1; i++)
 		{
 			// create color based on alpha
 			Color draw_color = new Color(255, 255, 255, 
@@ -200,7 +200,7 @@ public class TestGlider extends Sprite
 	{
 		// duration
 		
-		public static final int MAX_FRAME_LIFE = 10;
+		public static final int MAX_FRAME_LIFE = 12;
 		public int frame_life = MAX_FRAME_LIFE;
 		
 		public _TrailPoint(double x, double y)

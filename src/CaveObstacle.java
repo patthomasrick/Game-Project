@@ -8,27 +8,27 @@ Date:		2/4/17
 Purpose: 	Stalagtite/mites. Stuff you hit. Extended from sprites.
 */
 
-public class CaveObstacle extends Sprite
-/*
+/**
  * 2/4/17
  * 
  * Extends sprite. Provides methods to tick a custom sprite that also has specialized
  * collision functions (e.g. triangles). Can draw triangles and store a color.
  */
+public class CaveObstacle extends Sprite
 {
 	public CaveObstacle(double x, double y, int h, int w, Color color)
 	{
 		// init sprite
 		super(x, y, h, w, color);
 	} // end constructor
-	
-	public void draw(Graphics g)
-	/*
+
+	/**
 	 * 2/4/17
 	 * 
 	 * Overwrites the default rectangle that Sprite draws. This draws a triangle, and the
 	 * position of the tip of the triangle depends on the value of this.l.
 	 */
+	public void draw(Graphics g)
 	{
 		// get the points of the triangle
 		int[] x_values = {
@@ -53,9 +53,8 @@ public class CaveObstacle extends Sprite
 			g.fillPolygon(x_values, y_values, 3);
 		} // end if graphics
 	} // end draw
-	
-	public void tick(double hg_speed)
-	/*
+
+	/**
 	 * 2/4/17
 	 * 
 	 * Ticks the stalagtite based on the hang glider's speed. To be called en masse when
@@ -63,6 +62,7 @@ public class CaveObstacle extends Sprite
 	 * 
 	 * Will eventually host collision tests
 	 */
+	public void tick(double hg_speed)
 	{
 		// move obstacle
 		this.push(-hg_speed, 0);	// method provided through Rect
