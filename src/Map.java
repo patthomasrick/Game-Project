@@ -31,12 +31,14 @@ public class Map
 	DecimalFormat fmt = new DecimalFormat ("0.00");
 
 	// debug printout
-	private final boolean DEBUG_TEXT = false;
+	private final boolean DEBUG_TEXT = true;
 	
 	// difficulty factors
-	private double[] diff_min_max_difficulty_factor = {0.7, 1.1};
-	private double[] diff_min_max_dist = {0.0, 1.0}; // in miles
-	private double current_difficulty = 0.7;
+	private double diff_min = 0.7;
+	private double diff_max = 1.1;
+	private double diff_dist_min = 0.0;
+	private double diff_dist_max = 1.0;
+	private double current_difficulty = diff_min;
 	
 	// variables
 	private double scroll_speed; // how fast the map scrolls (placeholder)
@@ -306,8 +308,9 @@ public class Map
 			dist_mi = 1;
 		
 		// calculate percentage through scale range
-		double dist_pct = (dist_mi - diff_min_max_dist[0])/(diff_min_max_dist[1] - diff_min_max_dist[0]);
-		double diff_scale_pct = dist_pct * (diff_min_max_difficulty_factor[1] - diff_min_max_dist[0]) + diff_min_max_dist[0];
+		this.current_difficulty = 
+				((dist_mi - diff_dist_min) / (diff_dist_max - diff_dist_min)) *
+				(diff_max - diff_min) + diff_min;
 		
 		// --------------------------------------
 		// ----------- RESIZE APPLET ------------
@@ -536,11 +539,11 @@ public class Map
 			
 			// randomize values of the obstacle to be generated
 			int random_x = (int) (ThreadLocalRandom.current().nextInt(
-					SPIKE_X_RANGE[0], SPIKE_X_RANGE[1]) * x_shift * diff_scale_pct);
+					SPIKE_X_RANGE[0], SPIKE_X_RANGE[1]) * x_shift * this.current_difficulty);
 			int random_w = (int) (ThreadLocalRandom.current().nextInt(
-					SPIKE_W_RANGE[0], SPIKE_W_RANGE[1]) * x_shift * diff_scale_pct);
+					SPIKE_W_RANGE[0], SPIKE_W_RANGE[1]) * x_shift * this.current_difficulty);
 			int random_h = (int) (ThreadLocalRandom.current().nextInt(
-					SPIKE_H_RANGE[0], SPIKE_H_RANGE[1]) * y_shift * diff_scale_pct);
+					SPIKE_H_RANGE[0], SPIKE_H_RANGE[1]) * y_shift * this.current_difficulty);
 			
 			
 			// init new obstacle
@@ -767,6 +770,8 @@ public class Map
 	public void draw(Graphics g)
 	{	
 		// ############# BACKGROUND ############################################
+		
+		System.out.println(this.bg_obstacles.size());
 
 		// --------------------------------------
 		// ------------ DRAW SPIKES -------------
@@ -927,24 +932,23 @@ public class Map
 		
 		// ######### ######## debug ######### ##########
 		
-		// convert speed to string
-		double dist_mi = this.dist_travelled / 10 / 1000 * 0.62137119;
-		
-		if (dist_mi > 1)
-			dist_mi = 1;
-		
-		// calculate percentage through scale range
-		double dist_pct = (dist_mi - diff_min_max_dist[0])/(diff_min_max_dist[1] - diff_min_max_dist[0]);
-		double diff_scale_pct = dist_pct * (diff_min_max_difficulty_factor[1] - diff_min_max_dist[0]) + diff_min_max_dist[0];
-		String s_diff_fact = fmt.format(diff_scale_pct * 100);
-		
-		g.setColor(Color.BLACK);
-		g.drawString("Difficulty: " + s_diff_fact + "%",
-				(int) (21*this.factors[0]),
-				this.floor + (int) (61*this.factors[1]));
-		g.setColor(Color.WHITE);
-		g.drawString("Difficulty: " + s_diff_fact + "%",
-				(int) (20*this.factors[0]),
-				this.floor + (int) (60*this.factors[1]));
+		if (this.DEBUG_TEXT)
+		{
+			// convert speed to string
+			double dist_mi = this.dist_travelled / 10 / 1000 * 0.62137119;
+			
+			if (dist_mi > 1)
+				dist_mi = 1;
+			
+			// calculate percentage through scale range
+			g.setColor(Color.BLACK);
+			g.drawString("Difficulty: " + this.current_difficulty,
+					(int) (21*this.factors[0]),
+					this.floor + (int) (61*this.factors[1]));
+			g.setColor(Color.WHITE);
+			g.drawString("Difficulty: " + this.current_difficulty,
+					(int) (20*this.factors[0]),
+					this.floor + (int) (60*this.factors[1]));
+		} // end debug drawing
 	} // end draw
 } // end class
