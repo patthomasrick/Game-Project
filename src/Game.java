@@ -14,14 +14,30 @@ Purpose: 	play hang gliding
 
 // import statements
 import java.applet.Applet;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Timer;
 
 /**
@@ -39,6 +55,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	/** double buffering variables */
 	private Image dbImage;
 	private Graphics dbg;
+	
+	// audio clips
+	Clip current_clip;
+	
+	// song names:
+	private final String MUSIC_MENU = "menu1.wav";
+	private final String MUSIC_GAME = "game1.wav";
+	private String music_current = "none";
 	
 	// hang glider image
 	BufferedImage hg_img;
@@ -270,31 +294,46 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			
 			// update applet size
 			update_applet_size();
+			
 			// tick map and map objects
 			if (gr == true && hg.alive == true)
 			{
+				// play menu music if not already playing
+				if (music_current != MUSIC_GAME)
+				{
+					playSound(MUSIC_GAME);
+					music_current = MUSIC_GAME;
+				} // end play clip
+				
 				hg.tick(mouse_y);
 				scrollspeed = hg.v;
 				m.tick(aWidth, aHeight, hg, scrollspeed);
-			}
+			} // end if game is running and hang glider is active
 			
 			//tick the main menu and set button actions
 			else if (in_mm == true && in_pm == false && in_em == false)
 			{
+				// play menu music if not already playing
+				if (music_current != MUSIC_MENU)
+				{
+					playSound(MUSIC_MENU);
+					music_current = MUSIC_MENU;
+				} // end play clip
+				
 				Menu.Button clickedbutton = mm.tick(mouse_x, mouse_y, clicked);
 				
-				if(clickedbutton == mm_start_b)
+				if (clickedbutton == mm_start_b)
 				{
 					clicked = false;
 					in_mm = false;
 					gr = true;
-				}
+				} // end start game
 				
 				if(clickedbutton == mm_quit_b)
 				{
 					clicked = false;
 					System.exit(0);
-				}
+				} // end quit
 			}//end main menu
 			
 			//tick pause menu and set button actions
@@ -383,4 +422,40 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		g.drawImage(dbImage, 0, 0, this);
 		Toolkit.getDefaultToolkit().sync(); // fixes lag on Ubuntu
 	} // end update
+	
+	public synchronized void playSound(String filename)
+	{
+//		try
+//		{
+//			try 
+//			{
+//				if (current_clip.isRunning()) current_clip.stop();
+//			}
+//			catch(NullPointerException e) {};
+//			
+//		    // open audio stream
+//		    URL url = this.getClass().getClassLoader().getResource(filename);
+//		    AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+//		    
+//		    // get sound clip
+//		    current_clip = AudioSystem.getClip();
+//		    
+//		    // open clip and start playing
+//		    current_clip.open(audioIn);
+//		    current_clip.loop(Clip.LOOP_CONTINUOUSLY);
+//		} // end try
+//		
+//		catch (UnsupportedAudioFileException e)
+//		{
+//		    e.printStackTrace();
+//		} // end catch
+//		catch (IOException e) 
+//		{    
+//			e.printStackTrace();
+//		} // end catch
+//		catch (LineUnavailableException e)
+//		{
+//		    e.printStackTrace();
+//		} // end catch
+	} // end play sound
 } // end Game
