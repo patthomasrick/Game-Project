@@ -338,10 +338,6 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			cb.draw(g2);
 			cm.draw(g2);
 			
-			// for readability
-			int w, h;
-			String text;
-			
 			// title
 			drawCenteredShadowText("Cave Glider", title_font, g2, 0.08);
 //			g2.setFont(title_font);
