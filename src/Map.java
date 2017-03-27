@@ -323,7 +323,7 @@ public class Map
 		this.scroll_speed = scroll_speed;
 
 		// get the factors that the screen has changed by
-		this.factors[0] = ((float) a_width)/((float) this.a_width);
+		this.factors[0] = ((float) a_height)/((float) this.a_height);
 		this.factors[1] = ((float) a_height)/((float) this.a_height);
 		
 		// keep track of distance travelled for high scores
@@ -412,7 +412,7 @@ public class Map
 			// also update distance between spawns and scroll speed
 			DIST_BETWEEN_SPIKES = (int) (150.0 * a_width/SCREEN_FACTOR[0]);
 			BG_DIST_BETWEEN_SPIKES = (int) (100.0 * a_width/SCREEN_FACTOR[0]);
-			this.scroll_factor = a_width/SCREEN_FACTOR[0];
+			this.scroll_factor = a_height/SCREEN_FACTOR[1];
 			
 			// update values after changes are done
 			this.a_width = a_width;

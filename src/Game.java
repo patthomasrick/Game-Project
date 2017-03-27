@@ -355,13 +355,14 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			g2.drawString("Credits", (int)((aWidth/2)-w2), (int)((aHeight/6)+h2));
 			
 			//Author Credits
+			String auth_string = "Created By: Patrick Thomas, Isaac Payne, and Chris \"DJ Chraaas\" Martin";
 			g2.setFont(credits_font2);
-			int w3 = (g2.getFontMetrics().stringWidth("Created By: Patrick Thomas, Isaac Payne, and Chris Martin"))/2;
+			int w3 = (g2.getFontMetrics().stringWidth(auth_string))/2;
 			int h3 = (g2.getFontMetrics().getHeight())/4;
 			g2.setColor(Color.BLACK);
-			g2.drawString("Created By: Patrick Thomas, Isaac Payne, and Chris Martin", (int)((aWidth/2)-w3+2), (int)((aHeight/4)+h3+2));
+			g2.drawString(auth_string, (int)((aWidth/2)-w3+2), (int)((aHeight/4)+h3+2));
 			g2.setColor(Color.WHITE);
-			g2.drawString("Created By: Patrick Thomas, Isaac Payne, and Chris Martin", (int)((aWidth/2)-w3), (int)((aHeight/4)+h3));
+			g2.drawString(auth_string, (int)((aWidth/2)-w3), (int)((aHeight/4)+h3));
 			
 			//Hang Glider Credits
 			int w4 = (g2.getFontMetrics().stringWidth("Hang Glider Credit: CC BY-SA 3.0,"))/2;
@@ -425,7 +426,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 	/**Changes the variables associated with this applet's size to what it actually is.
 	 * Essentially a setter.
 	 */
-	public void update_applet_size()
+	public void updateAppletSize()
 	{
 		if (this.getWidth() != this.aWidth && this.getHeight() != this.aHeight)
 		{
@@ -511,7 +512,7 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 			lasttime = date.getTime();
 			
 			// update applet size
-			update_applet_size();
+			updateAppletSize();
 			
 			if (!died_yet && !hg.alive)
 			{
