@@ -1,3 +1,10 @@
+/**
+ * This is the hang glider and its controls. It is designed to fly somewhat realistically, increasing in speed as it falls
+ * and decreasing as it rises. Its controls are somewhat unresponsive to simulate actual flight.
+ * 
+ * @author Chris Martin
+ */
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -7,13 +14,10 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 /**
- * A class that performs as a hang glider.
- * @author Christopher Martin
+ * The hang glider itself.
+ * @author Chris Martin
+ *
  */
-
- 
-// hang glider picture credits: CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=531761
-
 public class TestGlider extends Sprite
 {
 	// enable/disable debug tools
@@ -42,6 +46,14 @@ public class TestGlider extends Sprite
 	Simulated_mouse sm;
 	double t = 0.0;
   
+	/**
+	 * Constructor for a hang glider. Needs bounding rect size and image.
+	 * @param x		double
+	 * @param y		double
+	 * @param h		int
+	 * @param w		int
+	 * @param img	BufferedImage
+	 */
 	public TestGlider(double x, double y, int h, int w, BufferedImage img)
 	{
 		// initialize Sprite
@@ -68,6 +80,11 @@ public class TestGlider extends Sprite
 		sm = new Simulated_mouse(this);
 	} // end constructor
 	
+	/**
+	 * Constructor, to copy hang glider. Makes code more readable in places where the hang glider is restarted.
+	 * Results in a slightly more memory intensive code, however.
+	 * @param tg		Another TestGlider
+	 */
 	public TestGlider(TestGlider tg)
 	{
 		// call sprite constructor
@@ -95,6 +112,11 @@ public class TestGlider extends Sprite
 		this.sm = new Simulated_mouse(this);
 	} // end copy constructor
 	
+	/**
+	 * The per-frame tick of the hang glider.
+	 * @param mouse_y	Y position of the mouse
+	 * @return			X component of the velocity, double
+	 */
 	public double tick(int mouse_y)
 	{
 		
@@ -142,10 +164,11 @@ public class TestGlider extends Sprite
 	} // end tick
 
 	/**
-	 * Draw the sprite as a simple rectangle to the screen.
-	 * 
+	 * Draw the sprite as an actual hang glider with trails. The glider is rotated to face its direction of
+	 * movement.
 	 * @param g		Graphics object to draw to
 	 */
+	@Override
 	public void draw(Graphics g)
 	{// get obstacle
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON) ;
@@ -195,31 +218,55 @@ public class TestGlider extends Sprite
 		} // end for loop
 	} // end draw
 	
-	
+	/**
+	 * A private class to keep track of the points that the hang glider leaves behind. These are used
+	 * to draw the trails.
+	 * @author Patrick Thomas
+	 *
+	 */
 	private static class _TrailPoint extends Geometry.Point
 	{
 		// duration
-		
 		public static final int MAX_FRAME_LIFE = 12;
 		public int frame_life = MAX_FRAME_LIFE;
 		
+		/**
+		 * Constructor. Needs point.
+		 * @param x		double
+		 * @param y		double
+		 */
 		public _TrailPoint(double x, double y)
 		{
 			super(x, y);
 		} // end constructor
 		
+		/**
+		 * Copy constructor
+		 * @param tp	_TrailPoint
+		 */
 		public _TrailPoint(_TrailPoint tp)
 		{
 			super(tp.x, tp.y);
 		} // end constructor
 	} // end class trail point
 	
-	
+	/**
+	 * A class to keep track of pairs of points. Makes the array operations simpler.
+	 * @author Patrick Thomas
+	 *
+	 */
 	private static class _TrailPointPair
 	{
+		/** The left trail point */
 		public _TrailPoint l;
+		/** The right trail point */
 		public _TrailPoint r;
 		
+		/**
+		 * Constructor. Takes two points.
+		 * @param l		the left trail point, correlates to hang glider
+		 * @param r		the right point
+		 */
 		public _TrailPointPair(_TrailPoint l, _TrailPoint r)
 		{
 			this.l = new _TrailPoint(l);
@@ -228,16 +275,10 @@ public class TestGlider extends Sprite
 	} // end class
 
 	
-	
-	/*
-	 * if the user wants to move down:
-	 * 		move the point down
-	 * 			if the point is below the mouse:
-	 * 				stop moving
-	 * else if the user wants to move up:
-	 * 		move the point up
-	 * 			if the point is above the mouse;
-	 * 				stop moving
+	/**
+	 * A "simulated" mouse to have a slight input delay and limit, so the game is harder.
+	 * @author Chris Martin
+	 *
 	 */
 	public class Simulated_mouse
 	{
@@ -247,14 +288,33 @@ public class TestGlider extends Sprite
 		double simmouse_vy = 0;//simulated mouse y velocity
 		double simmouse_maxa = 0;//simulated mouse max acceleration
 		
+		/**
+		 * Constructor. Needs its own hang glider.
+		 * @param hg
+		 */
 		public Simulated_mouse(TestGlider hg)
 		{
 			simmouse_x = hg.x + 100;
 			simmouse_y = hg.y;
 		} // end constructor
 		
+		/**
+		 * Chase a given mouse y.
+		 * @param mouse_y	int, height of mouse
+		 * @return			the height of the simulated mouse
+		 */
 		public double chase_mouse(int mouse_y)
 		{
+			/*
+			 * if the user wants to move down:
+			 * 		move the point down
+			 * 			if the point is below the mouse:
+			 * 				stop moving
+			 * else if the user wants to move up:
+			 * 		move the point up
+			 * 			if the point is above the mouse;
+			 * 				stop moving
+			 */
 			if (simmouse_y < mouse_y)
 			{
 				// mouse sim mouse

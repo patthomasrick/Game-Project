@@ -12,9 +12,8 @@
  */
 
 import java.awt.Color; // imported to define custom colors
-import java.awt.Graphics;
-// import java.awt.Graphics2D;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,7 +23,11 @@ import java.util.concurrent.ThreadLocalRandom; // allows for random int in a ran
  * Creates a map object that stores and controls game obstacles.
  */
 
-
+/**
+ * A class that contains all of the obstacles that the player sees and has to avoid.
+ * @author Patrick Thomas
+ *
+ */
 public class Map
 {
 	// create decimal format
@@ -40,20 +43,20 @@ public class Map
 	private double diff_dist_max = 1.0;
 	private double current_difficulty = diff_min;
 	
-	// variables
-	private double scroll_speed; // how fast the map scrolls (placeholder)
+	// map variables and counters
+	private double scroll_speed; 		// how fast the map scrolls (placeholder)
 	private double scroll_factor = 1.0; // how fast the map moves in accord to screen x size
-	private double dist_travelled = 0;
+	private double dist_travelled = 0;	// how far the map has moved so far
 	
-	public Font dist_font;
-	
-	
+	public Font dist_font;				// font that renders the distance readout on the HUD
 	
 	// applet size
 	private int a_width;	// the current size of the applet
 	private int a_height;	
 	
-	
+	// how large the window was originally designed to be
+	private final double[] SCREEN_FACTOR = {800.0, 600.0};
+	public double[] factors = {1.0, 1.0}; 
 	
 	// floor and ceiling
 	private int ceiling;	// the current y positions of the ceiling and floor
@@ -61,18 +64,8 @@ public class Map
 	private int bg_ceiling;	// the current y positions of the ceiling and floor
 	private int bg_floor;
 	
-	
-	
-	// constants
-	
-	// how large the window was originally designed to be
-	private final double[] SCREEN_FACTOR = {800.0, 600.0};
-	public double[] factors = {1.0, 1.0}; 
-	
 	// the percent of the screen that is the ceiling or floor
 	private final double[] PCT_MAP = {1.0/12.0, 10.0/12.0};
-	
-	
 	
 	// hardcode spawning
 	private final int[] SPIKE_X_RANGE = {-60, 60};
@@ -119,8 +112,6 @@ public class Map
 	/** Defined colors of theme */
 	public static final Color BG_COLOR_L = new Color(11, 29, 74); 	// dark blue
 	public static final Color BG_COLOR_D = new Color(7, 23, 64); 	// darker blue
-//	public static final Color BG_COLOR_L = new Color(48, 62, 115); 	// dark blue
-//	public static final Color BG_COLOR_D = new Color(23, 37, 87); 	// darker blue
 	
 	public static final Color FG_COLOR_L = new Color(170, 135, 57); // sandy yellow
 	public static final Color FG_COLOR_D = new Color(128, 95, 21); 	// dark sandy yellow
@@ -129,7 +120,7 @@ public class Map
 	public static final Color FG_COLOR_L_GREY = 	new Color(77, 70, 69); // grey
 	public static final Color FG_COLOR_D_GREY = 	new Color(56, 51, 50); // dark grey
 	
-	public Color fg_color_l; 
+	public Color fg_color_l; // the current color scheme
 	public Color fg_color_d; 
 	
 	/**
@@ -147,7 +138,7 @@ public class Map
 	public Map(int screensize_x, int screensize_y, double scroll_speed)
 	{
 		// select color randomly
-		int color_choice = ThreadLocalRandom.current().nextInt(1, 4);
+		int color_choice = ThreadLocalRandom.current().nextInt(1, 3 + 1);
 		if (color_choice == 1)
 		{
 			this.fg_color_l = Map.FG_COLOR_L;
@@ -200,9 +191,9 @@ public class Map
 		
 		// -------- FLOOR CHUNKS ----------------
 		int f_w, f_l, f_r;
-		f_w = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
-		f_l = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
-		f_r = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		f_w = (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
+		f_l = (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		f_r = (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
 		
 		// create floor points
 		int x2, y1, y2, y3;
@@ -223,9 +214,9 @@ public class Map
 		// -------- CEILING CHUNKS ----------------
 		
 		int c_w, c_l, c_r;
-		c_w = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
-		c_l = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
-		c_r = (int) (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		c_w = (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_OFFSET[0], CHUNK_SPAWN_OFFSET[1]));
+		c_l = (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
+		c_r = (ThreadLocalRandom.current().nextInt(CHUNK_SPAWN_HEIGHT[0], CHUNK_SPAWN_HEIGHT[1]));
 		
 		// create floor points
 		x2 = a_width + c_w + 200;
@@ -255,9 +246,9 @@ public class Map
 		// --------------------------------------
 		
 		// -------- BG FLOOR CHUNKS ----------------
-		f_w = (int) (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_OFFSET[0], BG_CHUNK_SPAWN_OFFSET[1]));
-		f_l = (int) (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
-		f_r = (int) (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
+		f_w = (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_OFFSET[0], BG_CHUNK_SPAWN_OFFSET[1]));
+		f_l = (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
+		f_r = (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
 		
 		// create floor points
 		x2 = a_width + f_w + 200;
@@ -274,9 +265,9 @@ public class Map
 		CaveObstacle.Chunk bg_floor_chunk = new CaveObstacle.Chunk(a2, a1, b2, b1, Map.BG_COLOR_L);
 		
 		// -------- CEILING CHUNKS ----------------
-		c_w = (int) (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_OFFSET[0], BG_CHUNK_SPAWN_OFFSET[1]));
-		c_l = (int) (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
-		c_r = (int) (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
+		c_w = (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_OFFSET[0], BG_CHUNK_SPAWN_OFFSET[1]));
+		c_l = (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
+		c_r = (ThreadLocalRandom.current().nextInt(BG_CHUNK_SPAWN_HEIGHT[0], BG_CHUNK_SPAWN_HEIGHT[1]));
 		
 		// create floor points
 		x2 = a_width + c_w + 200;
@@ -596,8 +587,8 @@ public class Map
 			
 			// create obstacle
 			co = new CaveObstacle(
-					(double) (this.a_width + 50*x_shift + random_x),
-					(double) new_y,
+					this.a_width + 50*x_shift + random_x,
+					new_y,
 					random_h,
 					random_w,
 					new_color);
@@ -713,8 +704,8 @@ public class Map
 			
 			// create obstacle
 			co = new CaveObstacle(
-					(double) (this.a_width + 50*x_shift + random_x),
-					(double) new_y,
+					this.a_width + 50*x_shift + random_x,
+					new_y,
 					random_h,
 					random_w,
 					Map.BG_COLOR_L);

@@ -8,8 +8,8 @@
  * @version 2/3/17
  */
 
-import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Graphics;
 
 /**
  * The Sprite class. Provides simple tools to draw a sprite's rect,
@@ -49,7 +49,6 @@ public class Sprite extends Geometry.Rect
 	
 	/**
 	 * Draw the sprite as a simple rectangle to the screen.
-	 * 
 	 * @param g		Graphics object to draw to
 	 */
 	public void draw(Graphics g)
@@ -61,6 +60,11 @@ public class Sprite extends Geometry.Rect
 		} // end if alive
 	} // end draw
 	
+	/**
+	 * Resize the sprite's rectangle.
+	 * @param x_factor
+	 * @param y_factor
+	 */
 	public void resize(double x_factor, double y_factor)
 	{
 		this.x *= x_factor;

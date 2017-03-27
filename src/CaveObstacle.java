@@ -114,7 +114,12 @@ public class CaveObstacle extends Sprite
 		this.w = (int) (this.w * x_factor);
 	} // end resize
 	
-	
+	/**
+	 * "Chunks" are the objects that make the floor/ceiling of the cave rough and bumpy. These are different from
+	 * the regular spikes/stalagtites/stalagmites that are in the cave.
+	 * @author Patrick Thomas
+	 *
+	 */
 	public static class Chunk
 	{
 		// geometric containers
@@ -274,6 +279,11 @@ public class CaveObstacle extends Sprite
 					chunk.color);
 		} // end constructor given another chunk
 		
+		/**
+		 * Updates the obstacle and moves it according to the hang glider.
+		 * @param milliseconds
+		 * @param scrollspeed
+		 */
 		public void tick(int milliseconds, double scrollspeed)
 		{			
 			this.a1.x -= scrollspeed;
@@ -291,6 +301,10 @@ public class CaveObstacle extends Sprite
 			this.inscribed_rect.move(-scrollspeed, 0);
 		} // end tick
 		
+		/**
+		 * Draw the trapezoid-like object.
+		 * @param g		Graphics object
+		 */
 		public void draw(Graphics g)
 		{
 			// draw rectangle of trapezoid
@@ -312,6 +326,11 @@ public class CaveObstacle extends Sprite
 			g.fillPolygon(x_values, y_values, 4);
 		} // end draw
 		
+		/**
+		 * Resize the object based on how the screen has changed.
+		 * @param x_factor
+		 * @param y_factor
+		 */
 		public void resize(double x_factor, double y_factor)
 		{
 			// shift position

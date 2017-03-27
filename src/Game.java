@@ -334,93 +334,155 @@ implements MouseListener, ActionListener, ItemListener, KeyListener, MouseMotion
 		//draw credits menu
 		if (in_cm == true)
 		{
+			// draw the menu and buttons
 			cb.draw(g2);
 			cm.draw(g2);
 			
-			g2.setFont(title_font);
-			int w1 = (g2.getFontMetrics().stringWidth("Cave Glider"))/2;
-			int h1 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Cave Glider", (int)((aWidth/2)-w1+2), (int)((aHeight/20)+h1+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Cave Glider", (int)((aWidth/2)-w1), (int)((aHeight/20)+h1));
+			// for readability
+			int w, h;
+			String text;
 			
-			//Credits title
-			g2.setFont(credits_font1);
-			int w2 = (g2.getFontMetrics().stringWidth("Credits"))/2;
-			int h2 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Credits", (int)((aWidth/2)-w2+2), (int)((aHeight/6)+h2+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Credits", (int)((aWidth/2)-w2), (int)((aHeight/6)+h2));
+			// title
+			drawCenteredShadowText("Cave Glider", title_font, g2, 0.08);
+//			g2.setFont(title_font);
+//			w = (g2.getFontMetrics().stringWidth("Cave Glider"))/2;
+//			h = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString(text, (int)((aWidth/2)-w+2), (int)((aHeight/20)+h+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString(text, (int)((aWidth/2)-w), (int)((aHeight/20)+h));
 			
-			//Author Credits
-			String auth_string = "Created By: Patrick Thomas, Isaac Payne, and Chris \"DJ Chraaas\" Martin";
-			g2.setFont(credits_font2);
-			int w3 = (g2.getFontMetrics().stringWidth(auth_string))/2;
-			int h3 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString(auth_string, (int)((aWidth/2)-w3+2), (int)((aHeight/4)+h3+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString(auth_string, (int)((aWidth/2)-w3), (int)((aHeight/4)+h3));
+			// Credits title
+			drawCenteredShadowText("Credits", credits_font1, g2, 1.0/6.0);
+//			g2.setFont(credits_font1);
+//			int w2 = (g2.getFontMetrics().stringWidth("Credits"))/2;
+//			int h2 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("Credits", (int)((aWidth/2)-w2+2), (int)((aHeight/6)+h2+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("Credits", (int)((aWidth/2)-w2), (int)((aHeight/6)+h2));
+			
+			// Author Credits
+			drawCenteredShadowText(
+					"Created by Patrick Thomas, Isaac Payne, and Chris \"DJ Chraaas\" Martin", credits_font2, g2, 0.25);
+//			String auth_string = "Created By: Patrick Thomas, Isaac Payne, and Chris \"DJ Chraaas\" Martin";
+//			g2.setFont(credits_font2);
+//			int w3 = (g2.getFontMetrics().stringWidth(auth_string))/2;
+//			int h3 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString(auth_string, (int)((aWidth/2)-w3+2), (int)((aHeight/4)+h3+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString(auth_string, (int)((aWidth/2)-w3), (int)((aHeight/4)+h3));
 			
 			//Hang Glider Credits
-			int w4 = (g2.getFontMetrics().stringWidth("Hang Glider Credit: CC BY-SA 3.0,"))/2;
-			int h4 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.5)-w4+2), (int)((aHeight/3.3)+h4+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.5)-w4), (int)((aHeight/3.3)+h4));
-			int w5 = (g2.getFontMetrics().stringWidth("https://commons.wikimedia.org/w/index.php?curid=531761"))/2;
-			int h5 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5+2), (int)((aHeight/3)+h5+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5), (int)((aHeight/3)+h5));
+			drawCenteredShadowText(
+					"Hang Glider Credit: CC BY-SA 3.0,", credits_font2, g2, 1.0/3.3);
+			drawCenteredShadowText(
+					"https://commons.wikimedia.org/w/index.php?curid=531761", credits_font2, g2, 1.0/3.0);
+//			int w4 = (g2.getFontMetrics().stringWidth("Hang Glider Credit: CC BY-SA 3.0,"))/2;
+//			int h4 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.5)-w4+2), (int)((aHeight/3.3)+h4+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("Hang Glider Credit: CC BY-SA 3.0,", (int)((aWidth*0.5)-w4), (int)((aHeight/3.3)+h4));
+//			int w5 = (g2.getFontMetrics().stringWidth("https://commons.wikimedia.org/w/index.php?curid=531761"))/2;
+//			int h5 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5+2), (int)((aHeight/3)+h5+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("https://commons.wikimedia.org/w/index.php?curid=531761", (int)((aWidth*0.5)-w5), (int)((aHeight/3)+h5));
 			
 			//Menu Music Credits
-			int w6 = (g2.getFontMetrics().stringWidth("Menu Music Credit: Hobo Pride by FRAIL is licensed under a"))/2;
-			int h6 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Menu Music Credit: Hobo Pride by FRAIL is licensed under a", (int)((aWidth*0.5)-w6+2), (int)((aHeight/2.5)+h6+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Menu Music Credit: Hobo Pride by FRAIL is licensed under a", (int)((aWidth*0.5)-w6), (int)((aHeight/2.5)+h6));
-			int w7 = (g2.getFontMetrics().stringWidth("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License"))/2;
-			int h7 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License", (int)((aWidth*0.5)-w7+2), (int)((aHeight/2.3)+h7+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License", (int)((aWidth*0.5)-w7), (int)((aHeight/2.3)+h7));
+			drawCenteredShadowText(
+					"Menu Music Credit: Hobo Pride by FRAIL is licensed under a", credits_font2, g2, 1.0/2.5);
+			drawCenteredShadowText(
+					"Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License", credits_font2, g2, 1.0/2.3);
+//			int w6 = (g2.getFontMetrics().stringWidth("Menu Music Credit: Hobo Pride by FRAIL is licensed under a"))/2;
+//			int h6 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("Menu Music Credit: Hobo Pride by FRAIL is licensed under a", (int)((aWidth*0.5)-w6+2), (int)((aHeight/2.5)+h6+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("Menu Music Credit: Hobo Pride by FRAIL is licensed under a", (int)((aWidth*0.5)-w6), (int)((aHeight/2.5)+h6));
+//			int w7 = (g2.getFontMetrics().stringWidth("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License"))/2;
+//			int h7 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License", (int)((aWidth*0.5)-w7+2), (int)((aHeight/2.3)+h7+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License", (int)((aWidth*0.5)-w7), (int)((aHeight/2.3)+h7));
 			
 			//Game Music Credits
-			int w8 = (g2.getFontMetrics().stringWidth("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)"))/2;
-			int h8 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)", (int)((aWidth*0.5)-w8+2), (int)((aHeight/2)+h8+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)", (int)((aWidth*0.5)-w8), (int)((aHeight/2)+h8));
-			int w9 = (g2.getFontMetrics().stringWidth("Licensed under Creative Commons: By Attribution 3.0 License"))/2;
-			int h9 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Licensed under Creative Commons: By Attribution 3.0 License", (int)((aWidth*0.5)-w9+2), (int)((aHeight*.53)+h9+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Licensed under Creative Commons: By Attribution 3.0 License", (int)((aWidth*0.5)-w9), (int)((aHeight*.53)+h9));
+			drawCenteredShadowText(
+					"In-Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)", credits_font2, g2, 1.0/2.0);
+			drawCenteredShadowText(
+					"Licensed under Creative Commons: By Attribution 3.0 License", credits_font2, g2, 0.53);
+//			int w8 = (g2.getFontMetrics().stringWidth("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)"))/2;
+//			int h8 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)", (int)((aWidth*0.5)-w8+2), (int)((aHeight/2)+h8+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("Game Music: Spazzmatica Polka Kevin MacLeod (incompetech.com)", (int)((aWidth*0.5)-w8), (int)((aHeight/2)+h8));
+//			int w9 = (g2.getFontMetrics().stringWidth("Licensed under Creative Commons: By Attribution 3.0 License"))/2;
+//			int h9 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("Licensed under Creative Commons: By Attribution 3.0 License", (int)((aWidth*0.5)-w9+2), (int)((aHeight*.53)+h9+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("Licensed under Creative Commons: By Attribution 3.0 License", (int)((aWidth*0.5)-w9), (int)((aHeight*.53)+h9));
 			
 			//Sound effect credits
-			int w10 = (g2.getFontMetrics().stringWidth("Cymbal noises: No machine-readable author provided. Clngre"))/2;
-			int h10 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("Cymbal noises: No machine-readable author provided. Clngre", (int)((aWidth*0.5)-w10+2), (int)((aHeight*.58)+h10+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("Cymbal noises: No machine-readable author provided. Clngre", (int)((aWidth*0.5)-w10), (int)((aHeight*.58)+h10));
-			int w11 = (g2.getFontMetrics().stringWidth("(http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0"))/2;
-			int h11 = (g2.getFontMetrics().getHeight())/4;
-			g2.setColor(Color.BLACK);
-			g2.drawString("assumed (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0", (int)((aWidth*0.45)-w11+2), (int)((aHeight*.61)+h11+2));
-			g2.setColor(Color.WHITE);
-			g2.drawString("assumed (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0", (int)((aWidth*0.45)-w11), (int)((aHeight*.61)+h11));
+			drawCenteredShadowText(
+					"Cymbal noises: No machine-readable author provided. Clngre", credits_font2, g2, 0.58);
+			drawCenteredShadowText(
+					"assumed (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0", credits_font2, g2, 0.61);
+//			int w10 = (g2.getFontMetrics().stringWidth("Cymbal noises: No machine-readable author provided. Clngre"))/2;
+//			int h10 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("Cymbal noises: No machine-readable author provided. Clngre", (int)((aWidth*0.5)-w10+2), (int)((aHeight*.58)+h10+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("Cymbal noises: No machine-readable author provided. Clngre", (int)((aWidth*0.5)-w10), (int)((aHeight*.58)+h10));
+//			int w11 = (g2.getFontMetrics().stringWidth("(http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0"))/2;
+//			int h11 = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString("assumed (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0", (int)((aWidth*0.45)-w11+2), (int)((aHeight*.61)+h11+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString("assumed (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0", (int)((aWidth*0.45)-w11), (int)((aHeight*.61)+h11));
+			
+//			// byrd credit
+//			String byrd_credit = "Special thanks to: Logan Byrd for being first tester";
+//			w = (g2.getFontMetrics().stringWidth(byrd_credit))/2;
+//			h = (g2.getFontMetrics().getHeight())/4;
+//			g2.setColor(Color.BLACK);
+//			g2.drawString(byrd_credit, (int)((aWidth*0.5)-w+2), (int)((aHeight*.67)+h+2));
+//			g2.setColor(Color.WHITE);
+//			g2.drawString(byrd_credit, (int)((aWidth*0.5)-w), (int)((aHeight*.67)+h));
+			
+			drawCenteredShadowText("Special thanks to: Logan Byrd for being first tester", credits_font2, g2, 0.67);
 		}
 	} // end draw
+	
+	
+	public void drawCenteredShadowText(String text, Font font, Graphics2D g2, double y_pct)
+	{
+		// set font
+		g2.setFont(font);
+		
+		// get the width/height to be centered upon
+		int w = (g2.getFontMetrics().stringWidth(text))/2;
+		int h = (g2.getFontMetrics().getHeight())/4;
+		
+		// draw the text
+		// shadow
+		g2.setColor(Color.BLACK);
+		g2.drawString(
+				text, 
+				(int)((aWidth / 2.0) 	- w + 2), 
+				(int)((aHeight * y_pct) + h + 2));
+		// foreground
+		g2.setColor(Color.WHITE);
+		g2.drawString(
+				text, 
+				(int)((aWidth / 2.0) 	- w),
+				(int)((aHeight * y_pct) + h));
+	} // end draw_shadow_text
 
 	
 	/**Changes the variables associated with this applet's size to what it actually is.
